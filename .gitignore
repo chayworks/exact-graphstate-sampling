@@ -1,0 +1,5 @@
+work/
+*.npy
+dp
+gsamp
+__pycache__/

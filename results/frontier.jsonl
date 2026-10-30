@@ -1,0 +1,10 @@
+{"n": 30, "edges": 229, "natural": 14, "width": 12, "log2_work": 16.7, "mem_GB": 0.0}
+{"n": 40, "edges": 425, "natural": 19, "width": 17, "log2_work": 21.43, "mem_GB": 0.0}
+{"n": 50, "edges": 601, "natural": 24, "width": 22, "log2_work": 26.42, "mem_GB": 0.07}
+{"n": 60, "edges": 901, "natural": 28, "width": 26, "log2_work": 30.81, "mem_GB": 1.07}
+{"n": 70, "edges": 1192, "natural": 33, "width": 31, "log2_work": 36.01, "mem_GB": 34.36}
+{"n": 80, "edges": 1573, "natural": 39, "width": 36, "log2_work": 41.21, "mem_GB": 1099.51}
+{"n": 90, "edges": 2047, "natural": 44, "width": 42, "log2_work": 46.25, "mem_GB": 70368.74}
+{"n": 100, "edges": 2428, "natural": 49, "width": 47, "log2_work": 51.36, "mem_GB": 2251799.81}
+{"n": 110, "edges": 3007, "natural": 54, "width": 51, "log2_work": 55.86, "mem_GB": 36028797.02}
+{"n": 120, "edges": 3627, "natural": 59, "width": 56, "log2_work": 61.17, "mem_GB": 1152921504.61}

@@ -1,0 +1,3 @@
+seed 1000000: gsamp log2 Pr = -69.5085302   dp.cpp log2 |Z|^2/2^70 = -69.5085294   (4 chunks)
+seed 1000001: gsamp log2 Pr = -68.8761651   dp.cpp log2 |Z|^2/2^70 = -68.8761651   (4 chunks)
+negative control (sample 1, step-bit 35 flipped):   dp.cpp log2 |Z|^2/2^70 = -69.5312514   (4 chunks)

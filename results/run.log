@@ -1,0 +1,49 @@
+2026-10-29T03:33:44Z boot r7a.4xlarge nproc=16 mem=123G
+2026-10-29T03:33:45Z cpu  AMD EPYC 9R14
+2026-10-29T03:34:08Z built: g++ (GCC) 11.5.0 20240719 (Red Hat 11.5.0-5)
+2026-10-29T03:34:10Z check55: PASS
+2026-10-29T03:39:11Z progress 22 samples
+2026-10-29T03:44:13Z progress 45 samples
+2026-10-29T03:49:14Z progress 68 samples
+2026-10-29T03:54:16Z progress 90 samples
+2026-10-29T03:59:17Z progress 113 samples
+2026-10-29T04:04:18Z progress 136 samples
+2026-10-29T04:09:19Z progress 159 samples
+2026-10-29T04:14:21Z progress 182 samples
+2026-10-29T04:19:22Z progress 205 samples
+2026-10-29T04:24:24Z progress 228 samples
+2026-10-29T04:29:25Z progress 251 samples
+2026-10-29T04:34:26Z progress 275 samples
+2026-10-29T04:39:28Z progress 298 samples
+2026-10-29T04:44:29Z progress 321 samples
+2026-10-29T04:49:31Z progress 344 samples
+2026-10-29T04:54:33Z progress 367 samples
+2026-10-29T04:59:34Z progress 390 samples
+2026-10-29T05:04:35Z progress 413 samples
+2026-10-29T05:09:36Z progress 436 samples
+2026-10-29T05:14:38Z progress 460 samples
+2026-10-29T05:19:39Z progress 483 samples
+2026-10-29T05:24:41Z progress 506 samples
+2026-10-29T05:29:42Z progress 529 samples
+2026-10-29T05:34:44Z progress 552 samples
+2026-10-29T05:39:45Z progress 575 samples
+2026-10-29T05:44:47Z progress 598 samples
+2026-10-29T05:49:48Z progress 622 samples
+2026-10-29T05:54:50Z progress 645 samples
+2026-10-29T05:59:51Z progress 668 samples
+2026-10-29T06:04:53Z progress 691 samples
+2026-10-29T06:09:54Z progress 715 samples
+2026-10-29T06:14:56Z progress 738 samples
+2026-10-29T06:19:57Z progress 761 samples
+2026-10-29T06:24:59Z progress 784 samples
+2026-10-29T06:30:00Z progress 808 samples
+2026-10-29T06:35:02Z progress 831 samples
+2026-10-29T06:40:03Z progress 854 samples
+2026-10-29T06:45:05Z progress 877 samples
+2026-10-29T06:50:06Z progress 901 samples
+2026-10-29T06:55:07Z progress 924 samples
+2026-10-29T07:00:09Z progress 947 samples
+2026-10-29T07:05:10Z progress 971 samples
+2026-10-29T07:10:12Z progress 994 samples
+2026-10-29T07:14:12Z sampling done in 13202 s, 1012 samples
+2026-10-29T07:14:13Z finish: complete
