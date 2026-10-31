@@ -111,10 +111,18 @@ over the shots rather than its mean. If each shot is drawn from the ideal distri
 and uniformly otherwise, the density of z over shots is (Fz + 1 − F)e^{−z}, and the maximum-likelihood
 fit gives F_MLE = 0.48 [0.43, 0.54] (profile likelihood, 95%). The mixture fits the observed shot
 distribution (Kolmogorov–Smirnov distance 0.018, 5% threshold 0.033; `ibm_fidelity_mle.py`,
-which recovers F = 0, 0.4 and 1 on synthetic data). Both estimates sit above the 0.37 that IBM reports
-for this run from direct fidelity estimation. The quantities differ (the full circuit including the
-non-Clifford measurement layer, versus the stabilizers of the graph state), and linear XEB is known to
-over-estimate fidelity under non-depolarising noise, so we report the gap without interpreting it.
+which recovers F = 0, 0.4 and 1 on synthetic data).
+
+The instance README (tracker repository, `random_graph_sampling/README.md`) states that "XEB requires
+classical simulations for the outcome probabilities, hence can only be extrapolated for the full-depth
+circuit". Here it is computed exactly for every published shot. The shots are post-selected by spacetime
+Pauli checks on 27 ancillas (IBM Boston, Heron R3), and the README reports a post-selected state fidelity
+of 0.37 by direct fidelity estimation with 80 random stabilizers, "bounded above 0.092 with 95%
+confidence". Our two estimates, 0.457 ± 0.037 and 0.48 [0.43, 0.54], are consistent with that bound and
+higher than the point estimate, with a much narrower interval. The quantities differ (the full circuit
+including the non-Clifford measurement layer, versus the stabilizers of the graph state; the README argues
+they agree to first order under Pauli twirling), and linear XEB is known to over-estimate fidelity under
+non-depolarising noise, so we report the gap without interpreting it.
 
 ## 4. Verification
 

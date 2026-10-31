@@ -1,6 +1,7 @@
 // In-place exact sampler (see inplace.py): one complex64 arena of 2^R entries.
 // Plan: n nsteps R; per step: v nk m g rhoc nterms; nk Tkeep values; nterms x (Tq x tau par); 8 doubles M[b][x].
 // Usage: gsamp2 plan sample N seed | gsamp2 plan prob stringsfile   (same output format as gsamp)
+//        gsamp2 plan chain stringsfile   -> per line: log2 Pr, then Pr(b_k | b_1..b_{k-1}) for each step (one pass per step)
 #include <cstdio>
 #include <cstdint>
 #include <cstdlib>
@@ -42,6 +43,21 @@ static double chain(const int* forced, int* bits, std::mt19937_64* rng) {
     }
     return logp;
 }
+// Single pass per step for a forced string: store the chosen branch unnormalised and accumulate its norm nb.
+// Since sum_b Pr(prefix, b) = Pr(prefix), n0 + n1 = 2 * (norm of the current table) = 2 * nb_prev, so the
+// conditional is nb / (2 nb_prev) without the norm pass. cond[k] receives Pr(b_k | b_1..b_{k-1}).
+static double chain1(const int* forced, double* cond) {
+    mem[0] = 1; double prev = 1;
+    for (int k = 0; k < ns; k++) {
+        const Step& s = st[k]; const int64_t N = (int64_t)1 << s.nk; const int bv = forced[k]; double nb = 0;
+#pragma omp parallel for schedule(static) reduction(+:nb)
+        for (int64_t c = 0; c < N; c++) { cd o[2][2]; uint64_t b = base_of(s, c); outputs(s, c, b, o);
+            mem[b] = cf(o[bv][0]); if (s.m == 2) mem[b ^ s.g] = cf(o[bv][1]);
+            nb += std::norm(o[bv][0]) + std::norm(o[bv][1]); }
+        cond[k] = nb / (2 * prev); prev = nb; if (nb <= 0) { for (; k < ns; k++) cond[k] = 0; return -INFINITY; }
+    }
+    return std::log2(prev) - ns;
+}
 int main(int argc, char** argv) {
     if (argc < 4) return 1;
     FILE* f = fopen(argv[1], "r"); if (!f || fscanf(f, "%d %d %d", &n, &ns, &R) != 3) return 2; st.resize(ns);
@@ -62,9 +78,13 @@ int main(int argc, char** argv) {
         for (long i = 0; i < N; i++) { std::mt19937_64 rng(seed + i); double lp = chain(nullptr, bits.data(), &rng);
             for (int k = 0; k < ns; k++) putchar('0' + bits[k]); printf(" %.12f %llu\n", lp, seed + i); fflush(stdout); }
     } else {
+        const bool ch = !strcmp(argv[2], "chain"); std::vector<double> cond(ns);
         FILE* g = fopen(argv[3], "r"); char line[4096];
         while (fgets(line, sizeof line, g)) { if ((int)strlen(line) < ns) continue; std::vector<int> fb(ns);
-            for (int k = 0; k < ns; k++) fb[k] = line[k] - '0'; printf("%.12f\n", chain(fb.data(), bits.data(), nullptr)); fflush(stdout); }
+            for (int k = 0; k < ns; k++) fb[k] = line[k] - '0';
+            if (ch) { printf("%.12f", chain1(fb.data(), cond.data())); for (int k = 0; k < ns; k++) printf(" %.9f", cond[k]); putchar('\n'); }
+            else printf("%.12f\n", chain(fb.data(), bits.data(), nullptr));
+            fflush(stdout); }
     }
     return 0;
 }

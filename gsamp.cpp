@@ -51,6 +51,22 @@ static double chain(const int* forced, int* bits, std::mt19937_64* rng) {
     return logp;
 }
 
+// One pass per step for a forced string: write the chosen branch unnormalised and accumulate its norm nb.
+// sum_b Pr(prefix, b) = Pr(prefix) gives n0 + n1 = 2 * (norm of the current table) = 2 * nb_prev, so
+// Pr(b_k | prefix) = nb / (2 nb_prev) without the norm pass. cond[k] receives that conditional.
+static double chain1(const int* forced, double* cond) {
+    cf* old = bufA.data(); cf* nw = bufB.data(); old[0] = 1; double prev = 1;
+    for (int k = 0; k < ns; k++) {
+        const Step& s = st[k]; const int64_t N = (int64_t)1 << s.rn; const int b = forced[k];
+        const cd m0 = s.M[b][0], m1 = s.M[b][1]; double nb = 0;
+#pragma omp parallel for schedule(static) reduction(+:nb)
+        for (int64_t cp = 0; cp < N; cp++) { cd S0, S1; gather(s, old, cp, S0, S1); cd o = m0 * S0 + m1 * S1; nw[cp] = cf(o); nb += std::norm(o); }
+        cond[k] = nb / (2 * prev); prev = nb; std::swap(old, nw);
+        if (nb <= 0) { for (; k < ns; k++) cond[k] = 0; return -INFINITY; }
+    }
+    return std::log2(prev) - ns;
+}
+
 int main(int argc, char** argv) {
     if (argc < 4) { fprintf(stderr, "usage\n"); return 1; }
     FILE* f = fopen(argv[1], "r"); if (!f || fscanf(f, "%d %d %d", &n, &ns, &maxr) != 3) return 2;
@@ -72,12 +88,15 @@ int main(int argc, char** argv) {
             std::mt19937_64 rng(seed + i); double lp = chain(nullptr, bits.data(), &rng);
             for (int k = 0; k < ns; k++) putchar('0' + bits[k]); printf(" %.12f %llu\n", lp, seed + i); fflush(stdout);
         }
-    } else if (!strcmp(argv[2], "prob")) {
+    } else if (!strcmp(argv[2], "prob") || !strcmp(argv[2], "chain")) {
+        const bool ch = !strcmp(argv[2], "chain"); std::vector<double> cond(ns);
         FILE* g = fopen(argv[3], "r"); char line[4096];
         while (fgets(line, sizeof line, g)) {
             if ((int)strlen(line) < ns) continue; std::vector<int> fb(ns);
             for (int k = 0; k < ns; k++) fb[k] = line[k] - '0';
-            printf("%.12f\n", chain(fb.data(), bits.data(), nullptr)); fflush(stdout);
+            if (ch) { printf("%.12f", chain1(fb.data(), cond.data())); for (int k = 0; k < ns; k++) printf(" %.9f", cond[k]); putchar('\n'); }
+            else printf("%.12f\n", chain(fb.data(), bits.data(), nullptr));
+            fflush(stdout);
         }
     }
     return 0;
