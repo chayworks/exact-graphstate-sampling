@@ -1,0 +1,14 @@
+|v| = 1: min weight 23 at v = 42   (0.0 s)
+|v| = 2: min weight 21 at v = 34 65   (0.0 s)
+|v| = 3: min weight 19 at v = 5 9 25   (0.0 s)
+|v| = 4: min weight 18 at v = 12 20 40 56   (0.0 s)
+|v| = 5: min weight 17 at v = 32 44 47 58 68   (0.0 s)
+|v| = 6: min weight 16 at v = 5 10 26 30 32 64   (0.0 s)
+|v| = 7: min weight 16 at v = 5 7 19 35 54 60 67   (0.4 s)
+|v| = 8: min weight 16 at v = 15 16 26 27 36 52 57 67   (2.6 s)
+|v| = 9: min weight 15 at v = 2 8 13 26 30 36 46 48 60   (26.1 s)
+|v| = 10: min weight 15 at v = 12 20 25 32 37 43 53 57 59 68   (147.1 s)
+|v| = 11: min weight 15 at v = 1 2 10 18 25 34 35 39 45 50 64   (864.0 s)
+|v| = 12: min weight 16 at v = 7 29 30 32 33 35 55 56 60 61 65 67   (9200.4 s)
+minimum over popcount(v) <= 12: weight 15, v = 2 8 13 26 30 36 46 48 60
+NOT PROVEN: d_min <= 15; a lighter stabilizer could still exist with popcount(v) in [13, 14]
