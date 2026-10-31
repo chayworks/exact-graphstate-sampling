@@ -22,7 +22,13 @@ Each sample is therefore drawn in two passes, with no rejection and no truncatio
 capped rejection sampling (#260 on the tracker), whose output distribution departs from the Born law.
 
 We verify the sampler against dense statevectors on small instances, and on the full instance against an
-independent amplitude algorithm.
+independent amplitude algorithm. An in-place variant draws an exact sample in about 17 s on a laptop with
+an 8.6 GB table.
+
+We also score IBM's 1,726 published hardware shots exactly: linear XEB **0.466 ± 0.031** (controls at
+zero), with every per-shot probability agreeing with #260's independent code to 10⁻⁵ in log₂. Two fidelity
+estimators built on the exact probabilities give 0.46 ± 0.04 and 0.48 [0.43, 0.54], above IBM's reported
+0.37.
 
 Finally, we map the **hardness frontier** of the construction. The width that governs the attack grows as n/2 − 3.5, so memory doubles every two qubits. At depth n the
 attack needs one server at n = 70, a large supercomputer at n ≈ 90, and more than any existing machine
@@ -77,6 +83,39 @@ costs 4·Σ_k 2^{r_k} = 6.0·10¹⁰ table updates, with two complex64 tables of
 - Linear XEB against their own exact probabilities is 1.020 ± 0.047, i.e. 2⁷⁰ Σ p² ≈ 2.02,
   consistent with Porter–Thomas-like output.
 
+**Laptop.** With an in-place variant of the program, the arena is a single complex64 table of 2^30
+entries (8.6 GB) for a width-30 order. On a laptop (AMD Ryzen 9 9955HX, 16 threads, container memory
+capped at 10 GB), 3 exact samples took 55 s including allocation, i.e. **about 17 s per exact sample**
+(`results/laptop_samples_w30.txt`). The in-place sampler was validated on every bitstring of small
+circuits. On the full instance it reproduces the cloud samples' log₂ Pr to 3·10⁻⁷. The independent amplitude engine confirms the first laptop sample:
+−68.5019327 against −68.5019326 reported (`results/xcheck70e_laptop.txt`).
+
+**Scoring IBM's hardware shots.** The sampler's probability mode evaluates the exact Born probability of a
+given bitstring through the same code path as sampling. We scored all 1,726 hardware shots published with
+#151 on an r7a.4xlarge: 6.9 s per shot, 3 h 19 min in all, 16.8 GB peak (`results/ibmxeb/`). The
+run first reproduced two earlier cloud samples' log₂ Pr to 5·10⁻⁷ as a gate.
+
+| strings | N | linear XEB |
+|---|---|---|
+| IBM hardware shots | 1,726 | **+0.466 ± 0.031** (bootstrap 95% [+0.41, +0.53]) |
+| uniform random strings (control) | 64 | +0.16 ± 0.12 |
+| IBM shots with the bit order reversed (control) | 64 | −0.15 ± 0.10 |
+
+Our log₂ Pr agrees with #260's independently written FP64 code on every one of the 1,726 strings, to
+9.4·10⁻⁶ at worst (median 2.8·10⁻⁷), and the XEB of +0.4660 is the same to four digits. Two programs
+written independently assign the same probability to each of IBM's shots.
+
+Normalising by the ideal value 2⁷⁰Σp² − 1 = 1.020 ± 0.047, measured on our own exact samples, gives a
+fidelity estimate F_XEB = 0.457 ± 0.037. A second estimator uses the whole distribution of z = 2⁷⁰·p(x)
+over the shots rather than its mean. If each shot is drawn from the ideal distribution with probability F
+and uniformly otherwise, the density of z over shots is (Fz + 1 − F)e^{−z}, and the maximum-likelihood
+fit gives F_MLE = 0.48 [0.43, 0.54] (profile likelihood, 95%). The mixture fits the observed shot
+distribution (Kolmogorov–Smirnov distance 0.018, 5% threshold 0.033; `ibm_fidelity_mle.py`,
+which recovers F = 0, 0.4 and 1 on synthetic data). Both estimates sit above the 0.37 that IBM reports
+for this run from direct fidelity estimation. The quantities differ (the full circuit including the
+non-Clifford measurement layer, versus the stabilizers of the graph state), and linear XEB is known to
+over-estimate fidelity under non-depolarising noise, so we report the gap without interpreting it.
+
 ## 4. Verification
 
 1. **Small instances.** On circuits of the same form with up to 9 qubits, the distribution implied by
@@ -103,7 +142,7 @@ costs 4·Σ_k 2^{r_k} = 6.0·10¹⁰ table updates, with two complex64 tables of
 
 We generated circuits with the #151 construction (linear chain, alternating CZ brickwork with random √X or
 S√X layers, CZ depth n) for n = 30–120, with one instance per n, and ran the same order search
-(`graphsamp/frontier.py`, output `graphsamp/results/frontier.jsonl`). At n = 70 the generated instance
+(`frontier.py`, output `results/frontier.jsonl`). At n = 70 the generated instance
 matches the real one: 1,192 vs 1,150 edges, natural-order width 33 vs 32, best width 31 vs 31.
 
 | n | best width found | memory (2 complex64 tables) | table updates per exact sample |
@@ -139,6 +178,6 @@ practical.
 
 ## Appendix: artifacts
 
-- `graphsamp/results/`: samples, run log, timing, input hashes, reproduction check.
-- `graphsamp/results/xcheck70_independent.txt`: independent recomputation of samples 1 and 2.
-- `graphsamp/README.md`: test table and commands.
+- `results/`: samples, run log, timing, input hashes, reproduction check.
+- `results/xcheck70_independent.txt`: independent recomputation of samples 1 and 2.
+- `README.md`: test table and commands.

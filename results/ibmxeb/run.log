@@ -1,0 +1,48 @@
+2026-10-30T23:36:39Z boot nproc=16 mem=123G cpu= AMD EPYC 9R14
+2026-10-30T23:37:25Z gate: PASS [-69.508529757852, -68.876164722863] (22s for 2 strings)
+2026-10-30T23:42:27Z progress uni=42 rev= ibm=
+2026-10-30T23:44:54Z uniform done
+2026-10-30T23:47:28Z progress uni=64 rev=21 ibm=
+2026-10-30T23:52:27Z reversed done
+2026-10-30T23:52:29Z progress uni=64 rev=64 ibm=0
+2026-10-30T23:57:31Z progress uni=64 rev=64 ibm=42
+2026-10-31T00:02:32Z progress uni=64 rev=64 ibm=86
+2026-10-31T00:07:33Z progress uni=64 rev=64 ibm=129
+2026-10-31T00:12:35Z progress uni=64 rev=64 ibm=172
+2026-10-31T00:17:36Z progress uni=64 rev=64 ibm=216
+2026-10-31T00:22:38Z progress uni=64 rev=64 ibm=260
+2026-10-31T00:27:39Z progress uni=64 rev=64 ibm=303
+2026-10-31T00:32:41Z progress uni=64 rev=64 ibm=347
+2026-10-31T00:37:42Z progress uni=64 rev=64 ibm=390
+2026-10-31T00:42:43Z progress uni=64 rev=64 ibm=434
+2026-10-31T00:47:45Z progress uni=64 rev=64 ibm=478
+2026-10-31T00:52:46Z progress uni=64 rev=64 ibm=521
+2026-10-31T00:57:48Z progress uni=64 rev=64 ibm=565
+2026-10-31T01:02:50Z progress uni=64 rev=64 ibm=609
+2026-10-31T01:07:51Z progress uni=64 rev=64 ibm=653
+2026-10-31T01:12:53Z progress uni=64 rev=64 ibm=696
+2026-10-31T01:17:54Z progress uni=64 rev=64 ibm=740
+2026-10-31T01:22:56Z progress uni=64 rev=64 ibm=784
+2026-10-31T01:27:57Z progress uni=64 rev=64 ibm=827
+2026-10-31T01:32:59Z progress uni=64 rev=64 ibm=870
+2026-10-31T01:38:00Z progress uni=64 rev=64 ibm=913
+2026-10-31T01:43:02Z progress uni=64 rev=64 ibm=956
+2026-10-31T01:48:03Z progress uni=64 rev=64 ibm=998
+2026-10-31T01:53:05Z progress uni=64 rev=64 ibm=1041
+2026-10-31T01:58:06Z progress uni=64 rev=64 ibm=1084
+2026-10-31T02:03:08Z progress uni=64 rev=64 ibm=1126
+2026-10-31T02:08:09Z progress uni=64 rev=64 ibm=1170
+2026-10-31T02:13:10Z progress uni=64 rev=64 ibm=1213
+2026-10-31T02:18:12Z progress uni=64 rev=64 ibm=1257
+2026-10-31T02:23:14Z progress uni=64 rev=64 ibm=1301
+2026-10-31T02:28:15Z progress uni=64 rev=64 ibm=1345
+2026-10-31T02:33:16Z progress uni=64 rev=64 ibm=1389
+2026-10-31T02:38:18Z progress uni=64 rev=64 ibm=1432
+2026-10-31T02:43:19Z progress uni=64 rev=64 ibm=1476
+2026-10-31T02:48:21Z progress uni=64 rev=64 ibm=1520
+2026-10-31T02:53:23Z progress uni=64 rev=64 ibm=1564
+2026-10-31T02:58:24Z progress uni=64 rev=64 ibm=1608
+2026-10-31T03:03:25Z progress uni=64 rev=64 ibm=1652
+2026-10-31T03:08:27Z progress uni=64 rev=64 ibm=1695
+2026-10-31T03:11:56Z ibm scoring ended: 1726 of 1726
+2026-10-31T03:11:57Z finish: complete

@@ -53,15 +53,20 @@ That is 6.4e8 visits/s on 16 threads, sharing the CPU with another job.
   different CPU, compiler and thread count (`results/check55_result.txt`).
 - **Independent check** (`xcheck70c.py`, `results/xcheck70_independent.txt`): dp.cpp sums sliced amplitudes,
   a different algorithm from gsamp's chain of conditionals. For cloud samples 1 and 2 it gives log2 Pr =
-  -69.5085294 and -68.8761651; gsamp reported -69.5085302 and -68.8761651. Control: sample 1 with step-bit 35
-  flipped gives -69.5312514. That differs by 0.023, against agreement of about 1e-6. The control is weaker
-  than ideal, because this particular flip changes Pr by only 1.6%.
+  -69.5085294 and -68.8761651; gsamp reported -69.5085302 and -68.8761651. Samples 3-5 and a laptop-drawn
+  sample agree the same way (`results/xcheck70d.txt`, `results/xcheck70e_laptop.txt`). Control: sample 1 with
+  10 bits flipped gives -72.8808316, 3.37 lower in log2, against agreement of about 1e-6.
+- **Agreement with #260 on IBM's shots:** our exact log2 Pr of all 1,726 hardware shots matches #260's
+  independently written FP64 code to 9.4e-6 at worst (`results/ibmxeb/analysis.txt`). Linear XEB of the
+  shots is 0.466 +/- 0.031; 64 uniform strings and 64 bit-reversed shots score zero within error.
 - **Self-consistency statistic:** linear XEB of our own samples is 1.020 +/- 0.047, i.e. 2^70 sum p^2 ≈ 2.02
   (Porter–Thomas would give 2). This is not an independent check.
 
-Not yet done: a check on more samples, and a check of the samples' marginals against something independent
-of both engines (for example, Pauli expectations computable with stabilizer methods).
+Not yet done: a check of the samples' marginals against something independent of both engines (for example,
+Pauli expectations computable with stabilizer methods).
 
-**Unverified:** novelty. Rank-width-based simulation of graph-state measurements is known in principle
-(Van den Nest, Dür, Vidal, Briegel, PRA 75, 012337 (2007)). The literature has not been checked for this
-exact sampler. The claim we would make is about this instance, not a new complexity result.
+**Novelty.** Rank-width-based simulation of graph-state measurements is known (Van den Nest, Dür, Vidal,
+Briegel, PRA 75, 012337 (2007); Kuyanov & Kissinger; Renaud's dcs-rankwidth), and #260 applies it to this
+instance with capped rejection sampling. What is new here is exact Born sampling via the prefix-marginal
+identity, the in-place single-table layout, the laptop run, the frontier table and the independent
+verification. The claim is about this instance, not a new complexity result.

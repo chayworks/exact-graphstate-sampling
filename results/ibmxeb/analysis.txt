@@ -1,0 +1,20 @@
+# python ibm_xeb_analyze.py results/ibmxeb/ibm_out.txt results/ibmxeb/uniform_out.txt results/ibmxeb/reversed_out.txt <#260 ibm_scored_fp64.jsonl sha 2059aa04...>
+IBM hardware samples         N= 1726  linear XEB +0.4660 +/- 0.0311  (bootstrap 95% [+0.4074, +0.5271])
+uniform random (control)     N=   64  linear XEB +0.1574 +/- 0.1193  (bootstrap 95% [-0.0632, +0.3981])
+IBM bit-reversed (control)   N=   64  linear XEB -0.1506 +/- 0.1000  (bootstrap 95% [-0.3409, +0.0487])
+vs #260 (independent code), first 1726 IBM strings: max |log2 Pr difference| = 9.43e-06, median 2.76e-07; their XEB on the same strings +0.4660
+
+# python ibm_fidelity_mle.py results/ibmxeb/ibm_out.txt results/samples_nq70.txt
+N = 1726 shots
+linear XEB            +0.4660 +/- 0.0311
+ideal E[z] - 1        1.0200 +/- 0.0471  (from our exact samples)
+F_xeb = XEB/(E[z]-1)  0.4569 +/- 0.0371
+F_mle (profile 95%)   0.4815  [0.4266, 0.5357]
+mean posterior clean  0.4815;  shots with posterior > 0.9: 0, < 0.1: 100
+z quantiles (0,25,50,75,100%): [0.003, 0.516, 1.142, 2.022, 8.192]
+KS distance to mixture at F_mle: 0.0180  (1.36/sqrt(N) = 0.0327 at 5%)
+
+# timing (results/ibmxeb/time_ibm.txt): 1726 strings
+	Percent of CPU this job got: 1579%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 3:19:28
+	Maximum resident set size (kbytes): 16781328

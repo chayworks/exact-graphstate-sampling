@@ -1,0 +1,1 @@
+s0      gsamp log2 Pr = -68.5019326   dp.cpp log2 |Z|^2/2^70 = -68.5019327   (4 chunks)
