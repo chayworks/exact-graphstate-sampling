@@ -13,11 +13,11 @@
 #include <memory>
 typedef std::complex<double> cd; typedef std::complex<float> cf;
 struct Term { uint64_t tq; int x, tau, par; };
-struct Step { int v, nk, m; uint64_t g, rhoc; std::vector<uint64_t> tk; std::vector<Term> t; cd M[2][2]; uint64_t tab[4][256]; };
+struct Step { int v, nk, m; uint64_t g, rhoc; std::vector<uint64_t> tk; std::vector<Term> t; cd M[2][2]; uint64_t tab[5][256]; };
 static std::vector<Step> st; static int n, ns, R; static std::unique_ptr<cf[]> mem;
 
 static inline uint64_t base_of(const Step& s, uint64_t c) {
-    return s.tab[0][c & 255] ^ s.tab[1][(c >> 8) & 255] ^ s.tab[2][(c >> 16) & 255] ^ s.tab[3][(c >> 24) & 255];
+    return s.tab[0][c & 255] ^ s.tab[1][(c >> 8) & 255] ^ s.tab[2][(c >> 16) & 255] ^ s.tab[3][(c >> 24) & 255] ^ s.tab[4][(c >> 32) & 255];
 }
 static inline void outputs(const Step& s, uint64_t c, uint64_t base, cd out[2][2]) {   // out[b][tau]
     out[0][0] = out[0][1] = out[1][0] = out[1][1] = 0; const int pc = __builtin_parityll(c & s.rhoc);
@@ -67,8 +67,8 @@ int main(int argc, char** argv) {
         s.tk.resize(s.nk); for (auto& x : s.tk) { unsigned long long y; if (fscanf(f, "%llu", &y) != 1) return 4; x = y; }
         s.t.resize(nt); for (auto& t : s.t) { unsigned long long y; if (fscanf(f, "%llu %d %d %d", &y, &t.x, &t.tau, &t.par) != 4) return 5; t.tq = y; }
         for (int b = 0; b < 2; b++) for (int x = 0; x < 2; x++) { double re, im; if (fscanf(f, "%lf %lf", &re, &im) != 2) return 6; s.M[b][x] = cd(re, im); }
-        if (s.nk > 32) return 7;
-        for (int t = 0; t < 4; t++) for (int v = 0; v < 256; v++) { uint64_t a = 0;
+        if (s.nk > 40) return 7;
+        for (int t = 0; t < 5; t++) for (int v = 0; v < 256; v++) { uint64_t a = 0;
             for (int j = 0; j < 8; j++) if ((v >> j) & 1 && 8 * t + j < s.nk) a ^= s.tk[8 * t + j]; s.tab[t][v] = a; }
     }
     fclose(f); mem.reset(new cf[(size_t)1 << R]);

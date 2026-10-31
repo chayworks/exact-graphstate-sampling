@@ -119,6 +119,10 @@ fit gives F_MLE = 0.48 [0.43, 0.54] (profile likelihood, 95%). The mixture fits 
 distribution (Kolmogorov–Smirnov distance 0.018, 5% threshold 0.033; `ibm_fidelity_mle.py`,
 which recovers F = 0, 0.4 and 1 on synthetic data).
 
+![Exact probabilities of IBM's shots](fig/fig2_shots.png)
+
+*Figure 2. Distribution of z = 2⁷⁰·p(x) over IBM's 1,726 post-selected shots (exact p), our 1,012 exact samples, and the fitted clean/uniform mixture (`paper/make_figures.py`).*
+
 The instance README (tracker repository, `random_graph_sampling/README.md`) states that "XEB requires
 classical simulations for the outcome probabilities, hence can only be extrapolated for the full-depth
 circuit". Here it is computed exactly for every published shot. The shots are post-selected by spacetime
@@ -185,6 +189,10 @@ non-depolarising noise, so we report the gap without interpreting it.
    stabilizer-only check of item 5 also holds along the reversed order and on the ideal samples (3.3·10⁻⁸,
    `results/chain/stabprefix_rev_ideal.txt`).
 
+![Where the information lives](fig/fig3_information.png)
+
+*Figure 3. Spread of the exact per-step conditionals along the width-30 order for the hardware shots and the ideal samples, and the mean of 2c_k − 1 over ideal samples (the per-step XEB signal). The first 22 conditionals are exactly ½; the information sits in the last ~8 steps.*
+
 **Per-step fidelity of the hardware shots.** Dividing the hardware mean of 2c_k − 1 by the ideal mean gives a
 fidelity-like ratio for each informative step. Because the information sits in the last steps, only four
 steps per order are informative (ideal mean above 0.05): in the forward order, qubits 9, 8, 13 and 50 give
@@ -214,9 +222,24 @@ same search budget (a longer search on the real instance reaches 30).
 | 110 | 51 | 36 PB | 2^55.9 |
 | 120 | 56 | 1.2 EB | 2^61.2 |
 
+![Hardness frontier](fig/fig1_frontier.png)
+
+*Figure 1. Best width found versus n for the construction, the ⌊n/2⌋ ceiling that holds for every graph, and the memory of the in-place table.*
+
 The width fits 0.492·n − 2.9; at every n it is between n/2 − 4 and n/2 − 3. So memory doubles with
 every two qubits. At depth n, this method moves from one server (n = 70) to one large-memory node
 (n ≈ 80), to a leadership-class supercomputer (n ≈ 90), and past any existing machine (n ≳ 100).
+
+**A bound that holds for every graph.** The cut rank of a prefix F is at most min(|F|, n − |F|), so for any
+graph on n vertices every linear order has width at most ⌊n/2⌋, and the in-place sampler needs at most
+2^{⌊n/2⌋} complex64 entries and at most 4·n·2^{⌊n/2⌋} table updates per exact sample, whatever the graph and
+whatever the product measurement basis. At n = 70 that is 275 GB and about 9.6·10¹² updates, i.e. roughly
+4 hours per sample at our measured 6.4·10⁸ updates per second on 16 threads; at n = 76 the table is 2.2 TB
+(the largest single cloud nodes); at n = 90 it is 281 TB (aggregate memory of a leadership machine); at
+n = 100 it is 9 PB. So no graph-state sampling experiment with product measurements can escape a single
+large-memory node below about 76 qubits, or a supercomputer below about 90, no matter how the graph is
+chosen; the random brickwork construction already sits within 3–4 of this ceiling, so the only lever left to
+the experimenters is the qubit count.
 
 Caveats. The widths are upper bounds from heuristic orders; better orders or tree decompositions would
 lower them. Slicing trades memory for time at a measured cost of about 1.5× per sliced vertex on this
