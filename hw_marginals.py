@@ -53,5 +53,7 @@ print(f"hardware shots N = {len(hw)}, ideal samples N = {len(ideal)}, n = {n}")
 res = {"hardware": report("hardware shots", hw), "ideal": report("ideal (exact samples)", ideal)}
 ctrl = ideal.copy(); rng = np.random.default_rng(0); flip = rng.random(len(ctrl)) < 0.3; ctrl[flip, 7] = 1   # bias one bit (step 8) by 15%
 res["control"] = report("control: 1 bit biased 15%", ctrl)
+unif = (1 - 2 * (np.random.default_rng(1).random((len(hw), n)) < 0.5)).astype(np.int8)       # calibration: truly uniform bits, N as the shots
+res["calibration"] = report("calibration: uniform bits", unif)
 json.dump(res, open("results/hw_marginals.json", "w"), indent=1)
 np.savez_compressed("results/hw_marginals_z.npz", **{f"{'hw' if 'hardware' in nm else 'ideal' if 'ideal' in nm else 'ctrl'}_k{k}": z for nm, d in ZS.items() for k, z in d.items()})

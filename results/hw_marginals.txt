@@ -14,3 +14,8 @@ control: 1 bit biased 15% 1-bit:     70 tests, 11.4% beyond 2 sigma (4.6% expect
 control: 1 bit biased 15% 2-bit:   2415 tests,  4.4% beyond 2 sigma (4.6% expected), max |z| 3.21 at qubits [4, 57], mean |z| 0.802 (expected 0.798), sum z^2 2382 on 2415 dof (p = 0.679)
 control: 1 bit biased 15% 3-bit:  54740 tests,  4.6% beyond 2 sigma (4.6% expected), max |z| 4.46 at qubits [14, 9, 50], mean |z| 0.793 (expected 0.798), sum z^2 54130 on 54740 dof (p = 0.968)
 control: 1 bit biased 15% 4-bit: 916895 tests, max |z| 4.97 at qubits [4, 40, 3, 66], sum z^2 918593 on 916895 dof (p = 0.105)
+calibration: uniform bits 1-bit:     70 tests, 10.0% beyond 2 sigma (4.6% expected), max |z| 2.70 at qubits [13], mean |z| 0.894 (expected 0.798), sum z^2 87 on 70 dof (p = 0.085)
+                         largest single-bit biases: q13: mean(b)=0.532 z=-2.70, q35: mean(b)=0.528 z=-2.36, q2: mean(b)=0.527 z=-2.26, q32: mean(b)=0.475 z=+2.12, q46: mean(b)=0.525 z=-2.07
+calibration: uniform bits 2-bit:   2415 tests,  5.3% beyond 2 sigma (4.6% expected), max |z| 3.75 at qubits [21, 69], mean |z| 0.813 (expected 0.798), sum z^2 2524 on 2415 dof (p = 0.059)
+calibration: uniform bits 3-bit:  54740 tests,  4.6% beyond 2 sigma (4.6% expected), max |z| 3.95 at qubits [45, 6, 23], mean |z| 0.795 (expected 0.798), sum z^2 54503 on 54740 dof (p = 0.763)
+calibration: uniform bits 4-bit: 916895 tests, max |z| 4.77 at qubits [43, 27, 20, 12], sum z^2 917327 on 916895 dof (p = 0.375)

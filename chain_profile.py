@@ -39,6 +39,17 @@ def main(a):
         f = mh[k] / mi_[k]; fb = bh[:, k] / bi[:, k]; se = fb.std()
         res.append(dict(step=k + 1, qubit=qub[k], ideal=mi_[k], hw=mh[k], f=f, se=se))
         print(f"{k + 1:>4} {qub[k]:>5} {mi_[k]:>12.4f} {mh[k]:>10.4f} {f:>7.3f} {se:>6.3f}")
+    # where the information lives: spread of the conditionals by step, and the share of var(log2 Pr) over strings
+    # that the last k steps account for (ideal samples); prefix marginals are uniform while the spread is ~0
+    sdi, sdh = xi.std(0), xh.std(0); li = np.log2(np.clip(ci, 1e-300, None)); tot = li.sum(1).var()
+    share = [li[:, n - k:].sum(1).var() / tot for k in (4, 8, 12, 16)]
+    first = next((k + 1 for k in range(n) if sdi[k] > 1e-3), None)
+    Lh = np.log2(ch); print(f"hardware: var(log2 Pr) over strings {lp_h.var(ddof=1):.3f}; variance of the last 4 / 8 conditionals' log2 sum "
+                            f"{Lh[:, -4:].sum(1).var(ddof=1):.3f} / {Lh[:, -8:].sum(1).var(ddof=1):.3f}")
+    print(f"ideal: first step with std(2c-1) > 1e-3: {first}; share of var(log2 Pr) from the last 4/8/12/16 steps: "
+          + "/".join(f"{v:.3f}" for v in share))
+    print("step : std(2c-1) ideal | hardware   (steps 1..n)")
+    print(" ".join(f"{k + 1}:{sdi[k]:.1e}|{sdh[k]:.1e}" for k in range(n)))
     inf = [r for r in res if r["f"] is not None]
     print(f"{len(inf)} informative steps (ideal mean >= {mi}); first informative step {inf[0]['step'] if inf else None}")
     if inf:

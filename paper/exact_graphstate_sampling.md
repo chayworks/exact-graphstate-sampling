@@ -242,9 +242,9 @@ the first two samples' log₂ Pr as −74.1389442 and −75.3402128 against the 
    The same formula explains where the information in a string lives: a stabilizer of weight w contributes
    at most max|n|^w, so the conditionals stay within 10⁻⁴ of ½ until the prefix supports many low-weight
    stabilizers, which in this order happens only in the last ~10 steps; the per-step spread of the chain
-   conditionals grows by about 1.4× per step from 10⁻⁴ at step 50 to 0.56 at step 70, and the last 8 steps
+   conditionals grows by about 1.4× per step from 7·10⁻⁴ at step 50 to 0.56 at step 70, and the last 8 steps
    carry 2.83 of the 2.85 variance of log₂ Pr across the hardware shots
-   (`results/chain/ibm_fwd_chain.txt`). For our 1,012 exact samples the picture is the same: the
+   (`results/chain/analysis_profile.txt`). For our 1,012 exact samples the picture is the same: the
    spread of the conditionals first exceeds 10⁻³ at step 51 (52 in the reversed order), and the last 4 and
    8 steps account for 90% and 100% of the variance of log₂ Pr (`results/chain/analysis_profile.txt`).
 6. **Three dynamic-program paths agree.** Scoring every string along the width-30 order, along its reverse
@@ -258,16 +258,17 @@ the first two samples' log₂ Pr as −74.1389442 and −75.3402128 against the 
    on at most 14 qubits is exactly uniform, so all single-bit means, pair parities and triple parities are
    exactly zero (for ±1 bits), and their sums of squared z-scores are χ² with as many degrees of freedom as
    tests. Our 1,012 samples: pairs p = 0.76, triples p = 0.97, quadruples p = 0.12, single bits χ² = 100 on 70
-   (p = 0.010); the test is calibrated on truly uniform bits (`hw_marginals.py`, `results/hw_marginals.txt`),
-   and a control with one bit biased by 15% fails it (p = 1.8·10⁻⁷). We examined the single-bit excess. For
+   (p = 0.010); the same run scores truly uniform random bits as a calibration and a control with one bit
+   biased by 15% fails it (p = 1.8·10⁻⁷) (`hw_marginals.py`, `results/hw_marginals.txt`). We examined the single-bit excess. For
    the first 30 steps of the production (width-31) order the cut rank equals the prefix length, so the
    conditional is exactly ½ and the sampled bit must equal (U < ½) for the sampler's uniform draw U;
    reproducing the stream (std::mt19937_64 seeded with 10⁶ + i, `rngbits.cpp`) gives exactly that bit in 1,012
    of 1,012 samples, and in 0 of 1,012 with the seed shifted by one (`results/rng_check.txt`). The sampler is
    therefore deterministic given its stream. Over those 30 exact steps the single-bit χ² is 36.9 on 30
    (p = 0.18); the excess sits in steps 31–70 (63.5 on 40, p = 0.010). The sampled bit still coincides with
-   the stream's sign bit through step 58, because the conditionals stay within 10⁻³ of ½ until about step 50
-   (Figure 3), so a χ² of the stream alone over the same seeds is not independent evidence. What is independent
+   the stream's sign bit through step 58 of the production order (`results/rng_check.txt`), as expected if its
+   conditionals, like those of the width-30 order profiled in Figure 3, stay within 10⁻³ of ½ until about
+   step 50; so a χ² of the stream alone over the same seeds is not independent evidence. What is independent
    is a direct test of the drawing step with the exact conditionals: the residuals b_k − Pr(b_k = 1 | prefix)
    have mean zero and variance p(1 − p) whatever the prefix, so their per-step z-scores are standard normal if
    each bit is drawn with its own conditional (`draw_check.py`, `results/draw_check.txt`, on the width-30 chain
@@ -275,7 +276,7 @@ the first two samples' log₂ Pr as −74.1389442 and −75.3402128 against the 
    χ² = 23.1 on 20 (p = 0.29); over steps 23–50, where the conditionals differ from ½ by less than 10⁻³, 44.2 on
    28 (p = 0.027); over all 70 steps 94.7 (p = 0.026). The test is wired to the conditionals: with the
    conditionals flipped (p → 1 − p) on the real samples it fails at p = 2·10⁻⁴, a synthetic sampler drawing with
-   p^{1.1} instead of p fails at p = 10⁻⁵⁰, and correct synthetic draws from the same conditionals pass
+   p^{1.1} instead of p fails at p = 7·10⁻⁵⁰, and correct synthetic draws from the same conditionals pass
    (p = 0.92). A scan of 300 blocks of 1,012 consecutive seeds shows no bias in the generator (mean χ² over 70
    draws 70.3 ± 0.7; `results/rng_scan.txt`). The excess therefore sits in bits that are, to within 10⁻³,
    the generator's own sign bits, and the drawing step passes where the dynamic program's conditionals matter.
@@ -317,7 +318,7 @@ longer search on the real instance reaches 30).
 
 ![Hardness frontier](fig/fig1_frontier.png)
 
-*Figure 1. Best width found versus n for the construction, the ⌊n/2⌋ ceiling that holds for every graph, the two instances sampled exactly, and the memory of the in-place table. Shaded bands mark what a laptop, one cloud node, a supercomputer, and no existing machine can hold. The 76- and 80-qubit order searches are in `results/frontier_instances/` (fi76_s2: width 33, log₂ of the update count 36.2; fi80_s5: width 35).*
+*Figure 1. Best width found versus n for the construction, the ⌊n/2⌋ ceiling that holds for every graph, the two instances sampled exactly, and the memory of the in-place table. Shaded bands mark what a laptop, one cloud node, a supercomputer, and no existing machine can hold. The 76- and 80-qubit order searches are in `results/frontier_instances/` (fi76_s2: width 33, log₂ Σ_k 2^{r_k} = 36.2, i.e. 2^{38.2} updates; fi80_s5: width 35).*
 
 The width fits 0.492·n − 2.9; at every n it is between n/2 − 4 and n/2 − 3. So memory doubles with
 every two qubits. At depth n, this method moves from one server (n = 70) to one large-memory node
@@ -380,8 +381,8 @@ stabilizer of weight w changes a marginal by at most the fraction 3^{−w/2} of 
 
 *Proof.* "If" is the formula with the identity as the only term. For "only if", let U be a minimal nonempty
 support among the stabilizers inside F and H_U the subgroup of stabilizers with support inside U; by
-minimality every nontrivial element of H_U has support exactly U. For any j ∈ U the map S ↦ S_j is a
-homomorphism from H_U to the one-qubit Pauli group whose kernel consists of elements with identity at j, hence
+minimality every nontrivial element of H_U has support exactly U. For any j ∈ U the map S ↦ S_j (the Pauli letter at j, modulo phase) is a
+homomorphism from H_U to the one-qubit Pauli group modulo phases whose kernel consists of elements with identity at j, hence
 of support smaller than U, hence trivial; so H_U embeds in the Klein group and has 1 or 3 nontrivial
 elements. The Fourier coefficient of the marginal at the character Π_{j∈U}(−1)^{b_j} is the sum over exactly
 those elements of sign(S) Π_j n_j[S_j] = ±3^{−|U|/2}, an odd number of terms of equal magnitude, which cannot
@@ -398,9 +399,10 @@ its 4-element kernel coset, lightest 15; `minweight_case1.cpp`, `results/minweig
 one solution). The first enumeration alone cannot certify the minimum, which is why its output file ends
 "NOT PROVEN"; the certificate is the union of the three. The lightest stabilizer has v = {0, 5, 27, 42, 48, 49, 52, 58, 61}
 and support of 15 qubits. The split was validated on the 30- and 40-qubit generated instances, whose minima
-(6 and 8) are known from direct enumeration: run with a small t so that the minimiser falls outside the directly
-enumerated part, it returns the same minima, and on the 30-qubit instance only case (2) finds the weight-6
-stabilizer, so dropping that case would report 8 (`minweight_split_test.py`, `results/minweight_split_test.txt`). So **every marginal on at most 14 qubits is exactly uniform**, and even the first
+(6 and 8) are known from direct enumeration: it returns the same minima, and on the 30-qubit instance, run
+with t = 2 so that the minimiser lies outside the directly enumerated part, only case (2) finds the weight-6
+stabilizer, so dropping that case would report 8 (at 40 qubits, t = 4, the direct part finds the minimiser and
+the other two cases return 9) (`minweight_split_test.py`, `results/minweight_split_test.txt`). So **every marginal on at most 14 qubits is exactly uniform**, and even the first
 non-uniform marginals deviate by at most about 3^{−7.5} ≈ 3·10⁻⁴ per stabilizer. This is the stabilizer-side
 statement of Figure 3: no test restricted to 14 or fewer qubits, however many shots, can tell the ideal output
 from coin flips; the signal lives in correlations of weight ≥ 15, and verifying such an experiment is global by

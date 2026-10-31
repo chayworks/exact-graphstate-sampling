@@ -91,7 +91,7 @@ Each test has a negative control that is caught.
 | `hw_marginals.py` | 1-, 2-, 3-, 4-bit parities of IBM's shots and our samples vs the exactly uniform ideal (χ²) | shots p = 0.78/0.36/0.28/0.95; samples 0.010/0.76/0.97/0.12; biased-bit control p < 1e-4 |
 | `rng_check.py`, `rngbits.cpp` | samples' first 30 bits (the exact-½ prefix of the production order) = sign bits of std::mt19937_64(10⁶ + i); 300-block scan of the generator | 1012/1012; seed+1 control 0/1012; scan χ² 70.3 ± 0.7 on 70 |
 | `fidelity_mle_synth.py` | both fidelity estimators on synthetic shots of known F = 0, 0.4, 1 | 0.00/0.00, 0.42/0.41, 0.94/0.98 (XEB/MLE) |
-| `draw_check.py` | drawing step: residuals b_k − Pr(b_k = 1 \| prefix) from the exact conditionals, per-step z | steps 51–70 p = 0.29, all p = 0.026; p^1.1 control p = 1e-50 |
+| `draw_check.py` | drawing step: residuals b_k − Pr(b_k = 1 \| prefix) from the exact conditionals, per-step z | steps 51–70 p = 0.29, all p = 0.026; p^1.1 control p = 7e-50 |
 | `ceiling_tightness.py` | best width for G(n,½), G(n,0.3), brickwork vs ⌊n/2⌋ | n = 70: 32, 31–32, 31 vs 35 |
 
 Full-instance runs (all on AWS r7a.4xlarge, 16 cores, AMD EPYC 9R14, 123 GB):
