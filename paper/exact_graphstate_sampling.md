@@ -376,6 +376,17 @@ per stabilizer. This is the stabilizer-side statement of Figure 3: no test restr
 many shots, can tell the ideal output from coin flips; the signal lives in correlations of weight ≥ 12, and
 verifying such an experiment is global by nature.
 
+The threshold grows with the size of the experiment. For generated instances of the same construction
+(`frontier.py` seeds, exhaustive enumeration with the proof condition met at every size; `minweight_scan.py`,
+`results/minweight_scan.txt`):
+
+| n | 30 | 40 | 50 | 60 | 70 (IBM's instance) |
+|---|---|---|---|---|---|
+| minimum stabilizer weight d_min | 6 | 8 | 9 | 12 | 12 ≤ d_min ≤ 15 |
+
+So the smallest marginal that carries any signal grows roughly like n/5: at 100 qubits one would expect every
+marginal on about 20 qubits to be exactly uniform.
+
 The same fact turns the hardware shots into a simulation-free diagnostic. Any deviation of a ≤ 11-qubit
 marginal of the device from uniform is noise, measurable from the shots alone. For IBM's 1,726 post-selected
 shots all 70 single-bit means (χ² 61 on 70, p = 0.78), 2,415 pair parities (p = 0.36, largest |z| 4.4),
@@ -440,8 +451,9 @@ All paths are relative to the repository root.
   comparison, the cross-order comparison and the information profile.
 - `results/nq76/`: the 76-qubit samples, timing, gate, independent check and `analysis.txt`.
 - `results/uniform_prefix_check.txt`: the engine-independent uniformity check.
-- `results/minweight.txt`, `results/minweight_k11.txt`, `results/nq70_graph_adjacency.txt`: the stabilizer
-  minimum-weight search and the graph it ran on.
+- `results/minweight.txt`, `results/minweight_k11.txt`, `results/minweight_exact.txt`, `results/nq70_graph_adjacency.txt`,
+  `results/minweight_scan.txt`: the stabilizer minimum-weight searches (IBM's instance and the generated ones) and the
+  graph they ran on.
 - `results/hw_marginals.txt`, `results/rng_check.txt`, `results/rngbits_seeds_*.txt`: the low-order marginal
   test of the shots and samples, and the random-stream identity check.
 - `results/ceiling_tightness.jsonl`: widths of random graphs and brickwork instances against the ceiling.

@@ -1,0 +1,4 @@
+{"n": 30, "edges": 229, "K": 14, "result": ["minimum over popcount(v) <= 14: weight 6, v = 3 7 23 25 26", "PROVEN: d_min = 6 (every v with popcount > 14 has weight > 14)"]}
+{"n": 40, "edges": 425, "K": 14, "result": ["minimum over popcount(v) <= 14: weight 8, v = 3 11 25", "PROVEN: d_min = 8 (every v with popcount > 14 has weight > 14)"]}
+{"n": 50, "edges": 601, "K": 13, "result": ["minimum over popcount(v) <= 13: weight 9, v = 22 32 33 36 39 43 45", "PROVEN: d_min = 9 (every v with popcount > 13 has weight > 13)"]}
+{"n": 60, "edges": 901, "K": 12, "result": ["minimum over popcount(v) <= 12: weight 12, v = 12 15 21 29 34 52 56", "PROVEN: d_min = 12 (every v with popcount > 12 has weight > 12)"]}
