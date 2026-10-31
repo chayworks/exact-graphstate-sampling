@@ -158,6 +158,23 @@ non-depolarising noise, so we report the gap without interpreting it.
    3.8). Of the 30 single-bit means, 4 fall beyond 2σ (p ≈ 0.05), the largest at 2.4σ. A control in which
    one bit is replaced by a copy of another fails the test (`check_uniform_prefix.py`,
    `results/uniform_prefix_check.txt`). This uses only the rank profile and the sample file.
+5. **Stabilizer-only conditionals.** Once the cut rank falls below the prefix length, the prefix marginal has
+   a closed form from the stabilizer group alone: Pr(b_F) = 2^{-t} Σ_S sign(S) Π_{j∈supp S} (−1)^{b_j} n_j[S_j],
+   summed over the 2^{t−rank} stabilizers supported on F, with n_j the Bloch vector of the measured
+   operator. We enumerate that sum exactly while the deficit is at most 16 (steps 1–42 of the width-30
+   order) and compare the resulting conditionals Pr(b_k | b_1…b_{k−1}) with the sampler's chain output for
+   all 1,726 hardware shots: the two agree to 3.3·10⁻⁸ (the print resolution), while the conditionals
+   themselves depart from ½ by up to 8·10⁻⁵ at those steps (`stabprefix.py`,
+   `results/chain/stabprefix_ibm_fwd.txt`). On small circuits the same formula reproduces the
+   statevector marginals to 6·10⁻¹⁵ on 162 prefixes, and a flipped generator sign fails it. This is a
+   check of the dynamic program's fine structure by a method that never builds the DP table.
+
+   The same formula explains where the information in a string lives: a stabilizer of weight w contributes
+   at most max|n|^w, so the conditionals stay within 10⁻⁴ of ½ until the prefix supports many low-weight
+   stabilizers, which in this order happens only in the last ~10 steps; the per-step spread of the chain
+   conditionals grows by about 1.4× per step from 10⁻⁴ at step 50 to 0.56 at step 70, and the last 8 steps
+   carry 2.91 of the 2.93 variance of log₂ Pr across the hardware shots
+   (`results/chain/ibm_fwd_chain.txt`). {Ideal-sample profile pending from cloud run 3.}
 
 ## 5. Hardness frontier
 

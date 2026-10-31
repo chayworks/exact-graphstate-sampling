@@ -39,6 +39,8 @@ Proven by running it (each test has a negative control that is caught):
 | `test_gsamp2.py` | in-place C++ sampler: prob mode every string; 20,000 samples | 5.8e-9; TV 0.0570 = ideal |
 | `test_chain.py`, `test_chain_gsamp.py` | one-pass `chain` mode: per-step conditionals vs reference, log2 Pr vs prob mode | 1e-7, 2e-6; swapped-M control 0.58 |
 | `check_uniform_prefix.py` | engine-independent: first 30 step-bits of the 1,012 samples uniform (bit/pair/triple parities) | at chance; copy-bit control z = 31.8 |
+| `test_stabprefix.py` | prefix marginals from the stabilizer group alone vs statevector, 162 prefixes, every string | 6.4e-15; flipped-sign control 0.577 |
+| `stabprefix.py` on the real instance | stabilizer-only conditionals vs chain mode, steps 1-42, all 1,726 IBM shots | agree to 3.3e-8 (deviations from 1/2 up to 8e-5) |
 
 nq70 structure (`cutprofile.py`, `order.py`):
 - linear cut-rank width is 32 in natural order, 31 after the first search (`order_best2.json`, used for the
