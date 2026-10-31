@@ -23,6 +23,8 @@ chi = float((z ** 2).sum()); print(f"drawing test: sum z^2 = {chi:.1f} on {k} do
 for a, b in [(0, 22), (22, 50), (50, 70)]:
     m = ok.copy(); m[:a] = False; m[b:] = False; zz = (B - P).sum(0)[m] / np.sqrt(var[m]); s = float((zz ** 2).sum())
     print(f"  steps {a + 1}-{b}: sum z^2 = {s:.1f} on {int(m.sum())} dof, p = {chi2.sf(s, int(m.sum())):.3f}")
+Pf = 1 - P; zf = (B - Pf).sum(0)[ok] / np.sqrt((Pf * (1 - Pf)).sum(0)[ok]); s = float((zf ** 2).sum())
+print(f"control (conditionals flipped, p -> 1 - p, real samples): sum z^2 = {s:.1f} on {k} dof, p = {chi2.sf(s, k):.2e}")
 # controls: (a) a sampler that draws with the wrong probability p' = p^1.1 (mild bias); (b) bits shifted by one sample
 rng = np.random.default_rng(0); Pb = P ** 1.1; Bb = (rng.random(P.shape) < Pb).astype(np.int8)
 zb = (Bb - P).sum(0)[ok] / np.sqrt(var[ok]); s = float((zb ** 2).sum()); print(f"control (bias p -> p^1.1, synthetic draws): sum z^2 = {s:.1f} on {k} dof, p = {chi2.sf(s, k):.2e}")

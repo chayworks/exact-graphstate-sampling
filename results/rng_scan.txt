@@ -1,0 +1,3 @@
+# docker gcc:14: ./rngbits scan 1012 300; ./rngbits scan 128 300   (bases 1000000 + 7919000 r, r = 0..299)
+consecutive seeds, N=1012, 300 reps: mean chi2 over 70 draws = 70.26 (expected 70.0, sd of mean 0.69)
+consecutive seeds, N=128, 300 reps: mean chi2 over 70 draws = 69.48 (expected 70.0, sd of mean 0.68)

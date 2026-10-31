@@ -1,0 +1,3 @@
+# command that produced results/ceiling_tightness.jsonl (2026-10-31):
+python ceiling_tightness.py 40,50,60,70 3000 2
+# iters = 3000 local-search moves after 4 randomized greedy orders (frontier.best_width), 2 seeds per family and n

@@ -3,5 +3,6 @@ drawing test: sum z^2 = 94.7 on 70 dof, p = 0.026; max |z| 2.70
   steps 1-22: sum z^2 = 27.5 on 22 dof, p = 0.195
   steps 23-50: sum z^2 = 44.2 on 28 dof, p = 0.027
   steps 51-70: sum z^2 = 23.1 on 20 dof, p = 0.285
+control (conditionals flipped, p -> 1 - p, real samples): sum z^2 = 118.8 on 70 dof, p = 2.45e-04
 control (bias p -> p^1.1, synthetic draws): sum z^2 = 411.7 on 70 dof, p = 7.32e-50
 control (correct synthetic draws from the same conditionals): sum z^2 = 54.3 on 70 dof, p = 0.916

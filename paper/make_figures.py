@@ -27,7 +27,7 @@ ax.plot(n, w, "o-", ms=4, lw=1.6, color=BLUE, label="IBM's construction at depth
 ax.plot([70], [30], "s", color=ORANGE, ms=8, mec="white", mew=1, zorder=5, label="sampled exactly: IBM's 70-qubit instance (#151), width 30")
 ax.plot([76], [33], "D", color=ORANGE, ms=7, mec="white", mew=1, zorder=5, label="sampled exactly: 76-qubit instance, width 33")
 ax.plot([80], [35], "^", color=AQUA, ms=8, mec="white", mew=1, zorder=5, label="order found, run pending: 80 qubits, width 35")
-ax.annotate("17 s / sample, laptop", (70, 30), (44, 33.5), fontsize=7.5, color=INK, arrowprops=dict(arrowstyle="-", color=MUTED, lw=0.7))
+ax.annotate("18 s / sample, laptop", (70, 30), (44, 33.5), fontsize=7.5, color=INK, arrowprops=dict(arrowstyle="-", color=MUTED, lw=0.7))
 ax.annotate("190 s / sample, 16 cores", (76, 33), (82, 27), fontsize=7.5, color=INK, arrowprops=dict(arrowstyle="-", color=MUTED, lw=0.7))
 ax.set_xlabel("qubits n (CZ depth n)"); ax.set_ylabel("cut-rank width of the best linear order")
 ax2 = ax.secondary_yaxis("right", functions=(lambda y: y + 3, lambda y: y - 3))

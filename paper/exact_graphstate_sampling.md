@@ -14,19 +14,19 @@ a candidate for verifiable quantum advantage (Quantum Advantage Tracker #151), w
 0.37 and extrapolated classical costs of 10²⁵ s (matrix product states) and 10⁷ s per sample (extended
 stabilizer simulation). We show that the instance is sampled **exactly from the ideal Born distribution** by a
 cut-rank dynamic program: **13.0 s per sample on one 16-core CPU node** (1,012 samples, 34 GB), and
-**17 s per sample on a laptop** with an 8.6 GB table. No rejection, no truncation, no GPU.
+**18 s per sample on a laptop** with an 8.6 GB table. No rejection, no truncation, no GPU.
 
 Three further results follow from having the exact probabilities in hand.
 
 1. **IBM's own hardware shots, scored exactly.** The full-depth linear cross-entropy benchmark, which the
    instance README says "can only be extrapolated", is computed for every one of the 1,726 published shots:
-   **XEB = 0.466 ± 0.031**, controls at zero, and every per-shot probability agrees with an independently
+   **XEB = 0.466 ± 0.031**, controls consistent with zero, and every per-shot probability agrees with an independently
    written program (tracker #260) to 10⁻⁵. Two fidelity estimators built on the exact probabilities give
    0.46 ± 0.04 and 0.48 [0.43, 0.54], above IBM's direct-fidelity estimate of 0.37 (95% lower bound 0.092) and
    much narrower.
 2. **The frontier, measured rather than projected.** The width that governs the attack grows as 0.49·n − 2.9
    for this construction at depth n, so memory doubles every two qubits. We sampled a 76-qubit, depth-76
-   instance exactly on the same 16-core node class (19 samples, 190 s each, 67 GB), with two samples reproduced
+   instance exactly on the same 16-core node class (19 samples, 190 s each, 69 GB), with two samples reproduced
    to 10⁻⁷ by an independent engine. An 80-qubit instance is prepared (275 GB).
 3. **A ceiling that holds for every graph.** Because a cut rank never exceeds min(|P|, n − |P|), *any*
    n-qubit graph state measured in *any* product basis is exactly samplable with 2^{⌊n/2⌋} table entries:
@@ -57,13 +57,13 @@ three different dynamic-program paths.
 
 | | Result | Artifact |
 |---|---|---|
-| Exact samples of IBM's 70-qubit instance | **1,012 samples, 13.0 s each**, 16 cores, peak 33.6 GB | `results/samples_nq70.txt`, `time_nq70.txt` |
-| Same instance on a laptop | **3 samples, ~17 s each**, one 8.6 GB table | `results/laptop_samples_w30.txt` |
-| Independent engine (different algorithm) | 6 samples reproduced to 10⁻⁶ in log₂ Pr; 10-bit-flip control moves by 3.37 | `results/xcheck70_independent.txt`, `xcheck70d.txt` |
+| Exact samples of IBM's 70-qubit instance | **1,012 samples, 13.0 s each**, 16 cores, peak 34.4 GB | `results/samples_nq70.txt`, `time_nq70.txt` |
+| Same instance on a laptop | **3 samples, ~18 s each**, one 8.6 GB table | `results/laptop_samples_w30.txt` |
+| Independent engine (different algorithm) | 6 samples reproduced to 10⁻⁶ in log₂ Pr; 10-bit-flip control moves by 3.37 | `results/xcheck70_independent.txt`, `xcheck70d.txt`, `xcheck70e_laptop.txt` |
 | IBM's 1,726 hardware shots scored exactly | **linear XEB 0.466 ± 0.031**; uniform control 0.16 ± 0.12; bit-reversed control −0.15 ± 0.10 | `results/ibmxeb/analysis.txt` |
 | Agreement with the independent code of #260 | 1,726 of 1,726 shots within 9.4·10⁻⁶ in log₂ Pr (median 2.8·10⁻⁷) | `results/ibmxeb/analysis.txt` |
 | Fidelity of IBM's run from exact probabilities | 0.457 ± 0.037 (XEB) and 0.48 [0.43, 0.54] (mixture MLE); IBM's DFE 0.37, ≥ 0.092 | `results/ibmxeb/analysis.txt` |
-| 76-qubit, depth-76 instance sampled exactly | **19 samples, 190 s each**, 67 GB, two reproduced to 10⁻⁷ by the independent engine | `results/nq76/analysis.txt` |
+| 76-qubit, depth-76 instance sampled exactly | **19 samples, 190 s each**, 69 GB, two reproduced to 10⁻⁷ by the independent engine | `results/nq76/analysis.txt` |
 | Fine-structure check without a dynamic program | stabilizer-group formula reproduces the sampler's conditionals to 3.3·10⁻⁸ on all shots | `results/chain/stabprefix_ibm_fwd.txt` |
 | Ceiling for every graph | width ≤ ⌊n/2⌋: 275 GB at n = 70, 281 TB at n = 90; random graphs G(70, ½) reach width 32, brickwork 31 | Proposition in §5, `results/ceiling_tightness.jsonl` |
 | Low-order marginals of the ideal distribution | exactly uniform on every set of ≤ 14 qubits (minimum stabilizer weight 15, proven) | `results/minweight_exact.txt`, `results/minweight_k11.txt`, `results/minweight_case1_k11.txt` |
@@ -127,7 +127,7 @@ the later runs (laptop, hardware-shot scoring, chain mode) use the width-30 orde
 
 ### 3.1 Sampling IBM's instance
 
-1,012 samples in 13,202 s on an AWS r7a.4xlarge (16 cores, AMD EPYC 9R14), peak RSS 33.6 GB, about $4.50
+1,012 samples in 13,202 s on an AWS r7a.4xlarge (16 cores, AMD EPYC 9R14), peak RSS 34.4 GB, about $4.50
 of on-demand time.
 - All samples are distinct.
 - Linear XEB against their own exact probabilities is 1.020 ± 0.047, i.e. 2⁷⁰ Σ p² ≈ 2.02,
@@ -135,7 +135,7 @@ of on-demand time.
 
 **Laptop.** With the in-place program, the arena is a single complex64 table of 2^30 entries (8.6 GB) for a
 width-30 order. On a laptop (AMD Ryzen 9 9955HX, 16 threads, container memory capped at 10 GB), 3 exact
-samples took 55 s including allocation, i.e. **about 17 s per exact sample**
+samples took 55 s including allocation, i.e. **about 18 s per exact sample**
 (`results/laptop_samples_w30.txt`). The in-place sampler was validated on every bitstring of small circuits.
 On the full instance it reproduces the cloud samples' log₂ Pr to 3·10⁻⁷, and the independent amplitude
 engine confirms the first laptop sample: −68.5019327 against −68.5019326 reported
@@ -145,7 +145,7 @@ engine confirms the first laptop sample: −68.5019327 against −68.5019326 rep
 
 The sampler's probability mode evaluates the exact Born probability of a given bitstring through the same
 code path as sampling. We scored all 1,726 hardware shots published with #151 on an r7a.4xlarge: 6.9 s per
-shot, 3 h 19 min in all, 16.8 GB peak (`results/ibmxeb/`). The run first reproduced two earlier cloud
+shot, 3 h 19 min in all, 17.2 GB peak (`results/ibmxeb/`). The run first reproduced two earlier cloud
 samples' log₂ Pr to 5·10⁻⁷ as a gate.
 
 | strings | N | linear XEB |
@@ -163,8 +163,10 @@ fidelity estimate F_XEB = 0.457 ± 0.037. A second estimator uses the whole dist
 over the shots rather than its mean. If each shot is drawn from the ideal distribution with probability F
 and uniformly otherwise, the density of z over shots is (Fz + 1 − F)e^{−z}, and the maximum-likelihood
 fit gives F_MLE = 0.48 [0.43, 0.54] (profile likelihood, 95%). The mixture fits the observed shot
-distribution (Kolmogorov–Smirnov distance 0.018, 5% threshold 0.033; `ibm_fidelity_mle.py`, which recovers
-F = 0, 0.4 and 1 on synthetic data).
+distribution (Kolmogorov–Smirnov distance 0.018, 5% threshold 0.033; `ibm_fidelity_mle.py`). On synthetic
+shots of known fidelity the two estimators return 0.00 ± 0.02 and 0.00 [0.00, 0.05] for F = 0, 0.42 ± 0.04 and
+0.41 [0.35, 0.46] for F = 0.4, and 0.94 ± 0.05 and 0.98 [0.95, 1.00] for F = 1 (`fidelity_mle_synth.py`,
+`results/fidelity_mle_synthetic.txt`).
 
 ![Exact probabilities of IBM's shots](fig/fig2_shots.png)
 
@@ -187,10 +189,11 @@ thing in this note for the experimenters: an exact, per-shot benchmark of their 
 To test the frontier with a measurement rather than a projection, we generated a 76-qubit, CZ-depth-76
 instance of the same construction (`frontier_instance.py`, seed 1076, 1,465 edges), found an order of width
 33 (natural order 38), and ran the in-place sampler on the same 16-core node class (r7a.4xlarge, 128 GiB):
-**19 exact samples in 3,604 s, 190 s per sample, 67 GB peak** (`results/nq76/`). The node first reproduced
+**19 exact samples in 3,604 s, 190 s per sample, 69 GB peak** (`results/nq76/`). The node first reproduced
 the two 70-qubit reference probabilities as a gate. All 19 samples are distinct; their self-consistency XEB
-is 0.83 ± 0.22. The independent sliced amplitude engine, built with complex64 tables and itself gated on the
-two known 70-qubit values (−69.5085289 and −68.8761655 against −69.5085302 and −68.8761651), recomputes
+is 0.83 ± 0.22. The cross-check scheduled in that run produced nothing (its complex128 tables, 137 GB, were
+killed by the kernel; `results/nq76/run.log`), so it was repeated in a second run. The independent sliced
+amplitude engine, rebuilt with complex64 tables and itself gated on the two known 70-qubit values (−69.5085289 and −68.8761655 against −69.5085302 and −68.8761651), recomputes
 the first two samples' log₂ Pr as −74.1389442 and −75.3402128 against the sampler's −74.1389441 and
 −75.3402127 (`results/nq76/analysis.txt`). An 80-qubit instance (seed 1080) has an order of width 35, a
 275 GB table; its inputs are prepared and the run waits on cloud capacity.
@@ -214,8 +217,9 @@ the first two samples' log₂ Pr as −74.1389442 and −75.3402128 against the 
 
    Control: sample 1 with 10 bits flipped gives −72.8808316. That is 3.37 lower in log₂ (10× less likely),
    against agreement within 1e-6 on the real samples.
-3. **Reproducibility.** The production run first reproduced, bit for bit, three samples generated on a
-   different machine, compiler and thread count.
+3. **Reproducibility.** The production run first reproduced, bit for bit, three samples of a 55-qubit
+   sub-instance (width 26) generated on a different machine, compiler and thread count
+   (`results/check55_result.txt`).
 4. **Engine-independent check.** While the cut rank of the measured prefix equals its length, the reduced
    state is maximally mixed, so the prefix marginal is exactly uniform; for the production order that holds
    for the first 30 steps. Over the 1,012 samples the first 30 step-bits show pair parities (435 tests) and
@@ -228,7 +232,8 @@ the first two samples' log₂ Pr as −74.1389442 and −75.3402128 against the 
    summed over the 2^{t−rank} stabilizers supported on F, with n_j the Bloch vector of the measured
    operator. We enumerate that sum exactly while the deficit is at most 16 (steps 1–42 of the width-30
    order) and compare the resulting conditionals Pr(b_k | b_1…b_{k−1}) with the sampler's chain output for
-   all 1,726 hardware shots: the two agree to 3.3·10⁻⁸ (the print resolution), while the conditionals
+   all 1,726 hardware shots: the two agree to 3.3·10⁻⁸ (half a float32 ulp at ½, the sampler's storage
+   precision), while the conditionals
    themselves depart from ½ by up to 8·10⁻⁵ at those steps (`stabprefix.py`,
    `results/chain/stabprefix_ibm_fwd.txt`). On small circuits the same formula reproduces the
    statevector marginals to 6·10⁻¹⁵ on 162 prefixes, and a flipped generator sign fails it. This is a
@@ -238,7 +243,7 @@ the first two samples' log₂ Pr as −74.1389442 and −75.3402128 against the 
    at most max|n|^w, so the conditionals stay within 10⁻⁴ of ½ until the prefix supports many low-weight
    stabilizers, which in this order happens only in the last ~10 steps; the per-step spread of the chain
    conditionals grows by about 1.4× per step from 10⁻⁴ at step 50 to 0.56 at step 70, and the last 8 steps
-   carry 2.91 of the 2.93 variance of log₂ Pr across the hardware shots
+   carry 2.83 of the 2.85 variance of log₂ Pr across the hardware shots
    (`results/chain/ibm_fwd_chain.txt`). For our 1,012 exact samples the picture is the same: the
    spread of the conditionals first exceeds 10⁻³ at step 51 (52 in the reversed order), and the last 4 and
    8 steps account for 90% and 100% of the variance of log₂ Pr (`results/chain/analysis_profile.txt`).
@@ -253,24 +258,28 @@ the first two samples' log₂ Pr as −74.1389442 and −75.3402128 against the 
    on at most 14 qubits is exactly uniform, so all single-bit means, pair parities and triple parities are
    exactly zero (for ±1 bits), and their sums of squared z-scores are χ² with as many degrees of freedom as
    tests. Our 1,012 samples: pairs p = 0.76, triples p = 0.97, quadruples p = 0.12, single bits χ² = 100 on 70
-   (p = 0.010); the
-   test is calibrated on truly uniform bits (`hw_marginals.py`, `results/hw_marginals.txt`), and a control with
-   one bit biased by 15% fails it (p < 10⁻⁴). We examined the single-bit excess. For the first 22 steps of the
-   production order the conditional is exactly ½, so the sampled bit must equal (U < ½) for the sampler's
-   uniform draw U; reproducing the stream (std::mt19937_64 seeded with 10⁶ + i, `rngbits.cpp`) gives exactly
-   that bit in 1,012 of 1,012 samples, and in 0 of 1,012 with the seed shifted by one (`results/rng_check.txt`).
-   The sampler is therefore deterministic given its stream, and the excess sits in steps 23–70 (χ² 70.9 on 48,
-   p = 0.018), where the drawn bit depends on the conditional that items 2, 5 and 6 verify. Two further checks
-   locate it. First, the stream's own sign bits for the same 1,012 seeds have χ² = 96.7 on 70 (p ≈ 0.02) with
-   no sampler involved, so the realised pseudo-random block is itself an unlucky one; a scan of 300 such blocks
-   shows no bias in the generator (mean χ² 70.3 ± 0.7 on 70). Second, a direct test of the drawing step uses the
-   exact conditionals: the residuals b_k − Pr(b_k = 1 | prefix) have mean zero and known variance whatever the
-   prefix, so their per-step z-scores are standard normal if each bit is drawn with its own conditional
-   (`draw_check.py`, `results/draw_check.txt`). Over the 20 steps where the conditionals carry the information
-   (51–70) this gives χ² = 23.1 on 20 (p = 0.29); over all 70 steps 94.7 (p = 0.026), the excess again sitting
-   in the steps whose bits are the stream's sign bits; a synthetic sampler drawing with p^{1.1} instead of p
-   fails the test at p = 10⁻⁵⁰ and correct synthetic draws pass (p = 0.92). We record the single-bit excess as a
-   property of the realised random stream, not of the dynamic program, and flag it rather than hide it.
+   (p = 0.010); the test is calibrated on truly uniform bits (`hw_marginals.py`, `results/hw_marginals.txt`),
+   and a control with one bit biased by 15% fails it (p = 1.8·10⁻⁷). We examined the single-bit excess. For
+   the first 30 steps of the production (width-31) order the cut rank equals the prefix length, so the
+   conditional is exactly ½ and the sampled bit must equal (U < ½) for the sampler's uniform draw U;
+   reproducing the stream (std::mt19937_64 seeded with 10⁶ + i, `rngbits.cpp`) gives exactly that bit in 1,012
+   of 1,012 samples, and in 0 of 1,012 with the seed shifted by one (`results/rng_check.txt`). The sampler is
+   therefore deterministic given its stream. Over those 30 exact steps the single-bit χ² is 36.9 on 30
+   (p = 0.18); the excess sits in steps 31–70 (63.5 on 40, p = 0.010). The sampled bit still coincides with
+   the stream's sign bit through step 58, because the conditionals stay within 10⁻³ of ½ until about step 50
+   (Figure 3), so a χ² of the stream alone over the same seeds is not independent evidence. What is independent
+   is a direct test of the drawing step with the exact conditionals: the residuals b_k − Pr(b_k = 1 | prefix)
+   have mean zero and variance p(1 − p) whatever the prefix, so their per-step z-scores are standard normal if
+   each bit is drawn with its own conditional (`draw_check.py`, `results/draw_check.txt`, on the width-30 chain
+   output of item 6). Over the 20 steps where the conditionals carry the information (51–70) this gives
+   χ² = 23.1 on 20 (p = 0.29); over steps 23–50, where the conditionals differ from ½ by less than 10⁻³, 44.2 on
+   28 (p = 0.027); over all 70 steps 94.7 (p = 0.026). The test is wired to the conditionals: with the
+   conditionals flipped (p → 1 − p) on the real samples it fails at p = 2·10⁻⁴, a synthetic sampler drawing with
+   p^{1.1} instead of p fails at p = 10⁻⁵⁰, and correct synthetic draws from the same conditionals pass
+   (p = 0.92). A scan of 300 blocks of 1,012 consecutive seeds shows no bias in the generator (mean χ² over 70
+   draws 70.3 ± 0.7; `results/rng_scan.txt`). The excess therefore sits in bits that are, to within 10⁻³,
+   the generator's own sign bits, and the drawing step passes where the dynamic program's conditionals matter.
+   We record the single-bit p = 0.010 as a flag, not an explanation.
 
 ![Where the information lives](fig/fig3_information.png)
 
@@ -308,7 +317,7 @@ longer search on the real instance reaches 30).
 
 ![Hardness frontier](fig/fig1_frontier.png)
 
-*Figure 1. Best width found versus n for the construction, the ⌊n/2⌋ ceiling that holds for every graph, the two instances sampled exactly, and the memory of the in-place table. Shaded bands mark what a laptop, one cloud node, a supercomputer, and no existing machine can hold.*
+*Figure 1. Best width found versus n for the construction, the ⌊n/2⌋ ceiling that holds for every graph, the two instances sampled exactly, and the memory of the in-place table. Shaded bands mark what a laptop, one cloud node, a supercomputer, and no existing machine can hold. The 76- and 80-qubit order searches are in `results/frontier_instances/` (fi76_s2: width 33, log₂ of the update count 36.2; fi80_s5: width 35).*
 
 The width fits 0.492·n − 2.9; at every n it is between n/2 − 4 and n/2 − 3. So memory doubles with
 every two qubits. At depth n, this method moves from one server (n = 70) to one large-memory node
@@ -325,16 +334,18 @@ most min(|P|, |F|) = min(t, n − t) ≤ ⌊n/2⌋. The in-place sampler's table
 each step makes at most four passes over it. ∎
 
 The proposition is elementary, but its consequence is not widely stated: at n = 70 the ceiling is 275 GB and
-about 9.6·10¹² updates, roughly 4 hours per sample at our measured 6.4·10⁸ updates per second on 16
-threads; at n = 76 it is 2.2 TB (the largest single cloud nodes); at n = 90 it is 281 TB (the aggregate
+about 9.6·10¹² updates per sample; at the rates measured in this work (6.0·10¹⁰ updates in 13.0 s for the
+two-table sampler, 2^{38.2} updates in 190 s for the in-place sampler at 76 qubits, i.e. 4.6·10⁹ and
+1.7·10⁹ per second on 16 cores) that is between 35 minutes and 1.6 hours per sample; at n = 76 it is 2.2 TB (the largest single cloud nodes); at n = 90 it is 281 TB (the aggregate
 memory of a leadership machine); at n = 100 it is 9 PB. So no graph-state sampling experiment with product
 measurements can escape a single large-memory node below about 76 qubits, or a supercomputer below about
 90, no matter how the graph is chosen. The random brickwork construction already sits within 3–4 of this
 ceiling (Figure 1), so better graphs cannot buy the experimenters more than a factor of about 10 in memory;
 the only lever left is the qubit count.
 
-**Is the ceiling tight?** Running the same order search (3,000 local-search steps, two instances per cell) on
-Erdős–Rényi graphs G(n, ½) and G(n, 0.3) and on the brickwork construction gives
+**Is the ceiling tight?** Running the same order search (four randomised greedy orders then 3,000 local-search
+moves, two instances per cell; the command is recorded in `results/ceiling_tightness.cmd.txt`) on Erdős–Rényi
+graphs G(n, ½) and G(n, 0.3) and on the brickwork construction gives
 (`ceiling_tightness.py`, `results/ceiling_tightness.jsonl`):
 
 | n | ceiling ⌊n/2⌋ | G(n, ½) | G(n, 0.3) | brickwork |
@@ -362,10 +373,20 @@ the marginal of the output distribution on a qubit set F is Pr(b_F) = 2^{-|F|} �
 Π_j (−1)^{b_j} n_j[S_j]. The measured Bloch vectors have no zero component (all three components are ±1/√3
 in the graph frame), so:
 
-**Proposition.** *The marginal on F is exactly uniform if and only if no nontrivial stabilizer is supported
-inside F. In particular every marginal on fewer than d_min qubits is exactly uniform, where d_min is the
-minimum weight of a stabilizer of the graph state, and a stabilizer of weight w shifts a marginal by at most
-3^{−w/2}.*
+**Proposition.** *For the face-state basis (every Bloch component ±1/√3), the marginal on F is exactly uniform
+if and only if no nontrivial stabilizer is supported inside F. In particular every marginal on fewer than d_min
+qubits is exactly uniform, where d_min is the minimum weight of a stabilizer of the graph state, and a
+stabilizer of weight w changes a marginal by at most the fraction 3^{−w/2} of its uniform value.*
+
+*Proof.* "If" is the formula with the identity as the only term. For "only if", let U be a minimal nonempty
+support among the stabilizers inside F and H_U the subgroup of stabilizers with support inside U; by
+minimality every nontrivial element of H_U has support exactly U. For any j ∈ U the map S ↦ S_j is a
+homomorphism from H_U to the one-qubit Pauli group whose kernel consists of elements with identity at j, hence
+of support smaller than U, hence trivial; so H_U embeds in the Klein group and has 1 or 3 nontrivial
+elements. The Fourier coefficient of the marginal at the character Π_{j∈U}(−1)^{b_j} is the sum over exactly
+those elements of sign(S) Π_j n_j[S_j] = ±3^{−|U|/2}, an odd number of terms of equal magnitude, which cannot
+vanish. ∎ (For a general product basis with nonzero Bloch components "if" still holds and "only if" holds
+unless three such terms cancel exactly.)
 
 For IBM's instance **d_min = 15 exactly**, by a three-way split that is exhaustive (`minweight_exact.py`,
 `results/minweight_exact.txt`): a stabilizer of weight ≤ 14 has either at most 11 X-support vertices (all
@@ -373,7 +394,9 @@ For IBM's instance **d_min = 15 exactly**, by a three-way split that is exhausti
 Z-support vertices c = Av (all such c enumerated through a generalised inverse of the rank-68 adjacency and
 its 4-element kernel coset, lightest 15; `minweight_case1.cpp`, `results/minweight_case1_k11.txt`), or at least
 12 of each, in which case v and Av differ in at most 4 positions and v is recovered from (A+I)v = e for the
-974,120 vectors e with |e| ≤ 4 (lightest 16). The lightest stabilizer has v = {0, 5, 27, 42, 48, 49, 52, 58, 61}
+974,120 vectors e with |e| ≤ 4 (lightest 16; A+I has full rank, so e = 0 contributes nothing and each e has
+one solution). The first enumeration alone cannot certify the minimum, which is why its output file ends
+"NOT PROVEN"; the certificate is the union of the three. The lightest stabilizer has v = {0, 5, 27, 42, 48, 49, 52, 58, 61}
 and support of 15 qubits. The split was validated on the 30- and 40-qubit generated instances, whose minima
 (6 and 8) are known from direct enumeration: run with a small t so that the minimiser falls outside the directly
 enumerated part, it returns the same minima, and on the 30-qubit instance only case (2) finds the weight-6
@@ -405,7 +428,7 @@ depolarisation (Figure 4).
 
 ![Low-order parities of the hardware shots](fig/fig4_marginals.png)
 
-*Figure 4. Distribution of z-scores of all 1-, 2-, 3- and 4-bit parity means over IBM's 1,726 shots and over our 1,012 exact samples, against the standard normal that an exactly uniform marginal implies. The χ² p-values are those of §4 item 7 (`hw_marginals.py`).* This is consistent with the mixture
+*Figure 4. Distribution of z-scores of all 1-, 2-, 3- and 4-bit parity means over IBM's 1,726 shots and over our 1,012 exact samples, against the standard normal that an exactly uniform marginal implies. The χ² p-values are those quoted in this section for the shots and in §4 item 7 for the samples (`hw_marginals.py`).* This is consistent with the mixture
 fit of §3.2 and is, we think, a useful fact for the experimenters.
 
 ## 7. What this does and does not show
@@ -461,8 +484,15 @@ All paths are relative to the repository root.
 - `results/minweight.txt`, `results/minweight_k11.txt`, `results/minweight_exact.txt`, `results/nq70_graph_adjacency.txt`,
   `results/minweight_scan.txt`: the stabilizer minimum-weight searches (IBM's instance and the generated ones) and the
   graph they ran on.
-- `results/hw_marginals.txt`, `results/rng_check.txt`, `results/rngbits_seeds_*.txt`: the low-order marginal
-  test of the shots and samples, and the random-stream identity check.
-- `results/ceiling_tightness.jsonl`: widths of random graphs and brickwork instances against the ceiling.
+- `results/hw_marginals.txt`, `results/rng_check.txt`, `results/rng_scan.txt`, `results/rngbits_seeds_*.txt`,
+  `results/draw_check.txt`: the low-order marginal test of the shots and samples, the random-stream identity check
+  and scan, and the drawing-step test.
+- `results/minweight_case1_k11.txt`, `results/minweight_split_test.txt`, `results/nq70_graph_geninverse.txt`,
+  `results/nq70_graph_kernel.txt`: the second enumeration of the minimum-weight proof, its validation on smaller
+  instances, and the generalised inverse and kernel it used.
+- `results/fidelity_mle_synthetic.txt`: the fidelity estimators on synthetic shots of known fidelity.
+- `results/ceiling_tightness.jsonl`, `results/ceiling_tightness.cmd.txt`: widths of random graphs and brickwork
+  instances against the ceiling, and the command that produced them.
+- `results/frontier_instances/`: order searches for the 74-, 76-, 78- and 80-qubit generated instances.
 - `results/frontier.jsonl`: the frontier search output.
 - `README.md`: the test table, the commands that reproduce each number, and the modes of the samplers.

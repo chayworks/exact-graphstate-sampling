@@ -29,9 +29,10 @@ def report(name, X):
         frac = float((np.abs(z) > 2).mean()); big = int(np.abs(z).argmax()); chi = float((z ** 2).sum()); pch = float(chi2.sf(chi, len(combos)))
         out[k] = dict(tests=len(combos), frac_beyond_2sigma=frac, max_z=float(np.abs(z[big])), where=[sq[j] for j in combos[big]],
                       mean_abs_z=float(np.abs(z).mean()), expected_mean_abs_z=float(np.sqrt(2 / np.pi)), sum_z2=chi, chi2_p=pch)
+        pstr = f"{pch:.3f}" if pch >= 1e-3 else f"{pch:.2e}"
         print(f"{name:>22} {k}-bit: {len(combos):>6} tests, {100 * frac:4.1f}% beyond 2 sigma (4.6% expected), "
               f"max |z| {np.abs(z[big]):.2f} at qubits {out[k]['where']}, mean |z| {np.abs(z).mean():.3f} (expected 0.798), "
-              f"sum z^2 {chi:.0f} on {len(combos)} dof (p = {pch:.3f})")
+              f"sum z^2 {chi:.0f} on {len(combos)} dof (p = {pstr})")
         if k == 1:
             order = np.argsort(-np.abs(z))[:5]
             print(f"{'':>22}   largest single-bit biases: " + ", ".join(f"q{sq[j]}: mean(b)={0.5 - z[j] / (2 * np.sqrt(N)):.3f} z={z[j]:+.2f}" for j in order))

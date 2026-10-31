@@ -30,7 +30,7 @@ if len(sys.argv) > 2:
 else:
     Ez, Ez_se = 2.0, 0.0                               # Porter-Thomas: E[z] over sampled strings = 2
 xeb = z.mean() - 1; xeb_se = z.std(ddof=1) / math.sqrt(len(z))
-F_xeb = xeb / (Ez - 1); F_xeb_se = F_xeb * math.hypot(xeb_se / xeb, Ez_se / (Ez - 1))
+F_xeb = xeb / (Ez - 1); F_xeb_se = abs(F_xeb) * math.hypot(xeb_se / xeb, Ez_se / (Ez - 1)) if xeb != 0 else xeb_se / (Ez - 1)
 post = F_mle * z / (F_mle * z + 1 - F_mle)
 print(f"N = {len(z)} shots")
 print(f"linear XEB            {xeb:+.4f} +/- {xeb_se:.4f}")

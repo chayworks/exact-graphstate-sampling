@@ -48,6 +48,9 @@ print(f"generalised inverse and kernel written ({base}_G.txt, {base}_ker.txt); c
 # case (2)
 emax = 2 * (W - t - 1); best = (10 ** 9, None, None); count = 0; skipped = 0
 cols = GB.T.copy(); cosetB = [np.zeros(n, np.uint8)] + span(HB)
+for kb in cosetB[1:]:                      # e = 0: nonzero v in ker(A+I) has Av = v and weight |v|
+    w = weight(kb)
+    if w < best[0]: best = (w, np.nonzero(kb)[0].tolist(), [])
 for k in range(1, emax + 1):
     for idx in itertools.combinations(range(n), k):
         e = np.zeros(n, np.uint8); e[list(idx)] = 1
@@ -60,6 +63,7 @@ for k in range(1, emax + 1):
                 if w < best[0]: best = (w, np.nonzero(v)[0].tolist(), list(idx))
 print(f"case (2): e with 1 <= |e| <= {emax}: {count} in the column space of A+I solved ({skipped} outside it), kernel of A+I "
       f"of dimension {len(HB)}; lightest stabilizer among them: weight {best[0]} at v = {best[1]} (e = {best[2]})")
+vchk = np.zeros(n, np.uint8); vchk[best[1]] = 1; assert weight(vchk) == best[0], "printed minimiser does not have the printed weight"
 print(f"case (2) {'excludes' if best[0] > W else 'FINDS'} a stabilizer of weight <= {W} with |v| >= {t + 1} and |Av| >= {t + 1}")
 vr = (np.random.default_rng(1).random(n) < 0.3).astype(np.uint8); er = (B @ vr) % 2
 vb = np.bitwise_xor.reduce(cols[np.nonzero(er)[0]], 0)

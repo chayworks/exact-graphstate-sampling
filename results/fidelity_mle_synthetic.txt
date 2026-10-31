@@ -1,0 +1,4 @@
+# python fidelity_mle_synth.py results/samples_nq70.txt   (N = 1726 synthetic shots per F, seed 20261031)
+true F = 0.0: F_xeb = -0.0020 +/- 0.0240; F_mle = 0.0000 [0.0000, 0.0456]
+true F = 0.4: F_xeb = 0.4185 +/- 0.0367; F_mle = 0.4056 [0.3523, 0.4587]
+true F = 1.0: F_xeb = 0.9382 +/- 0.0542; F_mle = 0.9826 [0.9450, 1.0000]

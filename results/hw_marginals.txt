@@ -9,7 +9,7 @@ hardware shots N = 1726, ideal samples N = 1012, n = 70
  ideal (exact samples) 2-bit:   2415 tests,  4.4% beyond 2 sigma (4.6% expected), max |z| 3.21 at qubits [4, 57], mean |z| 0.798 (expected 0.798), sum z^2 2365 on 2415 dof (p = 0.763)
  ideal (exact samples) 3-bit:  54740 tests,  4.6% beyond 2 sigma (4.6% expected), max |z| 4.46 at qubits [14, 9, 50], mean |z| 0.793 (expected 0.798), sum z^2 54099 on 54740 dof (p = 0.974)
  ideal (exact samples) 4-bit: 916895 tests, max |z| 4.97 at qubits [4, 40, 3, 66], sum z^2 918481 on 916895 dof (p = 0.121)
-control: 1 bit biased 15% 1-bit:     70 tests, 11.4% beyond 2 sigma (4.6% expected), max |z| 7.23 at qubits [11], mean |z| 1.038 (expected 0.798), sum z^2 148 on 70 dof (p = 0.000)
+control: 1 bit biased 15% 1-bit:     70 tests, 11.4% beyond 2 sigma (4.6% expected), max |z| 7.23 at qubits [11], mean |z| 1.038 (expected 0.798), sum z^2 148 on 70 dof (p = 1.81e-07)
                          largest single-bit biases: q11: mean(b)=0.386 z=+7.23, q58: mean(b)=0.542 z=-2.70, q67: mean(b)=0.462 z=+2.39, q50: mean(b)=0.462 z=+2.39, q9: mean(b)=0.535 z=-2.20
 control: 1 bit biased 15% 2-bit:   2415 tests,  4.4% beyond 2 sigma (4.6% expected), max |z| 3.21 at qubits [4, 57], mean |z| 0.802 (expected 0.798), sum z^2 2382 on 2415 dof (p = 0.679)
 control: 1 bit biased 15% 3-bit:  54740 tests,  4.6% beyond 2 sigma (4.6% expected), max |z| 4.46 at qubits [14, 9, 50], mean |z| 0.793 (expected 0.798), sum z^2 54130 on 54740 dof (p = 0.968)

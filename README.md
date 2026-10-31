@@ -2,21 +2,21 @@
 
 **A laptop draws exact samples from the ideal output distribution of the 70-qubit, depth-70 random-graph-state
 circuit that IBM and the University of Chicago ran as a quantum-advantage candidate (Quantum Advantage Tracker
-#151), in about 17 s per sample. The same code scores IBM's 1,726 published hardware shots exactly, at full
+#151), in about 18 s per sample. The same code scores IBM's 1,726 published hardware shots exactly, at full
 depth, and samples a 76-qubit instance of the construction on one cloud node.**
 
 Technical note: [`paper/exact_graphstate_sampling.pdf`](paper/exact_graphstate_sampling.pdf) (Markdown source alongside).
 
 | | Result | Artifact |
 |---|---|---|
-| Exact samples of IBM's instance | **1,012 samples, 13.0 s each** on 16 cores (34 GB); **~17 s each on a laptop** (8.6 GB table) | `results/samples_nq70.txt`, `results/laptop_samples_w30.txt` |
+| Exact samples of IBM's instance | **1,012 samples, 13.0 s each** on 16 cores (34 GB); **~18 s each on a laptop** (8.6 GB table) | `results/samples_nq70.txt`, `results/laptop_samples_w30.txt` |
 | Independent engine, different algorithm | 6 samples reproduced to 1e-6 in log₂ Pr; 10-bit-flip control moves by 3.37 | `results/xcheck70_independent.txt`, `results/xcheck70d.txt` |
 | IBM's hardware shots scored exactly | **linear XEB 0.466 ± 0.031**; controls at zero; every shot agrees with the independent code of #260 to 9.4e-6 | `results/ibmxeb/analysis.txt` |
 | Fidelity of IBM's run, from exact probabilities | 0.457 ± 0.037 (XEB) and 0.48 [0.43, 0.54] (mixture MLE), against IBM's DFE 0.37 (≥ 0.092) | `results/ibmxeb/analysis.txt` |
-| 76-qubit, depth-76 instance | **19 exact samples, 190 s each**, 67 GB, two reproduced to 1e-7 by the independent engine | `results/nq76/analysis.txt` |
+| 76-qubit, depth-76 instance | **19 exact samples, 190 s each**, 69 GB, two reproduced to 1e-7 by the independent engine | `results/nq76/analysis.txt` |
 | Conditionals checked without a dynamic program | stabilizer-group formula matches the sampler to 3.3e-8 on all 1,726 shots | `results/chain/stabprefix_ibm_fwd.txt` |
 | Ceiling for every graph | width ≤ ⌊n/2⌋, so 2^{n/2} entries suffice for any graph state in any product basis: 275 GB at 70 qubits, 281 TB at 90; random graphs G(70, ½) reach 32, brickwork 31 | note §5, `results/ceiling_tightness.jsonl` |
-| Where the signal is | minimum stabilizer weight 15 (proven), so every marginal on ≤ 14 qubits is exactly uniform; IBM's shots show no 1-, 2-, 3- or 4-bit bias (χ² p = 0.78, 0.36, 0.28, 0.95) | `results/minweight.txt`, `results/hw_marginals.txt` |
+| Where the signal is | minimum stabilizer weight 15 (proven), so every marginal on ≤ 14 qubits is exactly uniform; IBM's shots show no 1-, 2-, 3- or 4-bit bias (χ² p = 0.78, 0.36, 0.28, 0.95) | `results/minweight_exact.txt`, `results/hw_marginals.txt` |
 
 ![Hardness frontier](paper/fig/fig1_frontier.png)
 
@@ -51,7 +51,7 @@ n-qubit graph state in *any* product basis with 2^{⌊n/2⌋} entries. That ceil
 python test_tableau.py && python test_graphform.py && python test_plan.py && python test_amp.py   # exact vs statevector
 python test_sampler.py && python test_inplace.py && python test_stabprefix.py                     # samplers and the stabilizer formula
 g++ -O3 -march=native -fopenmp -o gsamp2 gsamp2.cpp                                               # in-place sampler (widths to 40)
-./gsamp2 cloud_ibmxeb/nq70_inplace_plan.txt sample 3 2000000      # 3 exact samples of IBM's instance, 8.6 GB, ~17 s each on 16 threads
+./gsamp2 cloud_ibmxeb/nq70_inplace_plan.txt sample 3 2000000      # 3 exact samples of IBM's instance, 8.6 GB, ~18 s each on 16 threads
 ./gsamp2 cloud_ibmxeb/nq70_inplace_plan.txt prob strings.txt      # exact log2 Pr of given bitstrings (IBM's shots: cloud_ibmxeb/)
 ./gsamp2 cloud_ibmxeb/nq70_inplace_plan.txt chain strings.txt     # same, plus every conditional Pr(b_k | b_1..b_{k-1})
 g++ -O3 -march=native -fopenmp -DDP_FLOAT -o dp dp.cpp      # independent sliced amplitude engine (xcheck_make.py builds its jobs)
@@ -89,23 +89,24 @@ Each test has a negative control that is caught.
 | `minweight_scan.py` | the same for generated instances, proof condition met | d_min = 6, 8, 9, 12 at n = 30, 40, 50, 60 |
 | `minweight_split_test.py` | the three-way split of `minweight_exact.py` against the direct answers at n = 30, 40 | agree (6, 8); at n = 30 only case 2 finds it, without it: 8 |
 | `hw_marginals.py` | 1-, 2-, 3-, 4-bit parities of IBM's shots and our samples vs the exactly uniform ideal (χ²) | shots p = 0.78/0.36/0.28/0.95; samples 0.010/0.76/0.97/0.12; biased-bit control p < 1e-4 |
-| `rng_check.py`, `rngbits.cpp` | samples' first 22 bits = sign bits of std::mt19937_64(10⁶ + i); the stream's own χ² for these seeds | 1012/1012; seed+1 control 0/1012; stream χ² 96.7 on 70 |
+| `rng_check.py`, `rngbits.cpp` | samples' first 30 bits (the exact-½ prefix of the production order) = sign bits of std::mt19937_64(10⁶ + i); 300-block scan of the generator | 1012/1012; seed+1 control 0/1012; scan χ² 70.3 ± 0.7 on 70 |
+| `fidelity_mle_synth.py` | both fidelity estimators on synthetic shots of known F = 0, 0.4, 1 | 0.00/0.00, 0.42/0.41, 0.94/0.98 (XEB/MLE) |
 | `draw_check.py` | drawing step: residuals b_k − Pr(b_k = 1 \| prefix) from the exact conditionals, per-step z | steps 51–70 p = 0.29, all p = 0.026; p^1.1 control p = 1e-50 |
 | `ceiling_tightness.py` | best width for G(n,½), G(n,0.3), brickwork vs ⌊n/2⌋ | n = 70: 32, 31–32, 31 vs 35 |
 
 Full-instance runs (all on AWS r7a.4xlarge, 16 cores, AMD EPYC 9R14, 123 GB):
 
 - **Sampling, 2026-10-29:** width-31 order, 1,012 exact samples in 13,202 s (`results/run.log`,
-  `results/time_nq70.txt`), peak RSS 33.6 GB; inputs hash-identical to this repository (`results/inputs.sha256`);
+  `results/time_nq70.txt`), peak RSS 34.4 GB; inputs hash-identical to this repository (`results/inputs.sha256`);
   instance QASM SHA-256 `e0189bdd2e67d1456cb92f5c750b880cbee935220e539c04934906a94535ea5f`. The run first
   reproduced three 55-qubit samples bit for bit (`results/check55_result.txt`).
-- **IBM's shots, 2026-10-31:** 1,726 strings at 6.9 s each, 16.8 GB (`results/ibmxeb/`). XEB 0.466 ± 0.031; 64
+- **IBM's shots, 2026-10-31:** 1,726 strings at 6.9 s each, 17.2 GB (`results/ibmxeb/`). XEB 0.466 ± 0.031; 64
   uniform strings +0.16 ± 0.12; 64 bit-reversed shots −0.15 ± 0.10; per-shot agreement with #260's FP64 code
   9.4e-6 at worst, median 2.8e-7.
 - **Chain mode, 2026-10-31:** every conditional of every shot and sample along the width-30 order and its
   reverse (`results/chain/`): the information in a string sits in its last ~8 conditionals (100% of the variance
   of log₂ Pr); per-step hardware/ideal ratios at the 8 informative qubits are 0.43–0.54.
-- **76 qubits, 2026-10-31:** seed-1076 instance of the construction, width 33, 19 exact samples in 3,604 s, 67 GB
+- **76 qubits, 2026-10-31:** seed-1076 instance of the construction, width 33, 19 exact samples in 3,604 s, 69 GB
   (`results/nq76/`); the independent engine, gated on the two known 70-qubit values, reproduces two samples to 1e-7.
 
 Self-consistency, not an independent check: the linear XEB of our own samples is 1.020 ± 0.047
