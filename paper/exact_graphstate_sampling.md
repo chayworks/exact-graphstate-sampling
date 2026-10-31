@@ -41,8 +41,9 @@ Two further facts follow from the stabilizer structure. The output distribution 
 uniform on every set of at most 11 qubits** (no stabilizer of the graph state has weight below 12; one of
 weight 15 is known), so no statistic on fewer than 12 qubits can see the signal, and verification of such an
 experiment is global by nature. Conversely any low-order bias in the hardware shots is pure noise, detectable
-without simulation: all 70 single-bit, 2,415 pair and 54,740 triple parities of IBM's post-selected shots are
-at chance (χ² p = 0.78, 0.36, 0.28), so whatever brings the fidelity to 0.46 leaves no trace below weight 4.
+without simulation: all 70 single-bit, 2,415 pair, 54,740 triple and 916,895 quadruple parities of IBM's
+post-selected shots are at chance (χ² p = 0.78, 0.36, 0.28, 0.95), so whatever brings the fidelity to 0.46
+leaves no trace below weight 5.
 
 The method is two standard ingredients joined by one identity: the rank-width simulability of graph-state
 measurements (Van den Nest et al. 2007) and perfect sampling in the style of Ferris and Vidal (2012), joined
@@ -66,7 +67,7 @@ three different dynamic-program paths.
 | Fine-structure check without a dynamic program | stabilizer-group formula reproduces the sampler's conditionals to 3.3·10⁻⁸ on all shots | `results/chain/stabprefix_ibm_fwd.txt` |
 | Ceiling for every graph | width ≤ ⌊n/2⌋: 275 GB at n = 70, 281 TB at n = 90; random graphs G(70, ½) reach width 32, brickwork 31 | Proposition in §5, `results/ceiling_tightness.jsonl` |
 | Low-order marginals of the ideal distribution | exactly uniform on every set of ≤ 11 qubits (no stabilizer of weight ≤ 11; one of weight 15 known) | `results/minweight.txt`, `results/minweight_k11.txt` |
-| Hardware shots, simulation-free test | 70 single-bit, 2,415 pair and 54,740 triple parities at chance (χ² p = 0.78, 0.36, 0.28) | `results/hw_marginals.txt` |
+| Hardware shots, simulation-free test | 70 single-bit, 2,415 pair, 54,740 triple and 916,895 quadruple parities at chance (χ² p = 0.78, 0.36, 0.28, 0.95) | `results/hw_marginals.txt` |
 
 ## 1. The task
 
@@ -251,7 +252,8 @@ the first two samples' log₂ Pr as −74.1389442 and −75.3402128 against the 
 7. **Simulation-free test, and the sampler's random stream.** By §6 every marginal of the ideal distribution
    on at most 11 qubits is exactly uniform, so all single-bit means, pair parities and triple parities are
    exactly zero (for ±1 bits), and their sums of squared z-scores are χ² with as many degrees of freedom as
-   tests. Our 1,012 samples: pairs p = 0.76, triples p = 0.97, single bits χ² = 100 on 70 (p = 0.010); the
+   tests. Our 1,012 samples: pairs p = 0.76, triples p = 0.97, quadruples p = 0.12, single bits χ² = 100 on 70
+   (p = 0.010); the
    test is calibrated on truly uniform bits (`hw_marginals.py`, `results/hw_marginals.txt`), and a control with
    one bit biased by 15% fails it (p < 10⁻⁴). We examined the single-bit excess. For the first 22 steps of the
    production order the conditional is exactly ½, so the sampled bit must equal (U < ½) for the sampler's
@@ -368,10 +370,12 @@ verifying such an experiment is global by nature.
 
 The same fact turns the hardware shots into a simulation-free diagnostic. Any deviation of a ≤ 11-qubit
 marginal of the device from uniform is noise, measurable from the shots alone. For IBM's 1,726 post-selected
-shots all 70 single-bit means (χ² 61 on 70, p = 0.78), 2,415 pair parities (p = 0.36, largest |z| 4.4) and
-54,740 triple parities (p = 0.28) are at chance (`results/hw_marginals.txt`). The errors that bring the fidelity
-to about 0.46 therefore leave no low-order trace at all: no biased qubit, no correlated pair; after the Pauli
-checks the residual noise acts on the output like a global depolarisation. This is consistent with the mixture
+shots all 70 single-bit means (χ² 61 on 70, p = 0.78), 2,415 pair parities (p = 0.36, largest |z| 4.4),
+54,740 triple parities (p = 0.28) and 916,895 quadruple parities (p = 0.95, largest |z| 5.6, which is p ≈ 0.02
+after correcting for the number of tests) are at chance (`results/hw_marginals.txt`). The errors that bring the
+fidelity to about 0.46 therefore leave no low-order trace at all: no biased qubit, no correlated pair, no
+correlated triple or quadruple; after the Pauli checks the residual noise acts on the output like a global
+depolarisation. This is consistent with the mixture
 fit of §3.2 and is, we think, a useful fact for the experimenters.
 
 ## 7. What this does and does not show

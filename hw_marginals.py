@@ -33,6 +33,16 @@ def report(name, X):
         if k == 1:
             order = np.argsort(-np.abs(z))[:5]
             print(f"{'':>22}   largest single-bit biases: " + ", ".join(f"q{sq[j]}: mean(b)={0.5 - z[j] / (2 * np.sqrt(N)):.3f} z={z[j]:+.2f}" for j in order))
+    # 4-bit parities, vectorised: products of all triples with max index < j, times bit j
+    tri = list(itertools.combinations(range(n), 3)); P3 = np.ones((N, len(tri)), np.int8)
+    for i, c in enumerate(tri): P3[:, i] = X[:, c[0]] * X[:, c[1]] * X[:, c[2]]
+    tmax = np.array([c[2] for c in tri]); chi = 0.0; tests = 0; big = (0.0, None)
+    for j in range(3, n):
+        m = tmax < j; z = (P3[:, m] * X[:, j:j + 1]).mean(0) * np.sqrt(N); chi += float((z ** 2).sum()); tests += int(m.sum())
+        a = int(np.abs(z).argmax())
+        if abs(z[a]) > big[0]: big = (float(abs(z[a])), [sq[q] for q in tri[np.nonzero(m)[0][a]]] + [sq[j]])
+    pch = float(chi2.sf(chi, tests)); out[4] = dict(tests=tests, sum_z2=chi, chi2_p=pch, max_z=big[0], where=big[1])
+    print(f"{name:>22} 4-bit: {tests:>6} tests, max |z| {big[0]:.2f} at qubits {big[1]}, sum z^2 {chi:.0f} on {tests} dof (p = {pch:.3f})")
     return out
 hw, ideal = load(S), load(I)
 print(f"hardware shots N = {len(hw)}, ideal samples N = {len(ideal)}, n = {n}")
