@@ -38,8 +38,8 @@ Three further results follow from having the exact probabilities in hand.
    is already as hard as a random graph.
 
 Two further facts follow from the stabilizer structure. The output distribution of the instance is **exactly
-uniform on every set of at most 11 qubits** (no stabilizer of the graph state has weight below 12; one of
-weight 15 is known), so no statistic on fewer than 12 qubits can see the signal, and verification of such an
+uniform on every set of at most 14 qubits** (the minimum stabilizer weight of the graph state is exactly 15,
+proven by exhaustive enumeration), so no statistic on fewer than 15 qubits can see the signal, and verification of such an
 experiment is global by nature. Conversely any low-order bias in the hardware shots is pure noise, detectable
 without simulation: all 70 single-bit, 2,415 pair, 54,740 triple and 916,895 quadruple parities of IBM's
 post-selected shots are at chance (χ² p = 0.78, 0.36, 0.28, 0.95), so whatever brings the fidelity to 0.46
@@ -66,7 +66,7 @@ three different dynamic-program paths.
 | 76-qubit, depth-76 instance sampled exactly | **19 samples, 190 s each**, 67 GB, two reproduced to 10⁻⁷ by the independent engine | `results/nq76/analysis.txt` |
 | Fine-structure check without a dynamic program | stabilizer-group formula reproduces the sampler's conditionals to 3.3·10⁻⁸ on all shots | `results/chain/stabprefix_ibm_fwd.txt` |
 | Ceiling for every graph | width ≤ ⌊n/2⌋: 275 GB at n = 70, 281 TB at n = 90; random graphs G(70, ½) reach width 32, brickwork 31 | Proposition in §5, `results/ceiling_tightness.jsonl` |
-| Low-order marginals of the ideal distribution | exactly uniform on every set of ≤ 11 qubits (no stabilizer of weight ≤ 11; one of weight 15 known) | `results/minweight.txt`, `results/minweight_k11.txt` |
+| Low-order marginals of the ideal distribution | exactly uniform on every set of ≤ 14 qubits (minimum stabilizer weight 15, proven) | `results/minweight_exact.txt`, `results/minweight_k11.txt`, `results/minweight_case1_k11.txt` |
 | Hardware shots, simulation-free test | 70 single-bit, 2,415 pair, 54,740 triple and 916,895 quadruple parities at chance (χ² p = 0.78, 0.36, 0.28, 0.95) | `results/hw_marginals.txt` |
 
 ## 1. The task
@@ -250,7 +250,7 @@ the first two samples' log₂ Pr as −74.1389442 and −75.3402128 against the 
    stabilizer-only check of item 5 also holds along the reversed order and on the ideal samples (3.3·10⁻⁸,
    `results/chain/stabprefix_rev_ideal.txt`).
 7. **Simulation-free test, and the sampler's random stream.** By §6 every marginal of the ideal distribution
-   on at most 11 qubits is exactly uniform, so all single-bit means, pair parities and triple parities are
+   on at most 14 qubits is exactly uniform, so all single-bit means, pair parities and triple parities are
    exactly zero (for ±1 bits), and their sums of squared z-scores are χ² with as many degrees of freedom as
    tests. Our 1,012 samples: pairs p = 0.76, triples p = 0.97, quadruples p = 0.12, single bits χ² = 100 on 70
    (p = 0.010); the
@@ -355,7 +355,7 @@ classical methods, and says nothing about circuits that are not graph states fol
 measurements: the doped sibling instance on the tracker, with 468 T gates spread through the circuit, is
 outside its reach (its amplitudes were computed by tensor-network methods in arXiv:2608.13110).
 
-## 6. Where the signal is: no marginal on fewer than 12 qubits carries any
+## 6. Where the signal is: no marginal on fewer than 15 qubits carries any
 
 In the graph frame every stabilizer is S_v = X^v Z^{Av} with support v ∪ Av, and by the formula of §4 item 5
 the marginal of the output distribution on a qubit set F is Pr(b_F) = 2^{-|F|} Σ_{S supported on F} sign(S)
@@ -367,14 +367,18 @@ inside F. In particular every marginal on fewer than d_min qubits is exactly uni
 minimum weight of a stabilizer of the graph state, and a stabilizer of weight w shifts a marginal by at most
 3^{−w/2}.*
 
-For IBM's instance, exhaustive enumeration of all v with at most 11 vertices (2.6·10¹² stabilizers, 14 minutes
-on 16 threads, `minweight.cpp`) finds none of weight below 15; since weight(S_v) ≥ |v|, **no stabilizer has
-weight ≤ 11**, and the lightest known has weight 15 (v = {0, 5, 27, 42, 48, 49, 52, 58, 61};
-`results/minweight.txt`, `results/minweight_k11.txt`). So **12 ≤ d_min ≤ 15**: every marginal on at most 11
-qubits is exactly uniform, and even the first non-uniform marginals deviate by at most about 3^{−7.5} ≈ 3·10⁻⁴
-per stabilizer. This is the stabilizer-side statement of Figure 3: no test restricted to a few qubits, however
-many shots, can tell the ideal output from coin flips; the signal lives in correlations of weight ≥ 12, and
-verifying such an experiment is global by nature.
+For IBM's instance **d_min = 15 exactly**, by a three-way split that is exhaustive (`minweight_exact.py`,
+`results/minweight_exact.txt`): a stabilizer of weight ≤ 14 has either at most 11 X-support vertices (all
+2.6·10¹² such v enumerated, lightest 15; `minweight.cpp`, `results/minweight_k11.txt`), or at most 11
+Z-support vertices c = Av (all such c enumerated through a generalised inverse of the rank-68 adjacency and
+its 4-element kernel coset, lightest 15; `minweight_case1.cpp`, `results/minweight_case1_k11.txt`), or at least
+12 of each, in which case v and Av differ in at most 4 positions and v is recovered from (A+I)v = e for the
+974,120 vectors e with |e| ≤ 4 (lightest 16). The lightest stabilizer has v = {0, 5, 27, 42, 48, 49, 52, 58, 61}
+and support of 15 qubits. So **every marginal on at most 14 qubits is exactly uniform**, and even the first
+non-uniform marginals deviate by at most about 3^{−7.5} ≈ 3·10⁻⁴ per stabilizer. This is the stabilizer-side
+statement of Figure 3: no test restricted to 14 or fewer qubits, however many shots, can tell the ideal output
+from coin flips; the signal lives in correlations of weight ≥ 15, and verifying such an experiment is global by
+nature.
 
 The threshold grows with the size of the experiment. For generated instances of the same construction
 (`frontier.py` seeds, exhaustive enumeration with the proof condition met at every size; `minweight_scan.py`,
@@ -382,12 +386,12 @@ The threshold grows with the size of the experiment. For generated instances of 
 
 | n | 30 | 40 | 50 | 60 | 70 (IBM's instance) |
 |---|---|---|---|---|---|
-| minimum stabilizer weight d_min | 6 | 8 | 9 | 12 | 12 ≤ d_min ≤ 15 |
+| minimum stabilizer weight d_min | 6 | 8 | 9 | 12 | 15 |
 
 So the smallest marginal that carries any signal grows roughly like n/5: at 100 qubits one would expect every
 marginal on about 20 qubits to be exactly uniform.
 
-The same fact turns the hardware shots into a simulation-free diagnostic. Any deviation of a ≤ 11-qubit
+The same fact turns the hardware shots into a simulation-free diagnostic. Any deviation of a ≤ 14-qubit
 marginal of the device from uniform is noise, measurable from the shots alone. For IBM's 1,726 post-selected
 shots all 70 single-bit means (χ² 61 on 70, p = 0.78), 2,415 pair parities (p = 0.36, largest |z| 4.4),
 54,740 triple parities (p = 0.28) and 916,895 quadruple parities (p = 0.95, largest |z| 5.6, which is p ≈ 0.02
@@ -411,7 +415,7 @@ It shows:
 - the same construction stays within one node's reach to about 80 qubits (measured at 76), within a
   supercomputer's to about 90, and that no choice of graph changes this by more than a few qubits (random
   graphs measured within one of the brickwork);
-- the output distribution is exactly uniform on every set of at most 11 qubits, and IBM's shots show no
+- the output distribution is exactly uniform on every set of at most 14 qubits, and IBM's shots show no
   low-order bias at all.
 
 It does not show:

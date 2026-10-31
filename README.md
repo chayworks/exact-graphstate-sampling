@@ -16,7 +16,7 @@ Technical note: [`paper/exact_graphstate_sampling.pdf`](paper/exact_graphstate_s
 | 76-qubit, depth-76 instance | **19 exact samples, 190 s each**, 67 GB, two reproduced to 1e-7 by the independent engine | `results/nq76/analysis.txt` |
 | Conditionals checked without a dynamic program | stabilizer-group formula matches the sampler to 3.3e-8 on all 1,726 shots | `results/chain/stabprefix_ibm_fwd.txt` |
 | Ceiling for every graph | width ≤ ⌊n/2⌋, so 2^{n/2} entries suffice for any graph state in any product basis: 275 GB at 70 qubits, 281 TB at 90; random graphs G(70, ½) reach 32, brickwork 31 | note §5, `results/ceiling_tightness.jsonl` |
-| Where the signal is | no stabilizer of weight ≤ 11, so every marginal on ≤ 11 qubits is exactly uniform; IBM's shots show no 1-, 2-, 3- or 4-bit bias (χ² p = 0.78, 0.36, 0.28, 0.95) | `results/minweight.txt`, `results/hw_marginals.txt` |
+| Where the signal is | minimum stabilizer weight 15 (proven), so every marginal on ≤ 14 qubits is exactly uniform; IBM's shots show no 1-, 2-, 3- or 4-bit bias (χ² p = 0.78, 0.36, 0.28, 0.95) | `results/minweight.txt`, `results/hw_marginals.txt` |
 
 ![Hardness frontier](paper/fig/fig1_frontier.png)
 
@@ -85,7 +85,7 @@ Each test has a negative control that is caught.
 | `stabprefix.py` on the real instance | stabilizer-only conditionals vs chain mode, steps 1–42, all 1,726 IBM shots | 3.3e-8 (deviations from ½ up to 8e-5) |
 | `xcheck55.py`, `xcheck70*.py` | 55- and 70-qubit real data: sampler Pr vs `dp.cpp` amplitude | 4e-7; 1e-6 on 6 samples, control 3.37 |
 | cross-order (`results/chain/analysis_crossorder.txt`) | width-30 order, its reverse, width-31 order: same log₂ Pr for 2,738 strings | 1.4e-5 at worst |
-| `minweight.py`, `minweight.cpp` | minimum stabilizer weight of the graph state (packed arithmetic checked against dense on 50 random v) | no weight ≤ 11 (exhaustive to 11 chosen vertices); weight 15 found |
+| `minweight.py`, `minweight.cpp` | minimum stabilizer weight of the graph state (packed arithmetic checked against dense on 50 random v) | no weight ≤ 11 (exhaustive to 11 chosen vertices); weight 15 found; d_min = 15 proven with `minweight_exact.py` + `minweight_case1.cpp` |
 | `minweight_scan.py` | the same for generated instances, proof condition met | d_min = 6, 8, 9, 12 at n = 30, 40, 50, 60 |
 | `hw_marginals.py` | 1-, 2-, 3-, 4-bit parities of IBM's shots and our samples vs the exactly uniform ideal (χ²) | shots p = 0.78/0.36/0.28/0.95; samples 0.010/0.76/0.97/0.12; biased-bit control p < 1e-4 |
 | `rng_check.py`, `rngbits.cpp` | samples' first 22 bits = sign bits of std::mt19937_64(10⁶ + i); the stream's own χ² for these seeds | 1012/1012; seed+1 control 0/1012; stream χ² 96.7 on 70 |

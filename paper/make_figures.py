@@ -83,6 +83,6 @@ for i, k in enumerate((1, 2, 3, 4)):
     ax.set_title(f"{k}-bit parities, {nt:,} tests", fontsize=9); ax.text(0.97, 0.95, f"χ² p: shots {ph:.2f}\nsamples {pi:.2f}", transform=ax.transAxes, fontsize=7.5, va="top", ha="right", color=MUTED)
     ax.set_xlabel("z-score of the parity mean"); ax.grid(alpha=0.25, lw=0.5); ax.set_xlim(-5, 5)
 axs[0].set_ylabel("density"); h, l = axs[0].get_legend_handles_labels(); fig.legend(h, l, loc="lower center", ncol=3, fontsize=7.5, bbox_to_anchor=(0.5, 0.0))
-fig.suptitle("IBM's shots carry no low-order bias: every marginal on ≤ 11 qubits of the ideal output is exactly uniform", fontsize=9.5)
+fig.suptitle("IBM's shots carry no low-order bias: every marginal on ≤ 14 qubits of the ideal output is exactly uniform", fontsize=9.5)
 fig.tight_layout(rect=(0, 0.08, 1, 1)); fig.savefig(OUT + "fig4_marginals.png", dpi=220); plt.close(fig)
 print("wrote", OUT)
