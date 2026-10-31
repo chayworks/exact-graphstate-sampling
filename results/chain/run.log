@@ -1,0 +1,66 @@
+2026-10-31T04:46:45Z boot nproc=16 mem=123G cpu= AMD EPYC 9R14
+2026-10-31T04:47:39Z gate: PASS (30s for 4 strings)
+2026-10-31T04:52:40Z progress ibm_fwd=87 ibm_rev= ideal_fwd= ideal_rev= 
+2026-10-31T04:57:42Z progress ibm_fwd=177 ibm_rev= ideal_fwd= ideal_rev= 
+2026-10-31T05:02:43Z progress ibm_fwd=266 ibm_rev= ideal_fwd= ideal_rev= 
+2026-10-31T05:07:45Z progress ibm_fwd=355 ibm_rev= ideal_fwd= ideal_rev= 
+2026-10-31T05:12:47Z progress ibm_fwd=444 ibm_rev= ideal_fwd= ideal_rev= 
+2026-10-31T05:17:48Z progress ibm_fwd=533 ibm_rev= ideal_fwd= ideal_rev= 
+2026-10-31T05:22:50Z progress ibm_fwd=623 ibm_rev= ideal_fwd= ideal_rev= 
+2026-10-31T05:27:51Z progress ibm_fwd=713 ibm_rev= ideal_fwd= ideal_rev= 
+2026-10-31T05:32:53Z progress ibm_fwd=802 ibm_rev= ideal_fwd= ideal_rev= 
+2026-10-31T05:37:54Z progress ibm_fwd=891 ibm_rev= ideal_fwd= ideal_rev= 
+2026-10-31T05:42:56Z progress ibm_fwd=981 ibm_rev= ideal_fwd= ideal_rev= 
+2026-10-31T05:47:58Z progress ibm_fwd=1070 ibm_rev= ideal_fwd= ideal_rev= 
+2026-10-31T05:52:59Z progress ibm_fwd=1160 ibm_rev= ideal_fwd= ideal_rev= 
+2026-10-31T05:58:01Z progress ibm_fwd=1249 ibm_rev= ideal_fwd= ideal_rev= 
+2026-10-31T06:03:02Z progress ibm_fwd=1338 ibm_rev= ideal_fwd= ideal_rev= 
+2026-10-31T06:08:04Z progress ibm_fwd=1428 ibm_rev= ideal_fwd= ideal_rev= 
+2026-10-31T06:13:05Z progress ibm_fwd=1517 ibm_rev= ideal_fwd= ideal_rev= 
+2026-10-31T06:18:07Z progress ibm_fwd=1607 ibm_rev= ideal_fwd= ideal_rev= 
+2026-10-31T06:23:08Z progress ibm_fwd=1696 ibm_rev= ideal_fwd= ideal_rev= 
+2026-10-31T06:24:47Z ibm_fwd done
+2026-10-31T06:28:10Z progress ibm_fwd=1726 ibm_rev=61 ideal_fwd= ideal_rev= 
+2026-10-31T06:33:11Z progress ibm_fwd=1726 ibm_rev=156 ideal_fwd= ideal_rev= 
+2026-10-31T06:38:13Z progress ibm_fwd=1726 ibm_rev=252 ideal_fwd= ideal_rev= 
+2026-10-31T06:43:15Z progress ibm_fwd=1726 ibm_rev=347 ideal_fwd= ideal_rev= 
+2026-10-31T06:48:16Z progress ibm_fwd=1726 ibm_rev=442 ideal_fwd= ideal_rev= 
+2026-10-31T06:53:18Z progress ibm_fwd=1726 ibm_rev=537 ideal_fwd= ideal_rev= 
+2026-10-31T06:58:19Z progress ibm_fwd=1726 ibm_rev=632 ideal_fwd= ideal_rev= 
+2026-10-31T07:03:21Z progress ibm_fwd=1726 ibm_rev=727 ideal_fwd= ideal_rev= 
+2026-10-31T07:08:22Z progress ibm_fwd=1726 ibm_rev=823 ideal_fwd= ideal_rev= 
+2026-10-31T07:13:24Z progress ibm_fwd=1726 ibm_rev=918 ideal_fwd= ideal_rev= 
+2026-10-31T07:18:26Z progress ibm_fwd=1726 ibm_rev=1013 ideal_fwd= ideal_rev= 
+2026-10-31T07:23:27Z progress ibm_fwd=1726 ibm_rev=1108 ideal_fwd= ideal_rev= 
+2026-10-31T07:28:28Z progress ibm_fwd=1726 ibm_rev=1203 ideal_fwd= ideal_rev= 
+2026-10-31T07:33:30Z progress ibm_fwd=1726 ibm_rev=1299 ideal_fwd= ideal_rev= 
+2026-10-31T07:38:32Z progress ibm_fwd=1726 ibm_rev=1393 ideal_fwd= ideal_rev= 
+2026-10-31T07:43:33Z progress ibm_fwd=1726 ibm_rev=1488 ideal_fwd= ideal_rev= 
+2026-10-31T07:48:34Z progress ibm_fwd=1726 ibm_rev=1583 ideal_fwd= ideal_rev= 
+2026-10-31T07:53:36Z progress ibm_fwd=1726 ibm_rev=1678 ideal_fwd= ideal_rev= 
+2026-10-31T07:56:06Z ibm_rev done
+2026-10-31T07:58:37Z progress ibm_fwd=1726 ibm_rev=1726 ideal_fwd=42 ideal_rev= 
+2026-10-31T08:03:38Z progress ibm_fwd=1726 ibm_rev=1726 ideal_fwd=131 ideal_rev= 
+2026-10-31T08:08:40Z progress ibm_fwd=1726 ibm_rev=1726 ideal_fwd=221 ideal_rev= 
+2026-10-31T08:13:42Z progress ibm_fwd=1726 ibm_rev=1726 ideal_fwd=310 ideal_rev= 
+2026-10-31T08:18:43Z progress ibm_fwd=1726 ibm_rev=1726 ideal_fwd=400 ideal_rev= 
+2026-10-31T08:23:45Z progress ibm_fwd=1726 ibm_rev=1726 ideal_fwd=489 ideal_rev= 
+2026-10-31T08:28:47Z progress ibm_fwd=1726 ibm_rev=1726 ideal_fwd=579 ideal_rev= 
+2026-10-31T08:33:48Z progress ibm_fwd=1726 ibm_rev=1726 ideal_fwd=669 ideal_rev= 
+2026-10-31T08:38:50Z progress ibm_fwd=1726 ibm_rev=1726 ideal_fwd=758 ideal_rev= 
+2026-10-31T08:43:52Z progress ibm_fwd=1726 ibm_rev=1726 ideal_fwd=847 ideal_rev= 
+2026-10-31T08:48:53Z progress ibm_fwd=1726 ibm_rev=1726 ideal_fwd=937 ideal_rev= 
+2026-10-31T08:53:06Z ideal_fwd done
+2026-10-31T08:53:54Z progress ibm_fwd=1726 ibm_rev=1726 ideal_fwd=1012 ideal_rev=12 
+2026-10-31T08:58:56Z progress ibm_fwd=1726 ibm_rev=1726 ideal_fwd=1012 ideal_rev=107 
+2026-10-31T09:03:57Z progress ibm_fwd=1726 ibm_rev=1726 ideal_fwd=1012 ideal_rev=202 
+2026-10-31T09:08:58Z progress ibm_fwd=1726 ibm_rev=1726 ideal_fwd=1012 ideal_rev=297 
+2026-10-31T09:14:00Z progress ibm_fwd=1726 ibm_rev=1726 ideal_fwd=1012 ideal_rev=392 
+2026-10-31T09:19:01Z progress ibm_fwd=1726 ibm_rev=1726 ideal_fwd=1012 ideal_rev=487 
+2026-10-31T09:24:02Z progress ibm_fwd=1726 ibm_rev=1726 ideal_fwd=1012 ideal_rev=582 
+2026-10-31T09:29:04Z progress ibm_fwd=1726 ibm_rev=1726 ideal_fwd=1012 ideal_rev=677 
+2026-10-31T09:34:05Z progress ibm_fwd=1726 ibm_rev=1726 ideal_fwd=1012 ideal_rev=771 
+2026-10-31T09:39:07Z progress ibm_fwd=1726 ibm_rev=1726 ideal_fwd=1012 ideal_rev=865 
+2026-10-31T09:44:09Z progress ibm_fwd=1726 ibm_rev=1726 ideal_fwd=1012 ideal_rev=959 
+2026-10-31T09:46:58Z ideal_rev ended: 1012 of 1012
+2026-10-31T09:46:58Z finish: complete

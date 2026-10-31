@@ -174,7 +174,25 @@ non-depolarising noise, so we report the gap without interpreting it.
    stabilizers, which in this order happens only in the last ~10 steps; the per-step spread of the chain
    conditionals grows by about 1.4× per step from 10⁻⁴ at step 50 to 0.56 at step 70, and the last 8 steps
    carry 2.91 of the 2.93 variance of log₂ Pr across the hardware shots
-   (`results/chain/ibm_fwd_chain.txt`). {Ideal-sample profile pending from cloud run 3.}
+   (`results/chain/ibm_fwd_chain.txt`). For our 1,012 exact samples the picture is the same: the
+   spread of the conditionals first exceeds 10⁻³ at step 51 (52 in the reversed order), and the last 4 and
+   8 steps account for 90% and 100% of the variance of log₂ Pr (`results/chain/analysis_profile.txt`).
+6. **Three dynamic-program paths agree.** Scoring every string along the width-30 order, along its reverse
+   (the same width, a different table layout and step sequence), and, for our samples, along the width-31
+   production order gives the same log₂ Pr: the forward and reversed orders agree to 1.4·10⁻⁵ at worst
+   (median 4·10⁻⁷) on the 1,726 hardware shots and to 3.5·10⁻⁶ on the 1,012 samples, and the width-31 run
+   agrees with the width-30 order to 4.3·10⁻⁶ (`results/chain/analysis_crossorder.txt`). The
+   stabilizer-only check of item 5 also holds along the reversed order and on the ideal samples (3.3·10⁻⁸,
+   `results/chain/stabprefix_rev_ideal.txt`).
+
+**Per-step fidelity of the hardware shots.** Dividing the hardware mean of 2c_k − 1 by the ideal mean gives a
+fidelity-like ratio for each informative step. Because the information sits in the last steps, only four
+steps per order are informative (ideal mean above 0.05): in the forward order, qubits 9, 8, 13 and 50 give
+0.45 ± 0.12, 0.54 ± 0.08, 0.52 ± 0.07 and 0.48 ± 0.04; in the reversed order, qubits 45, 68, 53 and 21 give
+0.47 ± 0.10, 0.43 ± 0.07, 0.43 ± 0.06 and 0.53 ± 0.05. All eight are consistent with the global fidelity
+estimates of 0.46–0.48 and none stands out, so the shots show no sign of a qubit that is much worse than
+the rest among those eight. A per-qubit map of all 70 qubits would need an order ending in each group of
+about four qubits, roughly 18 further width-30 passes; we did not run them.
 
 ## 5. Hardness frontier
 

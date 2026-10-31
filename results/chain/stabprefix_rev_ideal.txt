@@ -1,0 +1,9 @@
+# python stabprefix.py nq70.qasm cloud4/rev_step_qubits.json cloud4/ibm_rev.txt results/chain/ibm_rev_chain.txt 16   (reversed order, IBM shots)
+  40      12        6.520e-05              5.176e-10
+  41      13        4.274e-05              5.131e-10
+  42      15        9.465e-05              5.146e-10
+overall max |c_stab - c_chain| over 42 steps x 1726 strings: 3.300e-08
+# ideal samples, forward order
+overall max |c_stab - c_chain| over 42 steps x 1012 strings: 3.300e-08
+# ideal samples, reversed order
+overall max |c_stab - c_chain| over 42 steps x 1012 strings: 3.300e-08
