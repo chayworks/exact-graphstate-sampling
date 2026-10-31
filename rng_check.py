@@ -19,6 +19,9 @@ print("per-step agreement with (U < 0.5):", " ".join(f"{a:.2f}" for a in agree))
 X = 1 - 2 * np.array([[int(c) for c in s[0]] for s in S], np.int8); z = X.mean(0) * np.sqrt(len(X))
 for a, b in [(0, 22), (22, 70), (0, 70)]:
     s = float((z[a:b] ** 2).sum()); print(f"single-bit means, steps {a + 1}-{b}: sum z^2 = {s:.1f} on {b - a} dof, p = {chi2.sf(s, b - a):.3f}")
+Y = 1 - 2 * np.array([[int(c) for c in R[int(s[2])]] for s in S], np.int8); zr = Y.mean(0) * np.sqrt(len(Y))
+for a, b in [(0, 22), (22, 50), (50, 70)]:
+    s = float((zr[a:b] ** 2).sum()); print(f"RNG sign bits alone, same seeds, draws {a + 1}-{b}: sum z^2 = {s:.1f} on {b - a} dof, p = {chi2.sf(s, b - a):.3f}")
 if len(sys.argv) > 4:
     L, R2 = samples(sys.argv[3]), rng(sys.argv[4])
     print(f"laptop samples: first 22 bits equal the RNG sign bits in {sum(R2[int(s[2])][:22] == s[0][:22] for s in L)}/{len(L)}")

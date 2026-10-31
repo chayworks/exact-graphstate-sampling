@@ -30,7 +30,8 @@ int main(int argc, char** argv) {
     for (int i = 0; i < n; i++) { if ((int)rows[i].size() != n) { fprintf(stderr, "bad row %d\n", i); return 1; }
         for (int j = 0; j < n; j++) if (rows[i][j] == '1') { if (j < 64) R[i].a |= 1ULL << j; else R[i].b |= 1ULL << (j - 64); }
         if (i < 64) E[i].a |= 1ULL << i; else E[i].b |= 1ULL << (i - 64); }
-    for (int i = 0; i < n; i++) { if (rows[i][i] != '0') { fprintf(stderr, "diagonal\n"); return 1; } for (int j = 0; j < n; j++) if (rows[i][j] != rows[j][i]) { fprintf(stderr, "asym\n"); return 1; } }
+    bool nodiag = argc > 3 && !strcmp(argv[3], "nodiag");   // for A^{-1}: symmetric but the diagonal may be nonzero
+    for (int i = 0; i < n; i++) { if (!nodiag && rows[i][i] != '0') { fprintf(stderr, "diagonal\n"); return 1; } for (int j = 0; j < n; j++) if (rows[i][j] != rows[j][i]) { fprintf(stderr, "asym\n"); return 1; } }
     int K = atoi(argv[2]); int global = 1 << 30; std::vector<int> gv;
     for (int k = 1; k <= K; k++) {
         double t0 = omp_get_wtime(); Res best{1 << 30, {}};

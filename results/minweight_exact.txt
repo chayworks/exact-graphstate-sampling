@@ -1,0 +1,6 @@
+n = 70; rank A = 68; rank (A+I) = 70
+A is singular, kernel dimension 2: the 3 nonzero kernel elements are stabilizers X^k of weight [24, 31, 41] (these are case (1) with c = 0)
+generalized inverse G and kernel written (work/minweight_G.txt, work/minweight_ker.txt); case (1): minweight_case1 with K = 11
+case (2): 974120 vectors e with 1 <= |e| <= 4 solved; lightest stabilizer among them: weight 16 at v = [8, 14, 19, 30, 35, 39, 40, 43, 48, 58, 63, 65, 68] (e = [18, 61, 62, 68])
+case (2) excludes every stabilizer of weight <= 14 with |v| >= 12 and |Av| >= 12
+self-check: known weight-15 v recovered from its e (|e| = 9): True

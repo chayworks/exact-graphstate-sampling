@@ -87,7 +87,8 @@ Each test has a negative control that is caught.
 | cross-order (`results/chain/analysis_crossorder.txt`) | width-30 order, its reverse, width-31 order: same log₂ Pr for 2,738 strings | 1.4e-5 at worst |
 | `minweight.py`, `minweight.cpp` | minimum stabilizer weight of the graph state (packed arithmetic checked against dense on 50 random v) | no weight ≤ 11 (exhaustive to 11 chosen vertices); weight 15 found |
 | `hw_marginals.py` | 1-, 2-, 3-, 4-bit parities of IBM's shots and our samples vs the exactly uniform ideal (χ²) | shots p = 0.78/0.36/0.28/0.95; samples 0.010/0.76/0.97/0.12; biased-bit control p < 1e-4 |
-| `rng_check.py`, `rngbits.cpp` | samples' first 22 bits = sign bits of std::mt19937_64(10⁶ + i) | 1012/1012; seed+1 control 0/1012 |
+| `rng_check.py`, `rngbits.cpp` | samples' first 22 bits = sign bits of std::mt19937_64(10⁶ + i); the stream's own χ² for these seeds | 1012/1012; seed+1 control 0/1012; stream χ² 96.7 on 70 |
+| `draw_check.py` | drawing step: residuals b_k − Pr(b_k = 1 \| prefix) from the exact conditionals, per-step z | steps 51–70 p = 0.29, all p = 0.026; p^1.1 control p = 1e-50 |
 | `ceiling_tightness.py` | best width for G(n,½), G(n,0.3), brickwork vs ⌊n/2⌋ | n = 70: 32, 31–32, 31 vs 35 |
 
 Full-instance runs (all on AWS r7a.4xlarge, 16 cores, AMD EPYC 9R14, 123 GB):

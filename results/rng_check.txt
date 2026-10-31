@@ -3,5 +3,8 @@ per-step agreement with (U < 0.5): 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 
 single-bit means, steps 1-22: sum z^2 = 29.5 on 22 dof, p = 0.130
 single-bit means, steps 23-70: sum z^2 = 70.9 on 48 dof, p = 0.018
 single-bit means, steps 1-70: sum z^2 = 100.4 on 70 dof, p = 0.010
+RNG sign bits alone, same seeds, draws 1-22: sum z^2 = 29.5 on 22 dof, p = 0.130
+RNG sign bits alone, same seeds, draws 23-50: sum z^2 = 38.9 on 28 dof, p = 0.083
+RNG sign bits alone, same seeds, draws 51-70: sum z^2 = 28.3 on 20 dof, p = 0.103
 laptop samples: first 22 bits equal the RNG sign bits in 3/3
 control (seed + 1): first 22 bits match in 0/1012

@@ -260,9 +260,17 @@ the first two samples' log₂ Pr as −74.1389442 and −75.3402128 against the 
    uniform draw U; reproducing the stream (std::mt19937_64 seeded with 10⁶ + i, `rngbits.cpp`) gives exactly
    that bit in 1,012 of 1,012 samples, and in 0 of 1,012 with the seed shifted by one (`results/rng_check.txt`).
    The sampler is therefore deterministic given its stream, and the excess sits in steps 23–70 (χ² 70.9 on 48,
-   p = 0.018), where the drawn bit depends on the conditional that items 2, 5 and 6 verify. A scan of 300
-   blocks of 1,012 consecutive seeds shows no bias in the stream (mean χ² 70.3 ± 0.7 on 70). We record the
-   single-bit p = 0.010 as a one-in-a-hundred fluctuation and flag it rather than explain it away.
+   p = 0.018), where the drawn bit depends on the conditional that items 2, 5 and 6 verify. Two further checks
+   locate it. First, the stream's own sign bits for the same 1,012 seeds have χ² = 96.7 on 70 (p ≈ 0.02) with
+   no sampler involved, so the realised pseudo-random block is itself an unlucky one; a scan of 300 such blocks
+   shows no bias in the generator (mean χ² 70.3 ± 0.7 on 70). Second, a direct test of the drawing step uses the
+   exact conditionals: the residuals b_k − Pr(b_k = 1 | prefix) have mean zero and known variance whatever the
+   prefix, so their per-step z-scores are standard normal if each bit is drawn with its own conditional
+   (`draw_check.py`, `results/draw_check.txt`). Over the 20 steps where the conditionals carry the information
+   (51–70) this gives χ² = 23.1 on 20 (p = 0.29); over all 70 steps 94.7 (p = 0.026), the excess again sitting
+   in the steps whose bits are the stream's sign bits; a synthetic sampler drawing with p^{1.1} instead of p
+   fails the test at p = 10⁻⁵⁰ and correct synthetic draws pass (p = 0.92). We record the single-bit excess as a
+   property of the realised random stream, not of the dynamic program, and flag it rather than hide it.
 
 ![Where the information lives](fig/fig3_information.png)
 
