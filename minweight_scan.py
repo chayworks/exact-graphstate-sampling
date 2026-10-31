@@ -8,7 +8,7 @@ from graphform import graph_form
 spec = [(int(a), int(b)) for a, b in (x.split(":") for x in sys.argv[1].split(","))]
 with open("results/minweight_scan.txt", "a") as out:
     for n, K in spec:
-        A, _ = graph_form(ibm_like(n, 1000 + n)); path = f"work/scan_A{n}.txt"
+        A, _ = graph_form(ibm_like(n, 1000 + n)); path = f"work/scan{n}_A.txt"
         with open(path, "w") as f:
             for i in range(n): f.write("".join(str(int(x)) for x in A[i]) + "\n")
         cmd = ["docker", "run", "--rm", "-v", "D:/GIT/Innovation/graphsamp:/w", "-w", "/w", "gcc:14", "bash", "-c",

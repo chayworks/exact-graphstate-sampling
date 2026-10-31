@@ -374,7 +374,10 @@ Z-support vertices c = Av (all such c enumerated through a generalised inverse o
 its 4-element kernel coset, lightest 15; `minweight_case1.cpp`, `results/minweight_case1_k11.txt`), or at least
 12 of each, in which case v and Av differ in at most 4 positions and v is recovered from (A+I)v = e for the
 974,120 vectors e with |e| ≤ 4 (lightest 16). The lightest stabilizer has v = {0, 5, 27, 42, 48, 49, 52, 58, 61}
-and support of 15 qubits. So **every marginal on at most 14 qubits is exactly uniform**, and even the first
+and support of 15 qubits. The split was validated on the 30- and 40-qubit generated instances, whose minima
+(6 and 8) are known from direct enumeration: run with a small t so that the minimiser falls outside the directly
+enumerated part, it returns the same minima, and on the 30-qubit instance only case (2) finds the weight-6
+stabilizer, so dropping that case would report 8 (`minweight_split_test.py`, `results/minweight_split_test.txt`). So **every marginal on at most 14 qubits is exactly uniform**, and even the first
 non-uniform marginals deviate by at most about 3^{−7.5} ≈ 3·10⁻⁴ per stabilizer. This is the stabilizer-side
 statement of Figure 3: no test restricted to 14 or fewer qubits, however many shots, can tell the ideal output
 from coin flips; the signal lives in correlations of weight ≥ 15, and verifying such an experiment is global by

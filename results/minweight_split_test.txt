@@ -1,0 +1,7 @@
+work/scan30_A.txt: t = 2, W = 6; |v| <= t part: 8; case (1) |Av| <= t: 10; kernel elements: [16, 14, 16]; case (2) |e| <= 6: 6
+split minimum 6 vs direct d_min 6: AGREE; attained by: case 2
+mutation check: without case 2 the split would report 8; without case 1 6; without the |v|<=t part 6
+--- n=40, t=4, W=8
+work/scan40_A.txt: t = 4, W = 8; |v| <= t part: 8; case (1) |Av| <= t: 9; kernel elements: []; case (2) |e| <= 6: 9
+split minimum 8 vs direct d_min 8: AGREE; attained by: |v|<=t
+mutation check: without case 2 the split would report 8; without case 1 8; without the |v|<=t part 9
