@@ -81,3 +81,23 @@ Briegel, PRA 75, 012337 (2007); Kuyanov & Kissinger; Renaud's dcs-rankwidth), an
 instance with capped rejection sampling. What is new here is exact Born sampling via the prefix-marginal
 identity, the in-place single-table layout, the laptop run, the frontier table and the independent
 verification. The claim is about this instance, not a new complexity result.
+
+
+## Author
+
+Chaitanya Talapalli, independent researcher. ORCID [0009-0000-8811-3349](https://orcid.org/0009-0000-8811-3349), chayt128@gmail.com.
+
+## License
+
+Apache-2.0 (see `LICENSE`).
+
+## Cite
+
+```
+@misc{talapalli2026graphstate,
+  title  = {Exact Born sampling of a 70-qubit random-graph-state advantage experiment on one CPU node},
+  author = {Talapalli, Chaitanya},
+  year   = {2026},
+  note   = {ORCID 0009-0000-8811-3349; code and data at https://github.com/chayworks/exact-graphstate-sampling}
+}
+```

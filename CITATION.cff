@@ -1,0 +1,11 @@
+cff-version: 1.2.0
+message: "If you use this code or these results, please cite it as below."
+title: "Exact Born sampling of a 70-qubit random-graph-state advantage experiment on one CPU node"
+authors:
+  - family-names: Talapalli
+    given-names: Chaitanya
+    orcid: "https://orcid.org/0009-0000-8811-3349"
+    email: chayt128@gmail.com
+date-released: 2026-10-31
+license: Apache-2.0
+repository-code: "https://github.com/chayworks/exact-graphstate-sampling"
