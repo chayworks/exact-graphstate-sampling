@@ -1,0 +1,7 @@
+1012 production samples: first 22 bits equal the RNG sign bits in 1012/1012; whole 70-bit string equal in 375
+per-step agreement with (U < 0.5): 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 1.00 0.99 0.99 0.99 0.98 0.97 0.97 0.96 0.93 0.90 0.86 0.81 0.76
+single-bit means, steps 1-22: sum z^2 = 29.5 on 22 dof, p = 0.130
+single-bit means, steps 23-70: sum z^2 = 70.9 on 48 dof, p = 0.018
+single-bit means, steps 1-70: sum z^2 = 100.4 on 70 dof, p = 0.010
+laptop samples: first 22 bits equal the RNG sign bits in 3/3
+control (seed + 1): first 22 bits match in 0/1012

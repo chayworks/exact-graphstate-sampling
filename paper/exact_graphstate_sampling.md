@@ -33,7 +33,16 @@ Three further results follow from having the exact probabilities in hand.
    275 GB at 70 qubits, 2.2 TB at 76, 281 TB at 90, 9 PB at 100. No graph-state sampling experiment with
    product measurements can escape a single large-memory node below about 76 qubits, or a supercomputer
    below about 90, whatever graph is chosen. The random brickwork construction already sits within 3–4 of
-   this ceiling, so the only lever left to the experimenters is the qubit count.
+   this ceiling, so the only lever left to the experimenters is the qubit count. Random dense graphs reach the
+   same widths as the brickwork at the same search budget (within one), so for this method the construction
+   is already as hard as a random graph.
+
+Two further facts follow from the stabilizer structure. The output distribution of the instance is **exactly
+uniform on every set of at most 11 qubits** (no stabilizer of the graph state has weight below 12; one of
+weight 15 is known), so no statistic on fewer than 12 qubits can see the signal, and verification of such an
+experiment is global by nature. Conversely any low-order bias in the hardware shots is pure noise, detectable
+without simulation: all 70 single-bit, 2,415 pair and 54,740 triple parities of IBM's post-selected shots are
+at chance (χ² p = 0.78, 0.36, 0.28), so whatever brings the fidelity to 0.46 leaves no trace below weight 4.
 
 The method is two standard ingredients joined by one identity: the rank-width simulability of graph-state
 measurements (Van den Nest et al. 2007) and perfect sampling in the style of Ferris and Vidal (2012), joined
@@ -55,7 +64,9 @@ three different dynamic-program paths.
 | Fidelity of IBM's run from exact probabilities | 0.457 ± 0.037 (XEB) and 0.48 [0.43, 0.54] (mixture MLE); IBM's DFE 0.37, ≥ 0.092 | `results/ibmxeb/analysis.txt` |
 | 76-qubit, depth-76 instance sampled exactly | **19 samples, 190 s each**, 67 GB, two reproduced to 10⁻⁷ by the independent engine | `results/nq76/analysis.txt` |
 | Fine-structure check without a dynamic program | stabilizer-group formula reproduces the sampler's conditionals to 3.3·10⁻⁸ on all shots | `results/chain/stabprefix_ibm_fwd.txt` |
-| Ceiling for every graph | width ≤ ⌊n/2⌋: 275 GB at n = 70, 281 TB at n = 90 | Proposition in §5 |
+| Ceiling for every graph | width ≤ ⌊n/2⌋: 275 GB at n = 70, 281 TB at n = 90; random graphs G(70, ½) reach width 32, brickwork 31 | Proposition in §5, `results/ceiling_tightness.jsonl` |
+| Low-order marginals of the ideal distribution | exactly uniform on every set of ≤ 11 qubits (no stabilizer of weight ≤ 11; one of weight 15 known) | `results/minweight.txt`, `results/minweight_k11.txt` |
+| Hardware shots, simulation-free test | 70 single-bit, 2,415 pair and 54,740 triple parities at chance (χ² p = 0.78, 0.36, 0.28) | `results/hw_marginals.txt` |
 
 ## 1. The task
 
@@ -237,6 +248,19 @@ the first two samples' log₂ Pr as −74.1389442 and −75.3402128 against the 
    agrees with the width-30 order to 4.3·10⁻⁶ (`results/chain/analysis_crossorder.txt`). The
    stabilizer-only check of item 5 also holds along the reversed order and on the ideal samples (3.3·10⁻⁸,
    `results/chain/stabprefix_rev_ideal.txt`).
+7. **Simulation-free test, and the sampler's random stream.** By §6 every marginal of the ideal distribution
+   on at most 11 qubits is exactly uniform, so all single-bit means, pair parities and triple parities are
+   exactly zero (for ±1 bits), and their sums of squared z-scores are χ² with as many degrees of freedom as
+   tests. Our 1,012 samples: pairs p = 0.76, triples p = 0.97, single bits χ² = 100 on 70 (p = 0.010); the
+   test is calibrated on truly uniform bits (`hw_marginals.py`, `results/hw_marginals.txt`), and a control with
+   one bit biased by 15% fails it (p < 10⁻⁴). We examined the single-bit excess. For the first 22 steps of the
+   production order the conditional is exactly ½, so the sampled bit must equal (U < ½) for the sampler's
+   uniform draw U; reproducing the stream (std::mt19937_64 seeded with 10⁶ + i, `rngbits.cpp`) gives exactly
+   that bit in 1,012 of 1,012 samples, and in 0 of 1,012 with the seed shifted by one (`results/rng_check.txt`).
+   The sampler is therefore deterministic given its stream, and the excess sits in steps 23–70 (χ² 70.9 on 48,
+   p = 0.018), where the drawn bit depends on the conditional that items 2, 5 and 6 verify. A scan of 300
+   blocks of 1,012 consecutive seeds shows no bias in the stream (mean χ² 70.3 ± 0.7 on 70). We record the
+   single-bit p = 0.010 as a one-in-a-hundred fluctuation and flag it rather than explain it away.
 
 ![Where the information lives](fig/fig3_information.png)
 
@@ -299,6 +323,21 @@ measurements can escape a single large-memory node below about 76 qubits, or a s
 ceiling (Figure 1), so better graphs cannot buy the experimenters more than a factor of about 10 in memory;
 the only lever left is the qubit count.
 
+**Is the ceiling tight?** Running the same order search (3,000 local-search steps, two instances per cell) on
+Erdős–Rényi graphs G(n, ½) and G(n, 0.3) and on the brickwork construction gives
+(`ceiling_tightness.py`, `results/ceiling_tightness.jsonl`):
+
+| n | ceiling ⌊n/2⌋ | G(n, ½) | G(n, 0.3) | brickwork |
+|---|---|---|---|---|
+| 40 | 20 | 16, 16 | 16, 16 | 16, 17 |
+| 50 | 25 | 21, 21 | 22, 21 | 22, 21 |
+| 60 | 30 | 26, 26 | 26, 26 | 26, 26 |
+| 70 | 35 | 32, 32 | 32, 31 | 31, 31 |
+
+Random graphs of either density sit 3–4 below the ceiling and the brickwork within one of them, so for this
+method the construction is already as hard as a random graph, and the ceiling is tight to within the
+heuristic's few bits.
+
 **Caveats.** The widths are upper bounds from heuristic orders; better orders or tree decompositions would
 lower them. Slicing trades memory for time at a measured cost of about 1.5× per sliced vertex on this
 instance, not 2×. The table has one instance per n. The ceiling bounds this family of methods, not all
@@ -306,7 +345,36 @@ classical methods, and says nothing about circuits that are not graph states fol
 measurements: the doped sibling instance on the tracker, with 468 T gates spread through the circuit, is
 outside its reach (its amplitudes were computed by tensor-network methods in arXiv:2608.13110).
 
-## 6. What this does and does not show
+## 6. Where the signal is: no marginal on fewer than 12 qubits carries any
+
+In the graph frame every stabilizer is S_v = X^v Z^{Av} with support v ∪ Av, and by the formula of §4 item 5
+the marginal of the output distribution on a qubit set F is Pr(b_F) = 2^{-|F|} Σ_{S supported on F} sign(S)
+Π_j (−1)^{b_j} n_j[S_j]. The measured Bloch vectors have no zero component (all three components are ±1/√3
+in the graph frame), so:
+
+**Proposition.** *The marginal on F is exactly uniform if and only if no nontrivial stabilizer is supported
+inside F. In particular every marginal on fewer than d_min qubits is exactly uniform, where d_min is the
+minimum weight of a stabilizer of the graph state, and a stabilizer of weight w shifts a marginal by at most
+3^{−w/2}.*
+
+For IBM's instance, exhaustive enumeration of all v with at most 11 vertices (2.6·10¹² stabilizers, 14 minutes
+on 16 threads, `minweight.cpp`) finds none of weight below 15; since weight(S_v) ≥ |v|, **no stabilizer has
+weight ≤ 11**, and the lightest known has weight 15 (v = {0, 5, 27, 42, 48, 49, 52, 58, 61};
+`results/minweight.txt`, `results/minweight_k11.txt`). So **12 ≤ d_min ≤ 15**: every marginal on at most 11
+qubits is exactly uniform, and even the first non-uniform marginals deviate by at most about 3^{−7.5} ≈ 3·10⁻⁴
+per stabilizer. This is the stabilizer-side statement of Figure 3: no test restricted to a few qubits, however
+many shots, can tell the ideal output from coin flips; the signal lives in correlations of weight ≥ 12, and
+verifying such an experiment is global by nature.
+
+The same fact turns the hardware shots into a simulation-free diagnostic. Any deviation of a ≤ 11-qubit
+marginal of the device from uniform is noise, measurable from the shots alone. For IBM's 1,726 post-selected
+shots all 70 single-bit means (χ² 61 on 70, p = 0.78), 2,415 pair parities (p = 0.36, largest |z| 4.4) and
+54,740 triple parities (p = 0.28) are at chance (`results/hw_marginals.txt`). The errors that bring the fidelity
+to about 0.46 therefore leave no low-order trace at all: no biased qubit, no correlated pair; after the Pauli
+checks the residual noise acts on the output like a global depolarisation. This is consistent with the mixture
+fit of §3.2 and is, we think, a useful fact for the experimenters.
+
+## 7. What this does and does not show
 
 It shows:
 - the 70-qubit instance is sampled exactly, from the Born distribution, on a laptop, so it does not
@@ -314,7 +382,10 @@ It shows:
 - the published hardware data can be benchmarked exactly at full depth, which the experiment's own README
   describes as impossible, and the resulting fidelity estimate is tighter than the one obtained on the device;
 - the same construction stays within one node's reach to about 80 qubits (measured at 76), within a
-  supercomputer's to about 90, and that no choice of graph changes this by more than a few qubits.
+  supercomputer's to about 90, and that no choice of graph changes this by more than a few qubits (random
+  graphs measured within one of the brickwork);
+- the output distribution is exactly uniform on every set of at most 11 qubits, and IBM's shots show no
+  low-order bias at all.
 
 It does not show:
 - a new complexity-theoretic result; the rank-width reduction is from 2007 and the ceiling is elementary;
@@ -328,7 +399,7 @@ with a few hundred non-Clifford gates, as in the sibling instance, defeats this 
 case the exact scorer here can still compute full-depth XEB for any graph-state run up to about 80 qubits,
 so an experiment at that scale can report an exact benchmark instead of an extrapolated one.
 
-## 7. Related work
+## 8. Related work
 
 - Rank-width simulability of graph-state measurements: Van den Nest, Dür, Vidal, Briegel, PRA 75, 012337 (2007).
 - Perfect sampling of matrix product states: Ferris & Vidal, PRB 85, 165146 (2012).
@@ -353,5 +424,10 @@ All paths are relative to the repository root.
   comparison, the cross-order comparison and the information profile.
 - `results/nq76/`: the 76-qubit samples, timing, gate, independent check and `analysis.txt`.
 - `results/uniform_prefix_check.txt`: the engine-independent uniformity check.
+- `results/minweight.txt`, `results/minweight_k11.txt`, `results/nq70_graph_adjacency.txt`: the stabilizer
+  minimum-weight search and the graph it ran on.
+- `results/hw_marginals.txt`, `results/rng_check.txt`, `results/rngbits_seeds_*.txt`: the low-order marginal
+  test of the shots and samples, and the random-stream identity check.
+- `results/ceiling_tightness.jsonl`: widths of random graphs and brickwork instances against the ceiling.
 - `results/frontier.jsonl`: the frontier search output.
 - `README.md`: the test table, the commands that reproduce each number, and the modes of the samplers.

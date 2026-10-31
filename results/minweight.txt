@@ -1,0 +1,19 @@
+# python minweight.py cloud7/nq70.qasm work/minweight   (numpy part, |v| <= 4, then local search)
+n = 70, edges = 1150, degrees min/mean/max = 22/32.9/43
+measured Bloch vectors in the graph frame: smallest |component| = 0.577350 (all nonzero: True)
+|v| = 1: 70 stabilizers, min weight 23 at v = [42]
+|v| = 2: 2415 stabilizers, min weight 21 at v = [34, 65]
+|v| = 3: 54740 stabilizers, min weight 19 at v = [5, 9, 25]
+|v| = 4: 916895 stabilizers, min weight 18 at v = [12, 20, 40, 56]
+best stabilizer found: weight 18, v = [12, 20, 40, 56] (|v| = 4)
+
+# docker gcc:14: ./minweight_bin work/minweight_A.txt 7   (exhaustive over popcount(v) <= 7, 16 threads)
+|v| = 1: min weight 23 at v = 42   (0.0 s)
+|v| = 2: min weight 21 at v = 34 65   (0.0 s)
+|v| = 3: min weight 19 at v = 5 9 25   (0.0 s)
+|v| = 4: min weight 18 at v = 12 20 40 56   (0.0 s)
+|v| = 5: min weight 17 at v = 33 34 50 65 69   (0.0 s)
+|v| = 6: min weight 16 at v = 5 10 26 30 32 64   (0.0 s)
+|v| = 7: min weight 16 at v = 5 7 19 35 54 60 67   (0.5 s)
+minimum over popcount(v) <= 7: weight 16, v = 5 10 26 30 32 64
+NOT PROVEN: d_min <= 16; a lighter stabilizer could still exist with popcount(v) in [8, 15]
