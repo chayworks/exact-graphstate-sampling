@@ -1,5 +1,9 @@
 # Exact Born sampling of a 70-qubit random-graph-state advantage experiment on one CPU node
 
+**Chaitanya Talapalli** — independent researcher — ORCID 0009-0000-8811-3349 — chayt128@gmail.com
+
+Code, samples and raw outputs: https://github.com/chayworks/exact-graphstate-sampling (Apache-2.0).
+
 *Draft technical note, not submitted. Numbers in braces {…} are pending; every other number comes from a
 committed artifact listed in the appendix.*
 
@@ -95,6 +99,18 @@ capped at 10 GB), 3 exact samples took 55 s including allocation, i.e. **about 1
 (`results/laptop_samples_w30.txt`). The in-place sampler was validated on every bitstring of small
 circuits. On the full instance it reproduces the cloud samples' log₂ Pr to 3·10⁻⁷. The independent amplitude engine confirms the first laptop sample:
 −68.5019327 against −68.5019326 reported (`results/xcheck70e_laptop.txt`).
+
+**A 76-qubit instance, sampled.** To test the frontier with a measurement rather than a projection, we
+generated a 76-qubit, CZ-depth-76 instance of the same construction (`frontier_instance.py`, seed
+1076, 1,465 edges), found an order of width 33 (natural order 38), and ran the in-place sampler on the same
+16-core node class (r7a.4xlarge, 128 GiB): **19 exact samples in 3,604 s, 190 s per sample, 67 GB peak**
+(`results/nq76/`). The node first reproduced the two 70-qubit reference probabilities as a gate.
+All 19 samples are distinct; their self-consistency XEB is 0.83 ± 0.22. The independent sliced amplitude
+engine, built with complex64 tables and itself gated on the two known 70-qubit values (−69.5085289 and
+−68.8761655 against −69.5085302 and −68.8761651), recomputes the first two samples' log₂ Pr as
+−74.1389442 and −75.3402128 against the sampler's −74.1389441 and −75.3402127 (`results/nq76/analysis.txt`).
+An 80-qubit instance (seed 1080) has an order of width 35, a 275 GB table; its inputs are prepared and the
+run waits on cloud capacity.
 
 **Scoring IBM's hardware shots.** The sampler's probability mode evaluates the exact Born probability of a
 given bitstring through the same code path as sampling. We scored all 1,726 hardware shots published with
@@ -216,7 +232,8 @@ same search budget (a longer search on the real instance reaches 30).
 | 50 | 22 | 67 MB | 2^26.4 |
 | 60 | 26 | 1.1 GB | 2^30.8 |
 | **70** | **31** | **34 GB** | **2^36.0** |
-| 80 | 36 | 1.1 TB | 2^41.2 |
+| **76 (sampled)** | **33** | **69 GB in-place** | **2^38.2** |
+| 80 | 36 (35 found later) | 1.1 TB (275 GB in-place) | 2^41.2 |
 | 90 | 42 | 70 TB | 2^46.3 |
 | 100 | 47 | 2.3 PB | 2^51.4 |
 | 110 | 51 | 36 PB | 2^55.9 |

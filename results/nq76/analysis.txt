@@ -1,0 +1,9 @@
+# python report_run.py results/nq76/samples_nq76.txt 76 results/nq76/xcheck_out.txt results/nq76/xcheck_make_run6.txt
+19 exact samples of the 76-qubit instance; all distinct: True
+mean log2 Pr -75.397 (uniform would be -76); linear XEB against own exact probabilities +0.827 +/- 0.223 (Porter-Thomas: +1; estimates 2^n sum p^2 - 1)
+independent engine (dp.cpp, 1 sliced vertices, width 32):
+  1001110100000010...  sampler -74.1389441  dp -74.1389442  diff -1.0e-07
+  0101101000011100...  sampler -75.3402127  dp -75.3402128  diff -1.1e-07
+
+# gate (run 6, dp -DDP_FLOAT, width-30 plan, 2 known 70-qubit samples):
+PASS [-69.50852886805679, -68.8761654749801]

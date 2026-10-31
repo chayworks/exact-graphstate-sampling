@@ -24,7 +24,12 @@ int main(int argc, char** argv) {
             size_t L = s.kspan.size(); for (size_t j = 0; j < L; j++) s.kspan.push_back(s.kspan[j] ^ k); }
     }
     fclose(f);
-    std::vector<cd> a((size_t)1 << maxr), b((size_t)1 << maxr);
+#ifdef DP_FLOAT
+    typedef std::complex<float> st_t;      // half the memory; accumulation stays in double
+#else
+    typedef cd st_t;
+#endif
+    std::vector<st_t> a((size_t)1 << maxr), b((size_t)1 << maxr);
     FILE* g = fopen(argv[2], "r"); int nj; if (fscanf(g, "%d", &nj) != 1) return 5;
     std::vector<cd> w0(m), w1(m);
     for (int j = 0; j < nj; j++) {
@@ -33,7 +38,7 @@ int main(int argc, char** argv) {
             double pr, pi; if (fscanf(g, "%lf %lf", &pr, &pi) != 2) return 7;
             for (int q = 0; q < m; q++) { double x0, y0, x1, y1;
                 if (fscanf(g, "%lf %lf %lf %lf", &x0, &y0, &x1, &y1) != 4) return 8; w0[q] = cd(x0, y0); w1[q] = cd(x1, y1); }
-            cd* old = a.data(); cd* nw = b.data(); old[0] = 1;
+            st_t* old = a.data(); st_t* nw = b.data(); old[0] = 1;
             for (const Step& s : st) {
                 const uint64_t lowmask = (s.r == 64) ? ~0ULL : ((1ULL << s.r) - 1), xbit = 1ULL << s.r;
                 const cd W0 = w0[s.v], W1 = w1[s.v]; const int nk = s.kspan.size();
@@ -44,14 +49,14 @@ int main(int argc, char** argv) {
                     uint64_t u0 = _pdep_u64((uint64_t)cp, pm); cd acc = 0;
                     for (int t = 0; t < nk; t++) {
                         uint64_t u = u0 ^ ks[t], c = u & lowmask;
-                        if (u & xbit) acc += (__builtin_parityll(c & rho) ? -W1 : W1) * old[c];
-                        else acc += W0 * old[c];
+                        if (u & xbit) acc += (__builtin_parityll(c & rho) ? -W1 : W1) * cd(old[c]);
+                        else acc += W0 * cd(old[c]);
                     }
-                    nw[cp] = acc;
+                    nw[cp] = st_t(acc);
                 }
                 std::swap(old, nw);
             }
-            tot += cd(pr, pi) * old[0];
+            tot += cd(pr, pi) * cd(old[0]);
         }
         printf("%.17g %.17g\n", tot.real(), tot.imag()); fflush(stdout);
     }
