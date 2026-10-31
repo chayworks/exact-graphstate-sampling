@@ -1,0 +1,4 @@
+s2      gsamp log2 Pr = -68.3318209   dp.cpp log2 |Z|^2/2^70 = -68.3318207   (4 chunks)
+s3      gsamp log2 Pr = -69.0978566   dp.cpp log2 |Z|^2/2^70 = -69.0978571   (4 chunks)
+s4      gsamp log2 Pr = -70.2946875   dp.cpp log2 |Z|^2/2^70 = -70.2946876   (4 chunks)
+ctrl10  control: sample 0 with 10 step-bits flipped   dp.cpp log2 |Z|^2/2^70 = -72.8808316   (4 chunks)

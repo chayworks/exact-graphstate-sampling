@@ -84,7 +84,18 @@ costs 4·Σ_k 2^{r_k} = 6.0·10¹⁰ table updates, with two complex64 tables of
    histogram has the same total-variation distance from the exact distribution as an ideal sampler's.
    Every test has a negative control that fails as intended.
 2. **Full instance.** A sliced amplitude engine recomputes log₂ Pr of sampled bitstrings; it is a
-   different algorithm from the sampler. Results {table: samples 1–5, control}.
+   different algorithm from the sampler.
+
+   | sample | sampler log₂ Pr | independent engine log₂ Pr |
+   |---|---|---|
+   | 1 | −69.5085302 | −69.5085294 |
+   | 2 | −68.8761651 | −68.8761651 |
+   | 3 | −68.3318209 | −68.3318207 |
+   | 4 | −69.0978566 | −69.0978571 |
+   | 5 | −70.2946875 | −70.2946876 |
+
+   Control: sample 1 with 10 bits flipped gives −72.8808316. That is 3.37 lower in log₂ (10× less likely),
+   against agreement within 1e-6 on the real samples.
 3. **Reproducibility.** The production run first reproduced, bit for bit, three samples generated on a
    different machine, compiler and thread count.
 
