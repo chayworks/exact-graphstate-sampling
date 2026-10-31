@@ -2,7 +2,7 @@
   fig1_frontier.png   width vs n for the construction (frontier.jsonl), the n/2 ceiling, measured points, memory axis
   fig2_shots.png      distribution of z = 2^70 p over IBM's 1,726 shots vs the fitted clean/uniform mixture and the ideal
   fig3_information.png  spread of the exact per-step conditionals along the order: hardware shots and ideal samples
-Run from the repository root: python make_figures.py"""
+Run from the repository root: python paper/make_figures.py"""
 import json, math, numpy as np
 import matplotlib; matplotlib.use("Agg")
 import matplotlib.pyplot as plt
@@ -16,6 +16,7 @@ fig, ax = plt.subplots(figsize=(6.4, 4.2))
 ax.plot(n, n // 2, "k--", lw=1, label="ceiling for any graph: ⌊n/2⌋")
 ax.plot(n, w, "o-", color="#1f77b4", label="best order found, generated instances (seed 1000+n)")
 ax.plot([70], [30], "s", color="#d62728", ms=8, label="IBM's instance (#151): width 30, sampled exactly")
+ax.plot([76], [33], "D", color="#d62728", ms=7, label="76-qubit generated instance: width 33, sampled exactly")
 ax.plot([80], [35], "^", color="#2ca02c", ms=8, label="80-qubit generated instance: width 35 (order found)")
 ax.set_xlabel("qubits n (CZ depth n)"); ax.set_ylabel("linear cut-rank width")
 ax2 = ax.secondary_yaxis("right", functions=(lambda y: y + math.log2(8), lambda y: y - math.log2(8)))
