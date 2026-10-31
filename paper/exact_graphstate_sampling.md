@@ -1,57 +1,77 @@
-# Exact Born sampling of a 70-qubit random-graph-state advantage experiment on one CPU node
+# Exact classical sampling of IBM's 70-qubit graph-state advantage experiment, and where the construction becomes hard
 
 **Chaitanya Talapalli** — independent researcher — ORCID 0009-0000-8811-3349 — chayt128@gmail.com
 
 Code, samples and raw outputs: https://github.com/chayworks/exact-graphstate-sampling (Apache-2.0).
 
-*Draft technical note, not submitted. Numbers in braces {…} are pending; every other number comes from a
-committed artifact listed in the appendix.*
+*Technical note, draft of 31 October 2026. Every number in this note is read from a committed artifact listed in
+the appendix, and every verification step has a negative control that fails as intended.*
 
 ## Abstract
 
-IBM and the University of Chicago proposed sampling random graph states in a non-stabilizer product
-basis as a verifiable quantum-advantage task. They ran a 70-qubit, depth-70 instance with an estimated
-fidelity of 0.37 and extrapolated classical costs of 10²⁵ s (matrix product states) and 10⁷ s per sample
-(extended stabilizer simulation). We show that this instance admits **exact sampling from the ideal Born
-distribution** on a single 16-core CPU node: **13.0 s per sample**, with 1,012 samples drawn and two
-complex64 tables of 2³¹ entries.
+In 2026 IBM and the University of Chicago posted a 70-qubit, depth-70 random-graph-state sampling experiment as
+a candidate for verifiable quantum advantage (Quantum Advantage Tracker #151), with a measured state fidelity of
+0.37 and extrapolated classical costs of 10²⁵ s (matrix product states) and 10⁷ s per sample (extended
+stabilizer simulation). We show that the instance is sampled **exactly from the ideal Born distribution** by a
+cut-rank dynamic program: **13.0 s per sample on one 16-core CPU node** (1,012 samples, 34 GB), and
+**17 s per sample on a laptop** with an 8.6 GB table. No rejection, no truncation, no GPU.
 
-The method combines two standard ingredients:
-- reduction to a graph state with a dynamic program whose state space is set by the cut rank (the
-  rank-width simulability of graph-state measurements);
-- a marginal identity that makes the right environment trivial: after the first t qubits are measured, the
-  remaining states Z^v|G⟩ are orthonormal, so Pr(b₁…b_t) = 2^{-t} Σ|P_t|².
+Three further results follow from having the exact probabilities in hand.
 
-Each sample is therefore drawn in two passes, with no rejection and no truncation. This differs from
-capped rejection sampling (#260 on the tracker), whose output distribution departs from the Born law.
+1. **IBM's own hardware shots, scored exactly.** The full-depth linear cross-entropy benchmark, which the
+   instance README says "can only be extrapolated", is computed for every one of the 1,726 published shots:
+   **XEB = 0.466 ± 0.031**, controls at zero, and every per-shot probability agrees with an independently
+   written program (tracker #260) to 10⁻⁵. Two fidelity estimators built on the exact probabilities give
+   0.46 ± 0.04 and 0.48 [0.43, 0.54], above IBM's direct-fidelity estimate of 0.37 (95% lower bound 0.092) and
+   much narrower.
+2. **The frontier, measured rather than projected.** The width that governs the attack grows as 0.49·n − 2.9
+   for this construction at depth n, so memory doubles every two qubits. We sampled a 76-qubit, depth-76
+   instance exactly on the same 16-core node class (19 samples, 190 s each, 67 GB), with two samples reproduced
+   to 10⁻⁷ by an independent engine. An 80-qubit instance is prepared (275 GB).
+3. **A ceiling that holds for every graph.** Because a cut rank never exceeds min(|P|, n − |P|), *any*
+   n-qubit graph state measured in *any* product basis is exactly samplable with 2^{⌊n/2⌋} table entries:
+   275 GB at 70 qubits, 2.2 TB at 76, 281 TB at 90, 9 PB at 100. No graph-state sampling experiment with
+   product measurements can escape a single large-memory node below about 76 qubits, or a supercomputer
+   below about 90, whatever graph is chosen. The random brickwork construction already sits within 3–4 of
+   this ceiling, so the only lever left to the experimenters is the qubit count.
 
-We verify the sampler against dense statevectors on small instances, and on the full instance against an
-independent amplitude algorithm. An in-place variant draws an exact sample in about 17 s on a laptop with
-an 8.6 GB table.
+The method is two standard ingredients joined by one identity: the rank-width simulability of graph-state
+measurements (Van den Nest et al. 2007) and perfect sampling in the style of Ferris and Vidal (2012), joined
+by the observation that the post-measurement states Z^v|G⟩ are orthonormal, so every prefix marginal is a
+plain sum of squares, Pr(b₁…b_t) = 2^{-t} Σ|P_t|². We verify the sampler against dense statevectors on
+small instances, against an independent amplitude algorithm on the full instance, against a closed-form
+stabilizer-group formula for its per-step conditionals (agreement 3·10⁻⁸ on all 1,726 shots), and across
+three different dynamic-program paths.
 
-We also score IBM's 1,726 published hardware shots exactly: linear XEB **0.466 ± 0.031** (controls at
-zero), with every per-shot probability agreeing with #260's independent code to 10⁻⁵ in log₂. Two fidelity
-estimators built on the exact probabilities give 0.46 ± 0.04 and 0.48 [0.43, 0.54], above the 0.37 that
-IBM reports from direct fidelity estimation of the post-selected shots (95% lower bound 0.092), and far
-narrower.
+## Results at a glance
 
-Finally, we map the **hardness frontier** of the construction. The width that governs the attack grows as n/2 − 3.5, so memory doubles every two qubits. At depth n the
-attack needs one server at n = 70, a large supercomputer at n ≈ 90, and more than any existing machine
-at n ≳ 100. That locates the size at which this construction escapes rank-width methods.
+| | Result | Artifact |
+|---|---|---|
+| Exact samples of IBM's 70-qubit instance | **1,012 samples, 13.0 s each**, 16 cores, peak 33.6 GB | `results/samples_nq70.txt`, `time_nq70.txt` |
+| Same instance on a laptop | **3 samples, ~17 s each**, one 8.6 GB table | `results/laptop_samples_w30.txt` |
+| Independent engine (different algorithm) | 6 samples reproduced to 10⁻⁶ in log₂ Pr; 10-bit-flip control moves by 3.37 | `results/xcheck70_independent.txt`, `xcheck70d.txt` |
+| IBM's 1,726 hardware shots scored exactly | **linear XEB 0.466 ± 0.031**; uniform control 0.16 ± 0.12; bit-reversed control −0.15 ± 0.10 | `results/ibmxeb/analysis.txt` |
+| Agreement with the independent code of #260 | 1,726 of 1,726 shots within 9.4·10⁻⁶ in log₂ Pr (median 2.8·10⁻⁷) | `results/ibmxeb/analysis.txt` |
+| Fidelity of IBM's run from exact probabilities | 0.457 ± 0.037 (XEB) and 0.48 [0.43, 0.54] (mixture MLE); IBM's DFE 0.37, ≥ 0.092 | `results/ibmxeb/analysis.txt` |
+| 76-qubit, depth-76 instance sampled exactly | **19 samples, 190 s each**, 67 GB, two reproduced to 10⁻⁷ by the independent engine | `results/nq76/analysis.txt` |
+| Fine-structure check without a dynamic program | stabilizer-group formula reproduces the sampler's conditionals to 3.3·10⁻⁸ on all shots | `results/chain/stabprefix_ibm_fwd.txt` |
+| Ceiling for every graph | width ≤ ⌊n/2⌋: 275 GB at n = 70, 281 TB at n = 90 | Proposition in §5 |
 
 ## 1. The task
 
-Circuit `nq70_depth70_checks27_basis_fstate`, in the Quantum Advantage Tracker (issue #151):
+Circuit `nq70_depth70_checks27_basis_fstate`, Quantum Advantage Tracker issue #151:
 1. Hadamards on 70 qubits in a line.
-2. Brickwork of nearest-neighbour CZ gates to CZ depth 70, with a random √X or S√X on every qubit
-   between layers.
-3. On every qubit, T†·H·Rz(θ)·H with θ = arccos(1/√3), a rotation into the "face-state" basis that maximizes
+2. Brickwork of nearest-neighbour CZ gates to CZ depth 70, with a random √X or S√X on every qubit between
+   layers.
+3. On every qubit, T†·H·Rz(θ)·H with θ = arccos(1/√3), a rotation into the "face-state" basis that maximises
    stabilizer extent.
 4. Measurement in Z.
 
 The hardware run (IBM Boston, Heron R3, with 27 ancillas for spacetime Pauli checks) reports a post-selected
 fidelity of 0.37 from direct fidelity estimation of the underlying graph state, with a 95% lower bound of
-0.092. 1,726 post-selected shots are published with the instance.
+0.092. 1,726 post-selected shots are published with the instance. The construction was chosen so that
+stabilizer-extent methods cost 10⁷ s per sample and matrix-product-state methods 10²⁵ s, according to the
+instance README.
 
 ## 2. Method
 
@@ -64,7 +84,8 @@ local Cliffords, to |S⟩ = ⊗U_j† |G_A⟩. Then
 only on s = A[F,P]·x_P ∈ GF(2)^{|F|}. That vector lives in a space of dimension r = rank A[F,P], so the
 prefix is a table P[c] of 2^r complex numbers in a chosen basis of that space. Each step is a surjective
 GF(2)-linear map (c, x_v) ↦ c′. We evaluate it in gather form: a `pdep` scatter plus a kernel of
-dimension at most 2.
+dimension at most 2. A generic matrix product state of the same cut needs bond dimension 2^r and therefore
+cost polynomial in 2^r; here the cost is linear in 2^r.
 
 **Exact sampling.** With prefix P measured with outcomes b_P, the post-measurement state is
 
@@ -78,14 +99,21 @@ in the DP order:
 3. store the chosen extension (a second pass).
 
 This is the graph-state analogue of perfect MPS sampling (Ferris & Vidal 2012). The output is the exact
-Born distribution, up to floating-point error.
+Born distribution, up to floating-point error. Unlike rejection sampling, the cost does not depend on the
+shape of the output distribution, and unlike capped rejection sampling (#260) the output law is the Born law.
 
-**Cost for this instance.** A greedy-plus-local-search order (`order2.py`) reaches maximum cut
-rank 30, the value #260 also reports; the natural order gives 32. The production sampling run used an earlier
-width-31 order and cost 4·Σ_k 2^{r_k} = 6.0·10¹⁰ table updates per sample with two complex64 tables of 2³¹
-entries; the later runs (laptop, hardware-shot scoring) use the width-30 order.
+**In-place layout.** A second program keeps a single table and updates it in place, so the memory is
+2^{width} complex64 entries rather than two tables of 2^{width+1}: 8.6 GB for the width-30 order of this
+instance, which is why a laptop can run it.
+
+**Cost for this instance.** A greedy-plus-local-search order (`order2.py`) reaches maximum cut rank 30, the
+value #260 also reports; the natural order gives 32. The production sampling run used an earlier width-31
+order and cost 4·Σ_k 2^{r_k} = 6.0·10¹⁰ table updates per sample with two complex64 tables of 2³¹ entries;
+the later runs (laptop, hardware-shot scoring, chain mode) use the width-30 order.
 
 ## 3. Results
+
+### 3.1 Sampling IBM's instance
 
 1,012 samples in 13,202 s on an AWS r7a.4xlarge (16 cores, AMD EPYC 9R14), peak RSS 33.6 GB, about $4.50
 of on-demand time.
@@ -93,29 +121,20 @@ of on-demand time.
 - Linear XEB against their own exact probabilities is 1.020 ± 0.047, i.e. 2⁷⁰ Σ p² ≈ 2.02,
   consistent with Porter–Thomas-like output.
 
-**Laptop.** With an in-place variant of the program, the arena is a single complex64 table of 2^30
-entries (8.6 GB) for a width-30 order. On a laptop (AMD Ryzen 9 9955HX, 16 threads, container memory
-capped at 10 GB), 3 exact samples took 55 s including allocation, i.e. **about 17 s per exact sample**
-(`results/laptop_samples_w30.txt`). The in-place sampler was validated on every bitstring of small
-circuits. On the full instance it reproduces the cloud samples' log₂ Pr to 3·10⁻⁷. The independent amplitude engine confirms the first laptop sample:
-−68.5019327 against −68.5019326 reported (`results/xcheck70e_laptop.txt`).
+**Laptop.** With the in-place program, the arena is a single complex64 table of 2^30 entries (8.6 GB) for a
+width-30 order. On a laptop (AMD Ryzen 9 9955HX, 16 threads, container memory capped at 10 GB), 3 exact
+samples took 55 s including allocation, i.e. **about 17 s per exact sample**
+(`results/laptop_samples_w30.txt`). The in-place sampler was validated on every bitstring of small circuits.
+On the full instance it reproduces the cloud samples' log₂ Pr to 3·10⁻⁷, and the independent amplitude
+engine confirms the first laptop sample: −68.5019327 against −68.5019326 reported
+(`results/xcheck70e_laptop.txt`).
 
-**A 76-qubit instance, sampled.** To test the frontier with a measurement rather than a projection, we
-generated a 76-qubit, CZ-depth-76 instance of the same construction (`frontier_instance.py`, seed
-1076, 1,465 edges), found an order of width 33 (natural order 38), and ran the in-place sampler on the same
-16-core node class (r7a.4xlarge, 128 GiB): **19 exact samples in 3,604 s, 190 s per sample, 67 GB peak**
-(`results/nq76/`). The node first reproduced the two 70-qubit reference probabilities as a gate.
-All 19 samples are distinct; their self-consistency XEB is 0.83 ± 0.22. The independent sliced amplitude
-engine, built with complex64 tables and itself gated on the two known 70-qubit values (−69.5085289 and
-−68.8761655 against −69.5085302 and −68.8761651), recomputes the first two samples' log₂ Pr as
-−74.1389442 and −75.3402128 against the sampler's −74.1389441 and −75.3402127 (`results/nq76/analysis.txt`).
-An 80-qubit instance (seed 1080) has an order of width 35, a 275 GB table; its inputs are prepared and the
-run waits on cloud capacity.
+### 3.2 IBM's hardware shots, scored exactly
 
-**Scoring IBM's hardware shots.** The sampler's probability mode evaluates the exact Born probability of a
-given bitstring through the same code path as sampling. We scored all 1,726 hardware shots published with
-#151 on an r7a.4xlarge: 6.9 s per shot, 3 h 19 min in all, 16.8 GB peak (`results/ibmxeb/`). The
-run first reproduced two earlier cloud samples' log₂ Pr to 5·10⁻⁷ as a gate.
+The sampler's probability mode evaluates the exact Born probability of a given bitstring through the same
+code path as sampling. We scored all 1,726 hardware shots published with #151 on an r7a.4xlarge: 6.9 s per
+shot, 3 h 19 min in all, 16.8 GB peak (`results/ibmxeb/`). The run first reproduced two earlier cloud
+samples' log₂ Pr to 5·10⁻⁷ as a gate.
 
 | strings | N | linear XEB |
 |---|---|---|
@@ -132,8 +151,8 @@ fidelity estimate F_XEB = 0.457 ± 0.037. A second estimator uses the whole dist
 over the shots rather than its mean. If each shot is drawn from the ideal distribution with probability F
 and uniformly otherwise, the density of z over shots is (Fz + 1 − F)e^{−z}, and the maximum-likelihood
 fit gives F_MLE = 0.48 [0.43, 0.54] (profile likelihood, 95%). The mixture fits the observed shot
-distribution (Kolmogorov–Smirnov distance 0.018, 5% threshold 0.033; `ibm_fidelity_mle.py`,
-which recovers F = 0, 0.4 and 1 on synthetic data).
+distribution (Kolmogorov–Smirnov distance 0.018, 5% threshold 0.033; `ibm_fidelity_mle.py`, which recovers
+F = 0, 0.4 and 1 on synthetic data).
 
 ![Exact probabilities of IBM's shots](fig/fig2_shots.png)
 
@@ -142,13 +161,27 @@ which recovers F = 0, 0.4 and 1 on synthetic data).
 The instance README (tracker repository, `random_graph_sampling/README.md`) states that "XEB requires
 classical simulations for the outcome probabilities, hence can only be extrapolated for the full-depth
 circuit". Here it is computed exactly for every published shot. The shots are post-selected by spacetime
-Pauli checks on 27 ancillas (IBM Boston, Heron R3), and the README reports a post-selected state fidelity
-of 0.37 by direct fidelity estimation with 80 random stabilizers, "bounded above 0.092 with 95%
-confidence". Our two estimates, 0.457 ± 0.037 and 0.48 [0.43, 0.54], are consistent with that bound and
-higher than the point estimate, with a much narrower interval. The quantities differ (the full circuit
-including the non-Clifford measurement layer, versus the stabilizers of the graph state; the README argues
-they agree to first order under Pauli twirling), and linear XEB is known to over-estimate fidelity under
-non-depolarising noise, so we report the gap without interpreting it.
+Pauli checks on 27 ancillas, and the README reports a post-selected state fidelity of 0.37 by direct
+fidelity estimation with 80 random stabilizers, "bounded above 0.092 with 95% confidence". Our two
+estimates, 0.457 ± 0.037 and 0.48 [0.43, 0.54], are consistent with that bound and higher than the point
+estimate, with a much narrower interval. The quantities differ (the full circuit including the
+non-Clifford measurement layer, versus the stabilizers of the graph state; the README argues they agree to
+first order under Pauli twirling), and linear XEB is known to over-estimate fidelity under
+non-depolarising noise, so we report the gap without interpreting it. It is, in our view, the most useful
+thing in this note for the experimenters: an exact, per-shot benchmark of their device at full depth.
+
+### 3.3 A 76-qubit instance, sampled
+
+To test the frontier with a measurement rather than a projection, we generated a 76-qubit, CZ-depth-76
+instance of the same construction (`frontier_instance.py`, seed 1076, 1,465 edges), found an order of width
+33 (natural order 38), and ran the in-place sampler on the same 16-core node class (r7a.4xlarge, 128 GiB):
+**19 exact samples in 3,604 s, 190 s per sample, 67 GB peak** (`results/nq76/`). The node first reproduced
+the two 70-qubit reference probabilities as a gate. All 19 samples are distinct; their self-consistency XEB
+is 0.83 ± 0.22. The independent sliced amplitude engine, built with complex64 tables and itself gated on the
+two known 70-qubit values (−69.5085289 and −68.8761655 against −69.5085302 and −68.8761651), recomputes
+the first two samples' log₂ Pr as −74.1389442 and −75.3402128 against the sampler's −74.1389441 and
+−75.3402127 (`results/nq76/analysis.txt`). An 80-qubit instance (seed 1080) has an order of width 35, a
+275 GB table; its inputs are prepared and the run waits on cloud capacity.
 
 ## 4. Verification
 
@@ -207,7 +240,7 @@ non-depolarising noise, so we report the gap without interpreting it.
 
 ![Where the information lives](fig/fig3_information.png)
 
-*Figure 3. Spread of the exact per-step conditionals along the width-30 order for the hardware shots and the ideal samples, and the mean of 2c_k − 1 over ideal samples (the per-step XEB signal). The first 22 conditionals are exactly ½; the information sits in the last ~8 steps.*
+*Figure 3. Spread of the exact per-step conditionals along the width-30 order for the hardware shots and the ideal samples, and the mean of 2c_k − 1 over ideal samples where it is resolved (the per-step XEB signal). The first 22 conditionals are exactly ½; the information sits in the last ~8 steps.*
 
 **Per-step fidelity of the hardware shots.** Dividing the hardware mean of 2c_k − 1 by the ideal mean gives a
 fidelity-like ratio for each informative step. Because the information sits in the last steps, only four
@@ -222,9 +255,9 @@ about four qubits, roughly 18 further width-30 passes; we did not run them.
 
 We generated circuits with the #151 construction (linear chain, alternating CZ brickwork with random √X or
 S√X layers, CZ depth n) for n = 30–120, with one instance per n, and ran the same order search
-(`frontier.py`, output `results/frontier.jsonl`). At n = 70 the generated instance
-matches the real one: 1,192 vs 1,150 edges, natural-order width 33 vs 32, best width 31 vs 31 at the
-same search budget (a longer search on the real instance reaches 30).
+(`frontier.py`, output `results/frontier.jsonl`). At n = 70 the generated instance matches the real one:
+1,192 vs 1,150 edges, natural-order width 33 vs 32, best width 31 vs 31 at the same search budget (a
+longer search on the real instance reaches 30).
 
 | n | best width found | memory (2 complex64 tables) | table updates per exact sample |
 |---|---|---|---|
@@ -241,39 +274,73 @@ same search budget (a longer search on the real instance reaches 30).
 
 ![Hardness frontier](fig/fig1_frontier.png)
 
-*Figure 1. Best width found versus n for the construction, the ⌊n/2⌋ ceiling that holds for every graph, and the memory of the in-place table.*
+*Figure 1. Best width found versus n for the construction, the ⌊n/2⌋ ceiling that holds for every graph, the two instances sampled exactly, and the memory of the in-place table. Shaded bands mark what a laptop, one cloud node, a supercomputer, and no existing machine can hold.*
 
 The width fits 0.492·n − 2.9; at every n it is between n/2 − 4 and n/2 − 3. So memory doubles with
 every two qubits. At depth n, this method moves from one server (n = 70) to one large-memory node
 (n ≈ 80), to a leadership-class supercomputer (n ≈ 90), and past any existing machine (n ≳ 100).
 
-**A bound that holds for every graph.** The cut rank of a prefix F is at most min(|F|, n − |F|), so for any
-graph on n vertices every linear order has width at most ⌊n/2⌋, and the in-place sampler needs at most
-2^{⌊n/2⌋} complex64 entries and at most 4·n·2^{⌊n/2⌋} table updates per exact sample, whatever the graph and
-whatever the product measurement basis. At n = 70 that is 275 GB and about 9.6·10¹² updates, i.e. roughly
-4 hours per sample at our measured 6.4·10⁸ updates per second on 16 threads; at n = 76 the table is 2.2 TB
-(the largest single cloud nodes); at n = 90 it is 281 TB (aggregate memory of a leadership machine); at
-n = 100 it is 9 PB. So no graph-state sampling experiment with product measurements can escape a single
-large-memory node below about 76 qubits, or a supercomputer below about 90, no matter how the graph is
-chosen; the random brickwork construction already sits within 3–4 of this ceiling, so the only lever left to
-the experimenters is the qubit count.
+**Proposition (a ceiling for every graph).** *Let |G⟩ be a graph state on n qubits and let each qubit be
+measured in an arbitrary single-qubit basis. For every linear order of the qubits, the cut rank of every
+prefix is at most ⌊n/2⌋. Consequently the sampler above draws an exact Born sample with at most 2^{⌊n/2⌋}
+complex table entries and at most 4·n·2^{⌊n/2⌋} table updates, whatever the graph and whatever the
+measurement bases.*
 
-Caveats. The widths are upper bounds from heuristic orders; better orders or tree decompositions would
+*Proof.* The cut rank of a prefix P is the GF(2) rank of the |F| × |P| adjacency block A[F,P], which is at
+most min(|P|, |F|) = min(t, n − t) ≤ ⌊n/2⌋. The in-place sampler's table has 2^{r_k} entries at step k and
+each step makes at most four passes over it. ∎
+
+The proposition is elementary, but its consequence is not widely stated: at n = 70 the ceiling is 275 GB and
+about 9.6·10¹² updates, roughly 4 hours per sample at our measured 6.4·10⁸ updates per second on 16
+threads; at n = 76 it is 2.2 TB (the largest single cloud nodes); at n = 90 it is 281 TB (the aggregate
+memory of a leadership machine); at n = 100 it is 9 PB. So no graph-state sampling experiment with product
+measurements can escape a single large-memory node below about 76 qubits, or a supercomputer below about
+90, no matter how the graph is chosen. The random brickwork construction already sits within 3–4 of this
+ceiling (Figure 1), so better graphs cannot buy the experimenters more than a factor of about 10 in memory;
+the only lever left is the qubit count.
+
+**Caveats.** The widths are upper bounds from heuristic orders; better orders or tree decompositions would
 lower them. Slicing trades memory for time at a measured cost of about 1.5× per sliced vertex on this
-instance, not 2×. The table has one instance per n. For a fixed classical budget, then, the safe
-direction for the experiment is more qubits at full depth. A width of ~n/2 is what random graphs
-give, and the 70-qubit instance sits about 30 qubits below the point where this attack stops being
-practical.
+instance, not 2×. The table has one instance per n. The ceiling bounds this family of methods, not all
+classical methods, and says nothing about circuits that are not graph states followed by product
+measurements: the doped sibling instance on the tracker, with 468 T gates spread through the circuit, is
+outside its reach (its amplitudes were computed by tensor-network methods in arXiv:2608.13110).
 
-## 6. Related work
+## 6. What this does and does not show
+
+It shows:
+- the 70-qubit instance is sampled exactly, from the Born distribution, on a laptop, so it does not
+  demonstrate a task beyond classical reach;
+- the published hardware data can be benchmarked exactly at full depth, which the experiment's own README
+  describes as impossible, and the resulting fidelity estimate is tighter than the one obtained on the device;
+- the same construction stays within one node's reach to about 80 qubits (measured at 76), within a
+  supercomputer's to about 90, and that no choice of graph changes this by more than a few qubits.
+
+It does not show:
+- a new complexity-theoretic result; the rank-width reduction is from 2007 and the ceiling is elementary;
+- priority on attacking this instance; #260 applied the same reduction with capped rejection sampling the
+  day before our first run, and we cite it throughout;
+- anything about the doped instance, or about graph-state experiments with entangled measurements.
+
+**What we would suggest the experimenters run next.** At depth n with n ≥ 100, the ceiling alone puts any
+graph beyond rank-width methods (9 PB), with no dependence on the particular graph; alternatively, doping
+with a few hundred non-Clifford gates, as in the sibling instance, defeats this method outright. In either
+case the exact scorer here can still compute full-depth XEB for any graph-state run up to about 80 qubits,
+so an experiment at that scale can report an exact benchmark instead of an extrapolated one.
+
+## 7. Related work
 
 - Rank-width simulability of graph-state measurements: Van den Nest, Dür, Vidal, Briegel, PRA 75, 012337 (2007).
+- Perfect sampling of matrix product states: Ferris & Vidal, PRB 85, 165146 (2012).
 - ZX-calculus rank-width contraction: Kuyanov & Kissinger, arXiv:2603.06764.
 - Exact amplitudes of IBM's doped circuits by T-injection and rank-width: Renaud, `dcs-rankwidth`; tracker #249.
 - Capped rejection sampling for this instance on GPUs: tracker #260.
 - Exact tensor-network amplitudes for the doped 70-qubit instance: Manabe, Gu, Pan, arXiv:2608.13110.
+- The random-graph-state hardness argument behind the construction: arXiv:2412.07058.
 
 ## Appendix: artifacts
+
+All paths are relative to the repository root.
 
 - `results/samples_nq70.txt`, `run.log`, `time_nq70.txt`, `inputs.sha256`, `check55_result.txt`: the
   production sampling run and its reproduction check.
@@ -282,6 +349,9 @@ practical.
 - `results/laptop_samples_w30.txt`: the laptop run (3 samples, timing).
 - `results/ibmxeb/`: exact log₂ Pr of the 1,726 hardware shots and the controls, timing, gate,
   input hashes, and `analysis.txt` (XEB, comparison with #260, fidelity estimators).
+- `results/chain/`: per-step conditionals of all shots and samples along two orders, the stabilizer-only
+  comparison, the cross-order comparison and the information profile.
+- `results/nq76/`: the 76-qubit samples, timing, gate, independent check and `analysis.txt`.
 - `results/uniform_prefix_check.txt`: the engine-independent uniformity check.
 - `results/frontier.jsonl`: the frontier search output.
-- `README.md`: test table and commands.
+- `README.md`: the test table, the commands that reproduce each number, and the modes of the samplers.

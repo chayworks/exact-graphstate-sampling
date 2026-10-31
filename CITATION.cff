@@ -1,6 +1,6 @@
 cff-version: 1.2.0
 message: "If you use this code or these results, please cite it as below."
-title: "Exact Born sampling of a 70-qubit random-graph-state advantage experiment on one CPU node"
+title: "Exact classical sampling of IBM's 70-qubit graph-state advantage experiment, and where the construction becomes hard"
 authors:
   - family-names: Talapalli
     given-names: Chaitanya

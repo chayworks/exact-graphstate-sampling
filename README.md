@@ -1,87 +1,118 @@
-# graphsamp: exact sampling of graph states measured in a product basis
+# Exact sampling of IBM's 70-qubit graph-state advantage experiment
 
-Target: `random_graph_sampling/nq70_depth70_checks27_basis_fstate` on the Quantum Advantage Tracker
-(IBM / UChicago, issue #151). It reports hardware fidelity 0.37 and extrapolated classical costs of 10^25 s
-(MPS) and 10^7 s per sample (extended stabilizer). *Update 2026-10-30:* #260 (posted the same day as this
-note) attacks the instance with the same rank-width reduction (max rank 30) plus capped rejection sampling,
-which is not an exact Born sampler. What is distinctive here is exact Born sampling on CPU.
+**A laptop draws exact samples from the ideal output distribution of the 70-qubit, depth-70 random-graph-state
+circuit that IBM and the University of Chicago ran as a quantum-advantage candidate (Quantum Advantage Tracker
+#151), in about 17 s per sample. The same code scores IBM's 1,726 published hardware shots exactly, at full
+depth, and samples a 76-qubit instance of the construction on one cloud node.**
 
-## Idea
+Technical note: [`paper/exact_graphstate_sampling.pdf`](paper/exact_graphstate_sampling.pdf) (Markdown source alongside).
+
+| | Result | Artifact |
+|---|---|---|
+| Exact samples of IBM's instance | **1,012 samples, 13.0 s each** on 16 cores (34 GB); **~17 s each on a laptop** (8.6 GB table) | `results/samples_nq70.txt`, `results/laptop_samples_w30.txt` |
+| Independent engine, different algorithm | 6 samples reproduced to 1e-6 in log₂ Pr; 10-bit-flip control moves by 3.37 | `results/xcheck70_independent.txt`, `results/xcheck70d.txt` |
+| IBM's hardware shots scored exactly | **linear XEB 0.466 ± 0.031**; controls at zero; every shot agrees with the independent code of #260 to 9.4e-6 | `results/ibmxeb/analysis.txt` |
+| Fidelity of IBM's run, from exact probabilities | 0.457 ± 0.037 (XEB) and 0.48 [0.43, 0.54] (mixture MLE), against IBM's DFE 0.37 (≥ 0.092) | `results/ibmxeb/analysis.txt` |
+| 76-qubit, depth-76 instance | **19 exact samples, 190 s each**, 67 GB, two reproduced to 1e-7 by the independent engine | `results/nq76/analysis.txt` |
+| Conditionals checked without a dynamic program | stabilizer-group formula matches the sampler to 3.3e-8 on all 1,726 shots | `results/chain/stabprefix_ibm_fwd.txt` |
+| Ceiling for every graph | width ≤ ⌊n/2⌋, so 2^{n/2} entries suffice for any graph state in any product basis: 275 GB at 70 qubits, 281 TB at 90 | note, §5 |
+
+![Hardness frontier](paper/fig/fig1_frontier.png)
+
+## How it works
+
 The circuit is a Clifford body followed by one layer of single-qubit rotations. The Clifford state is a
-graph state |G_A> up to local Cliffords, so
+graph state |G_A⟩ up to local Cliffords, so every amplitude is a complex-weighted Ising sum on the graph:
 
-    <b|psi> = 2^{-n/2} sum_x prod_j M_j[b_j, x_j] (-1)^{x^T A x}  (upper triangle),
+    ⟨b|ψ⟩ = 2^{-n/2} Σ_x Π_j M_j[b_j, x_j] (−1)^{x^T A x}   (upper triangle)
 
-where M_j combines the rotation with the local Clifford. Processing the vertices in some order, the
-processed ones affect the rest only through the GF(2) field A[F,P] x_P. That field takes 2^{r_k} values,
-where r_k is the cut rank, so the dynamic program holds 2^{r_k} complex numbers, not 2^{2 r_k} as a generic MPS does.
+Summing over x one vertex at a time, the processed vertices P act on the rest only through the GF(2) vector
+A[F,P]·x_P, which takes 2^{r} values, r = cut rank of (P, F). The dynamic program therefore holds 2^{r}
+complex numbers, not the 2^{2r} of a generic matrix product state. The best order found for IBM's instance
+has r ≤ 30.
 
-Sampling: after measuring the first t vertices, the remaining state is a combination of
-Z^v|G_F>, and these states are orthonormal. So **Pr(b_1..b_t) = 2^{-t} sum_c |P_t[c]|^2**. One exact
-sample therefore costs two DP passes, with no right environment.
+**The identity that makes exact sampling cheap.** After the first t qubits are measured, the unmeasured
+qubits are in Σ_c P_t[c] Z^{v(c)}|G_F⟩, and the states Z^v|G_F⟩ are orthonormal. So
 
-## Status: what is proven, what is projected
+    Pr(b₁…b_t) = 2^{-t} Σ_c |P_t[c]|²
 
-Proven by running it (each test has a negative control that is caught):
+and one exact Born sample costs two passes of the dynamic program per qubit, with no right environment, no
+rejection and no truncation. An in-place variant (`gsamp2.cpp`) keeps a single table of 2^{width} complex64
+entries, which is what puts the 70-qubit instance on a laptop.
+
+Since the cut rank of any prefix is at most min(|P|, n − |P|) ≤ ⌊n/2⌋, the same program samples *any*
+n-qubit graph state in *any* product basis with 2^{⌊n/2⌋} entries. That ceiling is 275 GB at n = 70 and
+281 TB at n = 90; IBM's construction sits within 3–4 of it.
+
+## Reproduce
+
+```
+python test_tableau.py && python test_graphform.py && python test_plan.py && python test_amp.py   # exact vs statevector
+python test_sampler.py && python test_inplace.py && python test_stabprefix.py                     # samplers and the stabilizer formula
+g++ -O3 -march=native -fopenmp -o gsamp2 gsamp2.cpp                                               # in-place sampler (widths to 40)
+./gsamp2 cloud_ibmxeb/nq70_inplace_plan.txt sample 3 2000000      # 3 exact samples of IBM's instance, 8.6 GB, ~17 s each on 16 threads
+./gsamp2 cloud_ibmxeb/nq70_inplace_plan.txt prob strings.txt      # exact log2 Pr of given bitstrings (IBM's shots: cloud_ibmxeb/)
+./gsamp2 cloud_ibmxeb/nq70_inplace_plan.txt chain strings.txt     # same, plus every conditional Pr(b_k | b_1..b_{k-1})
+g++ -O3 -march=native -fopenmp -DDP_FLOAT -o dp dp.cpp      # independent sliced amplitude engine (xcheck_make.py builds its jobs)
+python ibm_xeb_analyze.py results/ibmxeb/ibm_out.txt results/ibmxeb/uniform_out.txt results/ibmxeb/reversed_out.txt
+python ibm_fidelity_mle.py results/ibmxeb/ibm_out.txt results/samples_nq70.txt
+python report_run.py results/nq76/samples_nq76.txt 76 results/nq76/xcheck_out.txt results/nq76/xcheck_make_run6.txt
+```
+
+Inputs for every cloud run (plans, orders, bitstrings, `run.sh`) are in `cloud*/`; every run first
+reproduces known probabilities as a gate, and `results/*/inputs.sha256` ties the outputs to these files.
+
+## Verification: what is proven by running it
+
+Each test has a negative control that is caught.
 
 | Test | What it checks | Result |
 |---|---|---|
 | `test_tableau.py` | stabilizer tableau vs statevector | 200 circuits, 2.6e-16 |
-| `test_graphform.py` | local-Clifford graph form | 150 circuits, overlap 1 - 2e-15 |
+| `test_graphform.py` | local-Clifford graph form | 150 circuits, overlap 1 − 2e-15 |
 | `test_plan.py` | DP vs brute force | 120 cases, 3e-15 |
 | `test_amp.py` | Born probabilities, end to end vs statevector | 60 circuits, 1e-15 |
 | `test_sampler.py` | reference sampler: distribution implied by the chain, every string | 2e-15 |
-| `test_engine.py` | C++ amplitude engine with slicing | 1e-14 |
-| `test_gsamp.py` | C++ sampler, exact probabilities | 6e-9 |
-| `test_gsamp.py` | C++ sampler, 20,000 samples | TV 0.0570; ideal sampler at that size: 0.0570 |
-| `xcheck55.py` | 55-qubit real-data subgraph: gsamp Pr vs dp.cpp \|amplitude\|^2 | agree to ~4e-7 in log2 |
+| `test_engine.py` | C++ amplitude engine with slicing | 1e-14 (complex64 build agrees to 2e-7) |
+| `test_gsamp.py` | C++ sampler, exact probabilities; 20,000 samples | 6e-9; TV 0.0570 = ideal sampler at that size |
 | `test_inplace.py` | in-place single-table layout (Python reference), every string, 30 circuits | 1.4e-15; tau-swap control 0.152 |
 | `test_gsamp2.py` | in-place C++ sampler: prob mode every string; 20,000 samples | 5.8e-9; TV 0.0570 = ideal |
-| `test_chain.py`, `test_chain_gsamp.py` | one-pass `chain` mode: per-step conditionals vs reference, log2 Pr vs prob mode | 1e-7, 2e-6; swapped-M control 0.58 |
+| `test_chain.py`, `test_chain_gsamp.py` | one-pass `chain` mode: conditionals vs reference, log₂ Pr vs prob mode | 1e-7, 2e-6; swapped-M control 0.58 |
+| `test_baseof.cpp` | base-address tables for widths to 40 | 10,000 cases; 4-table control fails 45/50 |
 | `check_uniform_prefix.py` | engine-independent: first 30 step-bits of the 1,012 samples uniform (bit/pair/triple parities) | at chance; copy-bit control z = 31.8 |
-| `test_stabprefix.py` | prefix marginals from the stabilizer group alone vs statevector, 162 prefixes, every string | 6.4e-15; flipped-sign control 0.577 |
-| `stabprefix.py` on the real instance | stabilizer-only conditionals vs chain mode, steps 1-42, all 1,726 IBM shots | agree to 3.3e-8 (deviations from 1/2 up to 8e-5) |
+| `test_stabprefix.py` | prefix marginals from the stabilizer group alone vs statevector, 162 prefixes | 6.4e-15; flipped-sign control 0.577 |
+| `stabprefix.py` on the real instance | stabilizer-only conditionals vs chain mode, steps 1–42, all 1,726 IBM shots | 3.3e-8 (deviations from ½ up to 8e-5) |
+| `xcheck55.py`, `xcheck70*.py` | 55- and 70-qubit real data: sampler Pr vs `dp.cpp` amplitude | 4e-7; 1e-6 on 6 samples, control 3.37 |
+| cross-order (`results/chain/analysis_crossorder.txt`) | width-30 order, its reverse, width-31 order: same log₂ Pr for 2,738 strings | 1.4e-5 at worst |
 
-nq70 structure (`cutprofile.py`, `order.py`):
-- linear cut-rank width is 32 in natural order, 31 after the first search (`order_best2.json`, used for the
-  production samples) and 30 after a longer search (`order_w30.json`, used for the laptop and the shot scoring);
-- the best balanced cut found has rank 29 (the README says 2^30 is the best known).
+Full-instance runs (all on AWS r7a.4xlarge, 16 cores, AMD EPYC 9R14, 123 GB):
 
-Modes of the C++ samplers: `sample N seed` (exact samples), `prob file` (exact log2 Pr of given strings, two passes
-per step) and `chain file` (same, one pass per step, also printing every conditional Pr(b_k | b_1..b_{k-1});
-`chain_profile.py` turns those into a position-resolved comparison of hardware shots against ideal samples).
+- **Sampling, 2026-10-29:** width-31 order, 1,012 exact samples in 13,202 s (`results/run.log`,
+  `results/time_nq70.txt`), peak RSS 33.6 GB; inputs hash-identical to this repository (`results/inputs.sha256`);
+  instance QASM SHA-256 `e0189bdd2e67d1456cb92f5c750b880cbee935220e539c04934906a94535ea5f`. The run first
+  reproduced three 55-qubit samples bit for bit (`results/check55_result.txt`).
+- **IBM's shots, 2026-10-31:** 1,726 strings at 6.9 s each, 16.8 GB (`results/ibmxeb/`). XEB 0.466 ± 0.031; 64
+  uniform strings +0.16 ± 0.12; 64 bit-reversed shots −0.15 ± 0.10; per-shot agreement with #260's FP64 code
+  9.4e-6 at worst, median 2.8e-7.
+- **Chain mode, 2026-10-31:** every conditional of every shot and sample along the width-30 order and its
+  reverse (`results/chain/`): the information in a string sits in its last ~8 conditionals (100% of the variance
+  of log₂ Pr); per-step hardware/ideal ratios at the 8 informative qubits are 0.43–0.54.
+- **76 qubits, 2026-10-31:** seed-1076 instance of the construction, width 33, 19 exact samples in 3,604 s, 67 GB
+  (`results/nq76/`); the independent engine, gated on the two known 70-qubit values, reproduces two samples to 1e-7.
 
-Measured throughput (`bench_sampler.py`): on the 55-vertex subgraph (width 26), ~2.5 s per exact sample.
-That is 6.4e8 visits/s on 16 threads, sharing the CPU with another job.
+Self-consistency, not an independent check: the linear XEB of our own samples is 1.020 ± 0.047
+(2⁷⁰ Σp² ≈ 2.02, Porter–Thomas would give 2); for the 76-qubit samples 0.83 ± 0.22.
 
-**Full instance, run (2026-10-29, `results/`):**
-- **Machine and run:** AWS r7a.4xlarge (16 cores, AMD EPYC 9R14, 123 GB). Order `order_best2.json`: width 31,
-  6.0e10 visits per sample. **1,012 exact samples in 13,202 s, i.e. 13.0 s per sample**
-  (`results/run.log`, `results/time_nq70.txt`). Peak RSS 33.6 GB.
-- **Inputs:** hash-identical to this repository's files (`results/inputs.sha256`). Instance QASM SHA-256
-  `e0189bdd2e67d1456cb92f5c750b880cbee935220e539c04934906a94535ea5f`.
-- **Reproduction gate before sampling:** the three local 55-qubit samples were reproduced bit for bit on a
-  different CPU, compiler and thread count (`results/check55_result.txt`).
-- **Independent check** (`xcheck70c.py`, `results/xcheck70_independent.txt`): dp.cpp sums sliced amplitudes,
-  a different algorithm from gsamp's chain of conditionals. For cloud samples 1 and 2 it gives log2 Pr =
-  -69.5085294 and -68.8761651; gsamp reported -69.5085302 and -68.8761651. Samples 3-5 and a laptop-drawn
-  sample agree the same way (`results/xcheck70d.txt`, `results/xcheck70e_laptop.txt`). Control: sample 1 with
-  10 bits flipped gives -72.8808316, 3.37 lower in log2, against agreement of about 1e-6.
-- **Agreement with #260 on IBM's shots:** our exact log2 Pr of all 1,726 hardware shots matches #260's
-  independently written FP64 code to 9.4e-6 at worst (`results/ibmxeb/analysis.txt`). Linear XEB of the
-  shots is 0.466 +/- 0.031; 64 uniform strings and 64 bit-reversed shots score zero within error.
-- **Self-consistency statistic:** linear XEB of our own samples is 1.020 +/- 0.047, i.e. 2^70 sum p^2 ≈ 2.02
-  (Porter–Thomas would give 2). This is not an independent check.
+## Relation to prior work
 
-Not yet done: a check of the samples' marginals against something independent of both engines (for example,
-Pauli expectations computable with stabilizer methods).
-
-**Novelty.** Rank-width-based simulation of graph-state measurements is known (Van den Nest, Dür, Vidal,
-Briegel, PRA 75, 012337 (2007); Kuyanov & Kissinger; Renaud's dcs-rankwidth), and #260 applies it to this
-instance with capped rejection sampling. What is new here is exact Born sampling via the prefix-marginal
-identity, the in-place single-table layout, the laptop run, the frontier table and the independent
-verification. The claim is about this instance, not a new complexity result.
-
+Rank-width simulation of graph-state measurements is known (Van den Nest, Dür, Vidal, Briegel, PRA 75, 012337
+(2007); Kuyanov & Kissinger, arXiv:2603.06764; Renaud's `dcs-rankwidth`, tracker #249), and tracker #260
+(2026-10-30) applies it to this instance with capped rejection sampling on two H200 GPUs, which is not an exact
+Born sampler. New here: exact Born sampling through the prefix-marginal identity, the in-place single-table
+layout and the laptop run, the exact full-depth scoring of IBM's hardware shots with controls and fidelity
+estimators, the stabilizer-only check of the sampler's conditionals, the measured 76-qubit point and the
+⌊n/2⌋ ceiling. The claim is about this family of experiments, not a new complexity result. The doped sibling
+instance (468 T gates) is outside the reach of this method.
 
 ## Author
 
@@ -95,7 +126,7 @@ Apache-2.0 (see `LICENSE`).
 
 ```
 @misc{talapalli2026graphstate,
-  title  = {Exact Born sampling of a 70-qubit random-graph-state advantage experiment on one CPU node},
+  title  = {Exact classical sampling of IBM's 70-qubit graph-state advantage experiment, and where the construction becomes hard},
   author = {Talapalli, Chaitanya},
   year   = {2026},
   note   = {ORCID 0009-0000-8811-3349; code and data at https://github.com/chayworks/exact-graphstate-sampling}
