@@ -1,0 +1,7 @@
+uniform prefix length t0 = 30 (cut rank = prefix length); N = 1012 samples; z = sqrt(N) * sample mean
+bit means      :    30 tests, max |z| = 2.39, frac |z| > 2 = 0.133
+pair parities  :   435 tests, max |z| = 3.21, frac |z| > 2 = 0.048
+triple parities:  4060 tests, max |z| = 3.77, frac |z| > 2 = 0.044
+expected for uniform: frac |z| > 2 about 0.046; max |z| over 4000 tests about 3.5-4
+control (bit 3 replaced by a copy of bit 7): pair |z| for (3,7) = 31.8, must exceed 4.5
+PASS

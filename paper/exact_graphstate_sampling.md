@@ -27,8 +27,9 @@ an 8.6 GB table.
 
 We also score IBM's 1,726 published hardware shots exactly: linear XEB **0.466 ± 0.031** (controls at
 zero), with every per-shot probability agreeing with #260's independent code to 10⁻⁵ in log₂. Two fidelity
-estimators built on the exact probabilities give 0.46 ± 0.04 and 0.48 [0.43, 0.54], above IBM's reported
-0.37.
+estimators built on the exact probabilities give 0.46 ± 0.04 and 0.48 [0.43, 0.54], above the 0.37 that
+IBM reports from direct fidelity estimation of the post-selected shots (95% lower bound 0.092), and far
+narrower.
 
 Finally, we map the **hardness frontier** of the construction. The width that governs the attack grows as n/2 − 3.5, so memory doubles every two qubits. At depth n the
 attack needs one server at n = 70, a large supercomputer at n ≈ 90, and more than any existing machine
@@ -44,7 +45,9 @@ Circuit `nq70_depth70_checks27_basis_fstate`, in the Quantum Advantage Tracker (
    stabilizer extent.
 4. Measurement in Z.
 
-The hardware run reports a fidelity of 0.37 from direct fidelity estimation of the underlying graph state.
+The hardware run (IBM Boston, Heron R3, with 27 ancillas for spacetime Pauli checks) reports a post-selected
+fidelity of 0.37 from direct fidelity estimation of the underlying graph state, with a 95% lower bound of
+0.092. 1,726 post-selected shots are published with the instance.
 
 ## 2. Method
 
@@ -73,12 +76,15 @@ in the DP order:
 This is the graph-state analogue of perfect MPS sampling (Ferris & Vidal 2012). The output is the exact
 Born distribution, up to floating-point error.
 
-**Cost for this instance.** Our best order has maximum cut rank 31 (#260 reports 30). Each sample then
-costs 4·Σ_k 2^{r_k} = 6.0·10¹⁰ table updates, with two complex64 tables of 2³¹ entries.
+**Cost for this instance.** A greedy-plus-local-search order (`order2.py`) reaches maximum cut
+rank 30, the value #260 also reports; the natural order gives 32. The production sampling run used an earlier
+width-31 order and cost 4·Σ_k 2^{r_k} = 6.0·10¹⁰ table updates per sample with two complex64 tables of 2³¹
+entries; the later runs (laptop, hardware-shot scoring) use the width-30 order.
 
 ## 3. Results
 
-1,012 samples in 13,202 s on an AWS r7a.4xlarge (16 cores, AMD EPYC 9R14), peak RSS 33.6 GB.
+1,012 samples in 13,202 s on an AWS r7a.4xlarge (16 cores, AMD EPYC 9R14), peak RSS 33.6 GB, about $4.50
+of on-demand time.
 - All samples are distinct.
 - Linear XEB against their own exact probabilities is 1.020 ± 0.047, i.e. 2⁷⁰ Σ p² ≈ 2.02,
   consistent with Porter–Thomas-like output.
@@ -145,13 +151,21 @@ non-depolarising noise, so we report the gap without interpreting it.
    against agreement within 1e-6 on the real samples.
 3. **Reproducibility.** The production run first reproduced, bit for bit, three samples generated on a
    different machine, compiler and thread count.
+4. **Engine-independent check.** While the cut rank of the measured prefix equals its length, the reduced
+   state is maximally mixed, so the prefix marginal is exactly uniform; for the production order that holds
+   for the first 30 steps. Over the 1,012 samples the first 30 step-bits show pair parities (435 tests) and
+   triple parities (4,060 tests) at chance (4.8% and 4.4% beyond 2σ, 4.6% expected; largest |z| 3.2 and
+   3.8). Of the 30 single-bit means, 4 fall beyond 2σ (p ≈ 0.05), the largest at 2.4σ. A control in which
+   one bit is replaced by a copy of another fails the test (`check_uniform_prefix.py`,
+   `results/uniform_prefix_check.txt`). This uses only the rank profile and the sample file.
 
 ## 5. Hardness frontier
 
 We generated circuits with the #151 construction (linear chain, alternating CZ brickwork with random √X or
 S√X layers, CZ depth n) for n = 30–120, with one instance per n, and ran the same order search
 (`frontier.py`, output `results/frontier.jsonl`). At n = 70 the generated instance
-matches the real one: 1,192 vs 1,150 edges, natural-order width 33 vs 32, best width 31 vs 31.
+matches the real one: 1,192 vs 1,150 edges, natural-order width 33 vs 32, best width 31 vs 31 at the
+same search budget (a longer search on the real instance reaches 30).
 
 | n | best width found | memory (2 complex64 tables) | table updates per exact sample |
 |---|---|---|---|
@@ -186,6 +200,13 @@ practical.
 
 ## Appendix: artifacts
 
-- `results/`: samples, run log, timing, input hashes, reproduction check.
-- `results/xcheck70_independent.txt`: independent recomputation of samples 1 and 2.
+- `results/samples_nq70.txt`, `run.log`, `time_nq70.txt`, `inputs.sha256`, `check55_result.txt`: the
+  production sampling run and its reproduction check.
+- `results/xcheck70_independent.txt`, `xcheck70d.txt`, `xcheck70e_laptop.txt`: independent
+  recomputation of five cloud samples, the 10-bit control, and one laptop sample.
+- `results/laptop_samples_w30.txt`: the laptop run (3 samples, timing).
+- `results/ibmxeb/`: exact log₂ Pr of the 1,726 hardware shots and the controls, timing, gate,
+  input hashes, and `analysis.txt` (XEB, comparison with #260, fidelity estimators).
+- `results/uniform_prefix_check.txt`: the engine-independent uniformity check.
+- `results/frontier.jsonl`: the frontier search output.
 - `README.md`: test table and commands.

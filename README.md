@@ -35,10 +35,19 @@ Proven by running it (each test has a negative control that is caught):
 | `test_gsamp.py` | C++ sampler, exact probabilities | 6e-9 |
 | `test_gsamp.py` | C++ sampler, 20,000 samples | TV 0.0570; ideal sampler at that size: 0.0570 |
 | `xcheck55.py` | 55-qubit real-data subgraph: gsamp Pr vs dp.cpp \|amplitude\|^2 | agree to ~4e-7 in log2 |
+| `test_inplace.py` | in-place single-table layout (Python reference), every string, 30 circuits | 1.4e-15; tau-swap control 0.152 |
+| `test_gsamp2.py` | in-place C++ sampler: prob mode every string; 20,000 samples | 5.8e-9; TV 0.0570 = ideal |
+| `test_chain.py`, `test_chain_gsamp.py` | one-pass `chain` mode: per-step conditionals vs reference, log2 Pr vs prob mode | 1e-7, 2e-6; swapped-M control 0.58 |
+| `check_uniform_prefix.py` | engine-independent: first 30 step-bits of the 1,012 samples uniform (bit/pair/triple parities) | at chance; copy-bit control z = 31.8 |
 
 nq70 structure (`cutprofile.py`, `order.py`):
-- linear cut-rank width is 32 in natural order and 31 after search;
+- linear cut-rank width is 32 in natural order, 31 after the first search (`order_best2.json`, used for the
+  production samples) and 30 after a longer search (`order_w30.json`, used for the laptop and the shot scoring);
 - the best balanced cut found has rank 29 (the README says 2^30 is the best known).
+
+Modes of the C++ samplers: `sample N seed` (exact samples), `prob file` (exact log2 Pr of given strings, two passes
+per step) and `chain file` (same, one pass per step, also printing every conditional Pr(b_k | b_1..b_{k-1});
+`chain_profile.py` turns those into a position-resolved comparison of hardware shots against ideal samples).
 
 Measured throughput (`bench_sampler.py`): on the 55-vertex subgraph (width 26), ~2.5 s per exact sample.
 That is 6.4e8 visits/s on 16 threads, sharing the CPU with another job.
