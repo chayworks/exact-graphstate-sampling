@@ -375,7 +375,11 @@ shots all 70 single-bit means (χ² 61 on 70, p = 0.78), 2,415 pair parities (p 
 after correcting for the number of tests) are at chance (`results/hw_marginals.txt`). The errors that bring the
 fidelity to about 0.46 therefore leave no low-order trace at all: no biased qubit, no correlated pair, no
 correlated triple or quadruple; after the Pauli checks the residual noise acts on the output like a global
-depolarisation. This is consistent with the mixture
+depolarisation (Figure 4).
+
+![Low-order parities of the hardware shots](fig/fig4_marginals.png)
+
+*Figure 4. Distribution of z-scores of all 1-, 2-, 3- and 4-bit parity means over IBM's 1,726 shots and over our 1,012 exact samples, against the standard normal that an exactly uniform marginal implies. The χ² p-values are those of §4 item 7 (`hw_marginals.py`).* This is consistent with the mixture
 fit of §3.2 and is, we think, a useful fact for the experimenters.
 
 ## 7. What this does and does not show

@@ -68,4 +68,21 @@ ax.set_xlabel("step k along the width-30 order (one qubit per step)"); ax.set_yl
 ax.set_ylim(1e-9, 2); ax.legend(fontsize=7.2, loc="upper left"); ax.grid(alpha=0.25, lw=0.5, which="both")
 ax.set_title("Where the information in a 70-bit string lives: the last ~8 conditionals")
 fig.tight_layout(); fig.savefig(OUT + "fig3_information.png", dpi=220); plt.close(fig)
+
+# ---- fig 4: low-order parities of the hardware shots (simulation-free) ----------------------------------------
+import json as _json
+Z = np.load(R + "hw_marginals_z.npz"); M = _json.load(open(R + "hw_marginals.json"))
+fig, axs = plt.subplots(1, 4, figsize=(9.6, 2.9), sharey=True)
+xx = np.linspace(-5, 5, 300)
+for i, k in enumerate((1, 2, 3, 4)):
+    ax = axs[i]; zh, zi = Z[f"hw_k{k}"], Z[f"ideal_k{k}"]; bins = np.linspace(-5, 5, 26 if k == 1 else 51)
+    ax.hist(zh, bins=bins, density=True, alpha=0.6, color=BLUE, lw=0, label="IBM hardware shots")
+    ax.hist(zi, bins=bins, density=True, histtype="step", color=ORANGE, lw=1.3, label="our exact samples")
+    ax.plot(xx, np.exp(-xx ** 2 / 2) / np.sqrt(2 * np.pi), "-", color=INK, lw=1.1, label="standard normal (exactly uniform marginal)")
+    ph, pi = M["hardware"][str(k)]["chi2_p"], M["ideal"][str(k)]["chi2_p"]; nt = M["hardware"][str(k)]["tests"]
+    ax.set_title(f"{k}-bit parities, {nt:,} tests", fontsize=9); ax.text(0.97, 0.95, f"χ² p: shots {ph:.2f}\nsamples {pi:.2f}", transform=ax.transAxes, fontsize=7.5, va="top", ha="right", color=MUTED)
+    ax.set_xlabel("z-score of the parity mean"); ax.grid(alpha=0.25, lw=0.5); ax.set_xlim(-5, 5)
+axs[0].set_ylabel("density"); h, l = axs[0].get_legend_handles_labels(); fig.legend(h, l, loc="lower center", ncol=3, fontsize=7.5, bbox_to_anchor=(0.5, 0.0))
+fig.suptitle("IBM's shots carry no low-order bias: every marginal on ≤ 11 qubits of the ideal output is exactly uniform", fontsize=9.5)
+fig.tight_layout(rect=(0, 0.08, 1, 1)); fig.savefig(OUT + "fig4_marginals.png", dpi=220); plt.close(fig)
 print("wrote", OUT)

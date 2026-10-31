@@ -1,0 +1,4 @@
+# python -P minweight_ilp.py work/minweight_A.txt 1800   (scipy 1.18.1 HiGHS; parity constraints via integer slack)
+status 1 (Time limit reached. (HiGHS Status 13: Time limit reached)); 1800.2 s
+weight 20 (recomputed from v: 20) at v = [6, 18, 19, 43, 63]; MIP gap 0.7999999999999999, dual bound 4.0
+NOT PROVEN (time limit): d_min in [4.0, 20]
