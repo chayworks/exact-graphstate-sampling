@@ -1,0 +1,8 @@
+N = 2051 shots
+linear XEB            +0.3416 +/- 0.0282
+ideal E[z] - 1        1.0000 +/- 0.0000  (from Porter-Thomas)
+F_xeb = XEB/(E[z]-1)  0.3416 +/- 0.0282
+F_mle (profile 95%)   0.3430  [0.2929, 0.3933]
+mean posterior clean  0.3430;  shots with posterior > 0.9: 0, < 0.1: 273
+z quantiles (0,25,50,75,100%): [0.001, 0.437, 0.973, 1.869, 11.39]
+KS distance to mixture at F_mle: 0.0137  (1.36/sqrt(N) = 0.0300 at 5%)

@@ -497,6 +497,19 @@ shot 1 has log₂ p = −68.295074. The relative difference between the two meth
 2^{48} complex64 contraction (`doped_tn242_compare.py`, `results/doped/tn242_crosscheck_run7.txt`). This is, to our
 knowledge, the first time two independent exact methods have been compared string by string on this circuit.
 
+**What the published exact probabilities say about the hardware run.** Since our values agree with #242's, their
+2,051 probabilities can be analysed with the estimators of §4 (`ibm_fidelity_mle.py`, `doped_tn242_analysis.py`;
+outputs in `results/doped/tn242_fidelity.txt` and `tn242_porter_thomas.txt`). Each of their batches also holds the
+255 sibling strings that differ from the shot on qubits 0–7, so the ideal distribution itself can be tested: over
+523,005 siblings z = 2^{70}p has mean 0.9991 ± 0.0014, mean z² 2.0013 and KS distance 0.0016 to Exp(1) (5% level
+0.0019), so unlike the Clifford instance the doped circuit's output is Porter–Thomas and E_ideal[z] = 2 is justified.
+For the shots: linear XEB fidelity 0.342 ± 0.028, mixture maximum likelihood 0.343 with 95% interval [0.293, 0.393],
+and the KS distance of the shots' z to the fitted mixture (F z + 1 − F)e^{−z} is 0.014 (5% level 0.030), so the
+depolarizing mixture describes the data; the log-XEB of #242 is 0.350 ± 0.027. A local check uses the conditional
+distribution of qubits 0–7 given the other 62 bits: the shots' mean of 256·p(x)/Σ_siblings p − 1 is 0.339 ± 0.028,
+the same fidelity read off eight qubits at a time. All three exceed the README's 0.26 ± 0.02, which was obtained on
+the device by other means, and agree with each other.
+
 {Pending from runs 9–11: exact probabilities of further IBM shots with uniform controls (each compared with #242's
 value), the hybrid samples with their acceptance rate and maximum z, and the two-table engine's time per pass.}
 
