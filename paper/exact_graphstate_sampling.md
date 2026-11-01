@@ -438,7 +438,9 @@ fit of §3.2 and is, we think, a useful fact for the experimenters.
 IBM's flagship variant, `nq70_depth70_checks27_doped`, inserts 468 T gates throughout the same 70-qubit brickwork and
 measures in Z; its README calls it adversarial for both tensor-network and stabilizer methods (best known stabilizer
 rank 2^{185.5}) and reports a hardware fidelity of 0.26 ± 0.02 after post-selection. The only classical entry on the
-tracker computes exact amplitudes by tensor-network contraction on GPUs (#242); nothing has sampled it.
+tracker computes exact amplitudes by tensor-network contraction (#242: contraction width 35, 2^{48.1} complex FMAs per
+batch of 256 amplitudes, all 2,051 IBM shots in 37.3 minutes on 32 nodes of eight H100 GPUs, log-XEB 0.350 ± 0.027);
+nothing has sampled it.
 
 **T gates as projected ancillas.** For a data qubit q, a fresh ancilla a in |0⟩, CNOT(q → a), and the projection of a
 onto |φ⟩ = (|0⟩ + e^{−iπ/4}|1⟩)/√2 give ⟨φ|_a CNOT |ψ⟩_q|0⟩_a = T|ψ⟩/√2 for every |ψ⟩ (the orthogonal outcome gives
@@ -477,9 +479,26 @@ the accepted samples' XEB against their own exact probabilities is 1.018 ± 0.12
 prob mode agree with the sampler's reported log₂ Pr to 9·10⁻⁷ (`results/fstate_hybrid_check.txt`,
 `results/fstate_hybrid_samples.txt`). Each sample costs about one width-34 pass.
 
-{Results of cloud run 7, in progress on a 32-core, 256 GiB node: exact probabilities of IBM's published doped shots
-with uniform controls, their XEB and fidelity estimates, the hybrid samples with their acceptance rate and maximum z,
-and the cross-order gate.}
+**Full scale: the first IBM doped shot, five ways.** The first of IBM's 2,051 published doped shots was scored on
+three rented nodes with three different arrangements of the same computation (`graphsamp/results/doped/`, each value
+read from that run's output file):
+
+| run | node | plan | log₂ Pr(shot 1) | seconds per pass |
+|---|---|---|---|---|
+| 7 | r5a.8xlarge, 256 GiB | width 34, m = 20, unsliced | −68.295330880 | 9,872 |
+| 7 | same | width 34, m = 10 (different order) | −68.295331335 | — |
+| 9 | r7iz.8xlarge, huge pages | m = 20 / m = 10 | −68.295331925 / −68.295330954 | 4,919 |
+| 10 | r7a.4xlarge, 128 GiB | two slices at ancillas 135, 104 (4 plans of width 33) | −68.295331107 | 5,888 (4 slice passes) |
+
+The five values agree to 1.0·10⁻⁶ in log₂, the rounding level of complex64 tables accumulated in different orders. The
+sixth value comes from a different method altogether: the tensor-network entry #242 published its amplitudes
+(Zenodo 10.5281/zenodo.21912448; q0-first strings, which are our Qiskit strings reversed, all 2,051 matching), and its
+shot 1 has log₂ p = −68.295074. The relative difference between the two methods is 1.8·10⁻⁴, within the precision of a
+2^{48} complex64 contraction (`doped_tn242_compare.py`, `results/doped/tn242_crosscheck_run7.txt`). This is, to our
+knowledge, the first time two independent exact methods have been compared string by string on this circuit.
+
+{Pending from runs 9–11: exact probabilities of further IBM shots with uniform controls (each compared with #242's
+value), the hybrid samples with their acceptance rate and maximum z, and the two-table engine's time per pass.}
 
 ## 8. What this does and does not show
 
@@ -513,7 +532,8 @@ so an experiment at that scale can report an exact benchmark instead of an extra
 - ZX-calculus rank-width contraction: Kuyanov & Kissinger, arXiv:2603.06764.
 - Exact amplitudes of IBM's doped circuits by T-injection and rank-width: Renaud, `dcs-rankwidth`; tracker #249.
 - Capped rejection sampling for this instance on GPUs: tracker #260.
-- Exact tensor-network amplitudes for the doped 70-qubit instance: Manabe, Gu, Pan, arXiv:2608.13110.
+- Exact tensor-network amplitudes for the doped 70-qubit instance: Manabe, Gu, Pan, arXiv:2608.13110; amplitudes and
+  contraction paths at Zenodo 10.5281/zenodo.21912448 (CC BY 4.0), used in §7 for the string-by-string comparison.
 - The random-graph-state hardness argument behind the construction: arXiv:2412.07058.
 
 ## Appendix: artifacts

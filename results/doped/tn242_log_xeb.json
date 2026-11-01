@@ -1,0 +1,17 @@
+{
+  "schema": "doped-clifford-tn-log-xeb-v1",
+  "estimator": {
+    "formula": "EulerGamma + n*ln(2) + mean_i(ln(p_ideal(x_i)))",
+    "log_base": "natural",
+    "n": 70,
+    "sample_count": 2051
+  },
+  "result": {
+    "estimate": 0.3503365216205227,
+    "empirical_standard_error": 0.02689353290848397
+  },
+  "source": {
+    "amplitude_batches": "../data/amplitude_batches.npz",
+    "vector_payload_sha256": "d655a1de86ed76e41e7a448e28a4aa33427593731979eb57245f7fffa5dfa3b3"
+  }
+}

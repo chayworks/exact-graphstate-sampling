@@ -47,6 +47,7 @@ if __name__ == "__main__":
                 for u in np.nonzero(A[v])[0]: Ms[u][:, 1] *= -1     # (-1)^{x_v x_u} for every neighbour u
         tag = "".join(map(str, bits)); write_inplace_plan(f"{out}_s{tag}.txt", st, R, Ms, N)
     K = next(i for i, s in enumerate(st) if all(t["v"] < 70 for t in st[i:]))     # first step of the pure-data suffix
+    if K == 0: K = len(st)                                                        # no ancillas: sum the slices at the very end
     pre = set(s["v"] for s in st[:K])
     for v in S: assert v in pre and set(np.nonzero(A[v])[0]) <= pre, f"slice vertex {v} or a neighbour lies in the suffix; tables could not be summed at K"
     json.dump({"slices": S, "R": R, "width_unsliced": w, "K_suffix_start": K, "step_vertices": [s["v"] for s in st]}, open(f"{out}_slices.json", "w"))

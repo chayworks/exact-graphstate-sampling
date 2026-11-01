@@ -1,0 +1,5 @@
+2051 TN strings; 2 of our scored strings match (reversed)
+file                         string (Qiskit order)                                                     ours log2 p    TN log2 p       diff  rel. prob
+ults/doped/run7/gate_m20.txt 1010100101110001011110000000101110111101011001110001100000111001100010    -68.2953309   -68.295074  -2.56e-04  -1.78e-04
+ults/doped/run7/gate_m10.txt 1010100101110001011110000000101110111101011001110001100000111001100010    -68.2953313   -68.295074  -2.57e-04  -1.78e-04
+log2 difference ours - TN: mean -2.57e-04, max |.| 2.57e-04, n = 2; TN values are complex64 outputs of a 2^48 FMA contraction, so a relative spread of 1e-4 is within their precision

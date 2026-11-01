@@ -14,10 +14,12 @@
 #include <random>
 #include <memory>
 #include <algorithm>
+#include <sys/mman.h>
 typedef std::complex<double> cd; typedef std::complex<float> cf;
 struct Term { uint64_t tq; int x, tau, par; };
 struct Step { int v, nk, m; uint64_t g, rhoc; std::vector<uint64_t> tk; std::vector<Term> t; cd M[2][2]; uint64_t tab[5][256]; };
-static std::vector<Step> st; static int n, ns, R; static std::unique_ptr<cf[]> mem;
+struct FreeDel { void operator()(cf* p) const { free(p); } };
+static std::vector<Step> st; static int n, ns, R; static std::unique_ptr<cf[], FreeDel> mem;
 
 static inline uint64_t base_of(const Step& s, uint64_t c) {
     return s.tab[0][c & 255] ^ s.tab[1][(c >> 8) & 255] ^ s.tab[2][(c >> 16) & 255] ^ s.tab[3][(c >> 24) & 255] ^ s.tab[4][(c >> 32) & 255];
@@ -129,7 +131,15 @@ int main(int argc, char** argv) {
         for (int t = 0; t < 5; t++) for (int v = 0; v < 256; v++) { uint64_t a = 0;
             for (int j = 0; j < 8; j++) if ((v >> j) & 1 && 8 * t + j < s.nk) a ^= s.tk[8 * t + j]; s.tab[t][v] = a; }
     }
-    fclose(f); mem.reset(new cf[(size_t)1 << R]);
+    fclose(f);
+    {   // arena: 2 MB-aligned and advised for transparent huge pages (the DP is a random gather over the whole table)
+        size_t bytes = ((size_t)1 << R) * sizeof(cf); void* p = nullptr;
+        if (posix_memalign(&p, 1 << 21, bytes) != 0 || !p) { fprintf(stderr, "allocation of %zu bytes failed\n", bytes); return 11; }
+#ifdef MADV_HUGEPAGE
+        madvise(p, bytes, MADV_HUGEPAGE);
+#endif
+        mem.reset((cf*)p);
+    }
     std::vector<int> bits(ns);
     if (!strcmp(argv[2], "sample")) {
         long N = atol(argv[3]); unsigned long long seed = strtoull(argv[4], 0, 10);

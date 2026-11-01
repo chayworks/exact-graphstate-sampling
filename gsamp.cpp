@@ -67,6 +67,32 @@ static double chain1(const int* forced, double* cond) {
     return std::log2(prev) - ns;
 }
 
+// Hybrid machinery (as in gsamp2.cpp): steps k0..k1-1 on the current table `old` of norm *prev, stored scaled so that
+// true table = stored * 2^*logscale. forced[k] in {0,1}: single pass; forced[k] == -1: norm pass, draw, write pass.
+static cf *cur = nullptr, *nxt = nullptr;
+static double run_steps(int k0, int k1, const int* forced, int* bits, double* cond, std::mt19937_64* rng, double* prev, double* logscale) {
+    double logp = 0;
+    for (int k = k0; k < k1; k++) {
+        const Step& s = st[k]; const int64_t N = (int64_t)1 << s.rn; int b = forced[k]; const double sc = 1.0 / std::sqrt(*prev);
+        if (b < 0) {
+            double n0 = 0, n1 = 0;
+#pragma omp parallel for schedule(static) reduction(+:n0,n1)
+            for (int64_t cp = 0; cp < N; cp++) { cd S0, S1; gather(s, cur, cp, S0, S1);
+                n0 += std::norm(s.M[0][0] * S0 + s.M[0][1] * S1); n1 += std::norm(s.M[1][0] * S0 + s.M[1][1] * S1); }
+            std::uniform_real_distribution<double> U(0, 1); b = U(*rng) < n1 / (n0 + n1);
+        }
+        const cd m0 = s.M[b][0] * sc, m1 = s.M[b][1] * sc; double nb = 0;
+#pragma omp parallel for schedule(static) reduction(+:nb)
+        for (int64_t cp = 0; cp < N; cp++) { cd S0, S1; gather(s, cur, cp, S0, S1); cd o = m0 * S0 + m1 * S1; nxt[cp] = cf(o); nb += std::norm(o); }
+        *logscale += 0.5 * std::log2(*prev); cond[k] = nb / 2; bits[k] = b; *prev = nb; std::swap(cur, nxt);
+        if (nb <= 0) { for (; k < k1; k++) { cond[k] = 0; bits[k] = forced[k] < 0 ? 0 : forced[k]; } return -INFINITY; }
+        logp += std::log2(cond[k]);
+    }
+    return logp;
+}
+static double hybrid(const int* forced, int* bits, double* cond, std::mt19937_64* rng) {
+    cur = bufA.data(); nxt = bufB.data(); cur[0] = 1; double prev = 1, logscale = 0; return run_steps(0, ns, forced, bits, cond, rng, &prev, &logscale);
+}
 int main(int argc, char** argv) {
     if (argc < 4) { fprintf(stderr, "usage\n"); return 1; }
     FILE* f = fopen(argv[1], "r"); if (!f || fscanf(f, "%d %d %d", &n, &ns, &maxr) != 3) return 2;
@@ -88,6 +114,38 @@ int main(int argc, char** argv) {
             std::mt19937_64 rng(seed + i); double lp = chain(nullptr, bits.data(), &rng);
             for (int k = 0; k < ns; k++) putchar('0' + bits[k]); printf(" %.12f %llu\n", lp, seed + i); fflush(stdout);
         }
+    } else if (!strcmp(argv[2], "hybrid")) {
+        // gsamp plan hybrid stringsfile seed: '?' = sampled from the exact conditional (only in a trailing data suffix)
+        unsigned long long seed = strtoull(argv[4], 0, 10); std::vector<double> cond(ns); FILE* g = fopen(argv[3], "r"); char line[4096]; long li = 0;
+        while (fgets(line, sizeof line, g)) { if ((int)strlen(line) < ns) continue; std::vector<int> fb(ns);
+            for (int k = 0; k < ns; k++) fb[k] = line[k] == '?' ? -1 : line[k] - '0';
+            std::mt19937_64 r2(seed + (unsigned long long)li++); double lp = hybrid(fb.data(), bits.data(), cond.data(), &r2);
+            for (int k = 0; k < ns; k++) putchar('0' + bits[k]); printf(" %.12f", lp); for (int k = 0; k < ns; k++) printf(" %.9f", cond[k]); putchar('\n'); fflush(stdout); }
+    } else if (!strcmp(argv[2], "prefix")) {
+        // gsamp plan prefix stringsfile K outprefix: run forced steps 0..K-1, dump the contiguous table read by step K
+        // (binary: int32 r, int32 1, double logscale, 2^r complex64) to outprefix_<line>.bin.  K == ns dumps the amplitude.
+        int K = atoi(argv[4]); const char* outp = argv[5]; std::vector<double> cond(ns); FILE* g = fopen(argv[3], "r"); char line[4096]; long li = 0;
+        while (fgets(line, sizeof line, g)) { if ((int)strlen(line) < K) continue; std::vector<int> fb(ns, 0);
+            for (int k = 0; k < K; k++) { if (line[k] == '?') { fprintf(stderr, "'?' before K\n"); return 8; } fb[k] = line[k] - '0'; }
+            cur = bufA.data(); nxt = bufB.data(); cur[0] = 1; double prev = 1, logscale = 0; double lp = run_steps(0, K, fb.data(), bits.data(), cond.data(), nullptr, &prev, &logscale);
+            int r = K < ns ? st[K].r : 0, one = 1; char fn[1024]; snprintf(fn, sizeof fn, "%s_%ld.bin", outp, li++); FILE* o = fopen(fn, "wb");
+            fwrite(&r, 4, 1, o); fwrite(&one, 4, 1, o); fwrite(&logscale, 8, 1, o); fwrite(cur, sizeof(cf), (size_t)1 << r, o); fclose(o);
+            printf("%ld %.12f %.6f\n", li - 1, lp, logscale); fflush(stdout); }
+    } else if (!strcmp(argv[2], "resume")) {
+        // gsamp plan resume stringsfile K seed dumpprefix1 [dumpprefix2 ...]: sum the slices' tables, continue steps K..ns-1
+        int K = atoi(argv[4]); unsigned long long seed = strtoull(argv[5], 0, 10); int nsl = argc - 6; std::vector<double> cond(ns); FILE* g = fopen(argv[3], "r"); char line[4096]; long li = 0;
+        int r = K < ns ? st[K].r : 0; int64_t Nt = (int64_t)1 << r; std::vector<std::vector<cf>> tabs(nsl, std::vector<cf>(Nt)); std::vector<double> ls(nsl);
+        while (fgets(line, sizeof line, g)) { if ((int)strlen(line) < ns) continue; std::vector<int> fb(ns);
+            for (int k = 0; k < ns; k++) fb[k] = line[k] == '?' ? -1 : line[k] - '0';
+            double L = -1e300;
+            for (int s = 0; s < nsl; s++) { char fn[1024]; snprintf(fn, sizeof fn, "%s_%ld.bin", argv[6 + s], li); FILE* o = fopen(fn, "rb"); if (!o) { fprintf(stderr, "missing %s\n", fn); return 9; }
+                int r2, one; if (fread(&r2, 4, 1, o) != 1 || r2 != r || fread(&one, 4, 1, o) != 1 || fread(&ls[s], 8, 1, o) != 1 || fread(tabs[s].data(), sizeof(cf), Nt, o) != (size_t)Nt) { fprintf(stderr, "bad dump %s\n", fn); return 10; } fclose(o); L = std::max(L, ls[s]); }
+            cur = bufA.data(); nxt = bufB.data(); double norm = 0;
+            for (int64_t c = 0; c < Nt; c++) { cd acc = 0; for (int s = 0; s < nsl; s++) acc += cd(tabs[s][c]) * std::exp2(ls[s] - L); cur[c] = cf(acc); norm += std::norm(acc); }
+            double lp_prefix = -K + std::log2(norm) + 2 * L; double prev = norm, logscale = L;
+            std::mt19937_64 r2(seed + (unsigned long long)li); double lps = run_steps(K, ns, fb.data(), bits.data(), cond.data(), &r2, &prev, &logscale);
+            for (int k = 0; k < ns; k++) putchar('0' + (k < K ? fb[k] : bits[k])); printf(" %.12f %.12f", lp_prefix + lps, lp_prefix);
+            for (int k = K; k < ns; k++) printf(" %.9f", cond[k]); putchar('\n'); fflush(stdout); li++; }
     } else if (!strcmp(argv[2], "prob") || !strcmp(argv[2], "chain")) {
         const bool ch = !strcmp(argv[2], "chain"); std::vector<double> cond(ns);
         FILE* g = fopen(argv[3], "r"); char line[4096];

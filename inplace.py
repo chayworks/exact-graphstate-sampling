@@ -47,6 +47,7 @@ def plan_inplace(A, order, R):
         Qb = _reduce([k & low for k in K if k & low])            # basis of Q with pivot bits
         q = len(Qb); qpiv = [p for _, p in Qb]
         keep = [i for i in range(r) if i not in qpiv]             # coset-rep coordinates (non-Q-pivot)
+        keep.sort(key=lambda i: T[i])                             # low physical bits first: consecutive c -> nearby addresses
         # enumerate Q x {0,1}: element (qv, x) -> u = qv | x<<r ; group by image under Lam (= same coset of K)
         Qall = [0]
         for b, _ in Qb: Qall += [a ^ b for a in Qall]
@@ -150,7 +151,7 @@ def write_inplace_plan(path, steps, R, M, n):
     with open(path, "w") as f:
         f.write(f"{n} {len(steps)} {R}\n")
         for s in steps:
-            keepmask = sum(1 << i for i in s["keep"]); rhoc = pext(s["rho"], keepmask)
+            rhoc = sum(((s["rho"] >> i) & 1) << j for j, i in enumerate(s["keep"]))     # bit j of c is coordinate keep[j]
             Mv = M[s["v"]]
             f.write(f"{s['v']} {len(s['keep'])} {s['m']} {s['g'] or 0} {rhoc} {len(s['terms'])} ")
             f.write(" ".join(str(t) for t in s["Tkeep"]) + " ")

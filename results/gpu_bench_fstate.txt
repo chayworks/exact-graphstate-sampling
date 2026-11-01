@@ -1,0 +1,15 @@
+# GPU port benchmark, laptop RTX 5060 (8 GB), 2026-11-01. 70-qubit fstate instance, width-30 order sliced at vertex 50
+# (two plans of width 29, 4.3 GB each): three IBM shots, prefix mode on both slices then resume (sum).
+# command: gsamp_cuda fs30_s0 prefix ... 70; gsamp_cuda fs30_s1 prefix ... 70; gsamp_cuda fs30_s0 resume ... (see session log)
+# wall time for the 6 sliced passes: 1 min 04 s  (about 11 s per sliced pass; the CPU does an unsliced pass in about 10 s)
+# summed log2 Pr vs the exact values from results/ibmxeb/ibm_out.txt:
+#   -69.265182043368 vs -69.265182570358
+#   -67.825102085709 vs -67.825102061589
+#   -73.860693206529 vs -73.860693875313
+# conclusion: correct to 7e-7; this laptop GPU is not faster than its CPU for the gather-bound kernel (FP64 is crippled on
+# consumer parts and the access pattern is random); the GPU path needs a kernel rewrite or a data-centre GPU to pay off.
+#
+# 2026-11-01 later: with the planner ordering kept coordinates by physical bit (inplace.py, commit 8361cec) the same six
+# sliced GPU passes take 23 s (was 64 s): 3.8 s per sliced pass, i.e. about 8 s per full amplitude vs 10 s on the CPU.
+# Results unchanged to 7e-7 (-69.265182081331, -67.825101968019, -73.860694567366). The CPU time did not change (25 s vs
+# 23 s for three passes): the CPU was not limited by that access pattern on the 8.6 GB table.

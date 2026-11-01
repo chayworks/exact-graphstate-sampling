@@ -7,7 +7,7 @@ Run from the repository root: python paper/make_figures.py"""
 import json, math, numpy as np
 import matplotlib; matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-R = "results/"; OUT = "paper/fig/"
+R = "graphsamp/results/"; OUT = "paper/fig/"
 import os; os.makedirs(OUT, exist_ok=True)
 BLUE, ORANGE, AQUA, INK, MUTED = "#2a78d6", "#eb6834", "#1baf7a", "#0b0b0b", "#52514e"
 plt.rcParams.update({"font.size": 8.5, "axes.titlesize": 10, "axes.labelsize": 9, "axes.edgecolor": MUTED,
