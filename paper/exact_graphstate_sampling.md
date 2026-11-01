@@ -457,6 +457,10 @@ ancillas in time order then its data vertex) has width **34** (`results/doped/do
 left and right halves of the chain is crossed only by the CZ gates on one bond, at most 35 of them, and the sweep
 realises nearly that bound; simulated annealing from the sweep and single- and double-vertex slice searches found
 nothing lower. One exact amplitude therefore costs a table of 2^{34} complex64 (128 GiB) and 2^{40.9} table updates.
+For comparison, #242's contraction has width 35 and costs 2^{48.1} complex multiply-adds per batch of 256 amplitudes,
+2^{40.1} per amplitude: the two methods do the same amount of arithmetic per amplitude to within a factor of two, and
+the gap in wall-clock time (their 37 minutes for all 2,051 shots on 256 H100 GPUs against our 82 minutes per shot on one
+32-core node) is hardware, not algorithm.
 
 **Why the chain rule fails here, and what replaces it.** The orthonormality identity traces out the unmeasured suffix,
 but the ancillas must be projected, not traced (a traced ancilla dephases its T gate). Putting all ancillas before any
@@ -490,7 +494,7 @@ read from that run's output file):
 | 9 | r7iz.8xlarge, huge pages | m = 20 / m = 10 | −68.295331925 / −68.295330954 | 4,919 |
 | 10 | r7a.4xlarge, 128 GiB | two slices at ancillas 135, 104 (4 plans of width 33) | −68.295331107 | 5,888 (4 slice passes) |
 
-The five values agree to 1.0·10⁻⁶ in log₂, the rounding level of complex64 tables accumulated in different orders. The
+The five values span 1.1·10⁻⁶ in log₂, the rounding level of complex64 tables accumulated in different orders. The
 sixth value comes from a different method altogether: the tensor-network entry #242 published its amplitudes
 (Zenodo 10.5281/zenodo.21912448; q0-first strings, which are our Qiskit strings reversed, all 2,051 matching), and its
 shot 1 has log₂ p = −68.295074. The relative difference between the two methods is 1.8·10⁻⁴, within the precision of a

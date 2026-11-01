@@ -29,13 +29,15 @@ log "gate (shot #1 vs runs 7/9/10): $(cat gate_result.txt); ${T}s for one sliced
 grep -q PASS gate_result.txt || finish "gate failed"
 up
 ( while sleep 300; do up; log "progress shots=$(wc -l < shots_scored.txt 2>/dev/null) samples=$(grep -c '^ACC' samples.txt 2>/dev/null) proposals=$(grep -c '^[Ar]' samples.txt 2>/dev/null)"; done ) &
+# IBM shots from the END of the file (runs 9 and 10 work from the front), then 2 uniform controls; at ~1 h per string
+# only a handful complete, so the strings that matter (each comparable with #242's published amplitude) come first.
 python3 - <<'PY'
-import random; r = random.Random(20261101); shots = [l.strip() for l in open("/opt/gs/ibm_doped_shots_qiskit.txt") if l.strip()]
-uni = ["".join(r.choice("01") for _ in range(70)) for _ in range(8)]
-open("/opt/gs/score_list.txt", "w").write("\n".join(uni + shots[1:]) + "\n")
+import random; r = random.Random(20261111); shots = [l.strip() for l in open("/opt/gs/ibm_doped_shots_qiskit.txt") if l.strip()]
+uni = ["".join(r.choice("01") for _ in range(70)) for _ in range(2)]
+open("/opt/gs/score_list.txt", "w").write("\n".join(shots[:0:-1] + uni) + "\n")
 PY
 S=$(date +%s); timeout $(( $(left) * 55 / 100 ))s python3 doped_sampler.py score doped_m20g_s00.txt doped_m20_step_vertices.json score_list.txt shots_scored.txt --qiskit --slices $SL --K $K --bin $BIN
-log "scoring ended: $(wc -l < shots_scored.txt) strings (first 8 are uniform controls) in $(( $(date +%s) - S ))s"
+log "scoring ended: $(wc -l < shots_scored.txt) strings (IBM shots 2051, 2050, ...; uniform controls last) in $(( $(date +%s) - S ))s"
 up
 S=$(date +%s); timeout $(( $(left) - 8 * 60 ))s python3 doped_sampler.py sample doped_m20g_s00.txt doped_m20_step_vertices.json 100000 20261101 1.03 samples.txt --slices $SL --K $K --bin $BIN
 log "sampling ended: $(grep -c '^ACC' samples.txt) accepted of $(grep -c '^[Ar]' samples.txt) proposals in $(( $(date +%s) - S ))s; max z $(grep -o 'z=[0-9.]*' samples.txt | cut -d= -f2 | sort -g | tail -1)"
