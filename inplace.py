@@ -94,7 +94,7 @@ def plan_inplace(A, order, R):
                 if (qv >> i) & 1: a ^= T[i]
             Tq[qv] = a
         steps.append(dict(v=v, r=r, rn=len(newB), keep=keep, Tkeep=[T[i] for i in keep], rho=rho, terms=terms,
-                          Tq=Tq, m=m, g=(newT[-1] if m == 2 else None)))
+                          Tq=Tq, m=m, g=(newT[-1] if m == 2 else None), B=list(B), Qall=Qall))   # B: field vectors of the old coordinates
         B, T = newB, newT
     assert not B
     return steps

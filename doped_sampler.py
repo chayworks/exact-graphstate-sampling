@@ -18,10 +18,10 @@ Usage:
   python doped_sampler.py score   <plan> <step_vertices.json> <strings.txt> <out.txt> [--qiskit] [--threads T]
 Outputs are appended line by line so a killed run can be resumed by passing a new seed."""
 import sys, json, os, subprocess, time, math, random
-NA = 468; ND = 70
 def argval(flag, default=None):
     if flag in sys.argv: i = sys.argv.index(flag); v = sys.argv[i + 1]; del sys.argv[i:i + 2]; return v
     return default
+NA = int(argval("--na", 468)); ND = int(argval("--nd", 70))   # --na 0 --nd N for an undoped N-qubit instance (every vertex is data)
 def run(cmd, threads):
     env = {**os.environ, "OMP_NUM_THREADS": str(threads)}; return subprocess.run(cmd, capture_output=True, text=True, env=env, check=True).stdout
 if __name__ == "__main__":
@@ -38,12 +38,13 @@ if __name__ == "__main__":
         if free_suffix:
             for i in range(ns - m_suffix, ns): s[i] = "?"
         return "".join(s)
-    SL = slices.split(",") if slices else []; KS = int(Kopt) if Kopt else None
+    SL = slices.split(",") if slices else []; KS = int(Kopt) if Kopt else None; twist = argval("--twist", None)
     def sliced_eval(tmp, seed):
-        """'prefix' on every slice plan up to step KS (dumps), then 'resume' summing the dumps; returns the resume line's
-        fields: bits, log2 Pr(full) [gadget], log2 Pr(prefix) [gadget], conditionals of the suffix."""
+        """'prefix' on every slice plan up to step KS (dumps), then 'resume' summing the dumps (with the twist file of
+        sliced_plans.py when a slice vertex has suffix neighbours); returns the resume line's fields: bits, log2 Pr(full)
+        [gadget], log2 Pr(prefix) [gadget], conditionals of the suffix."""
         for j, p in enumerate(SL): run([BIN, p, "prefix", tmp, str(KS), f"{tmp}_d{j}"], threads)
-        return run([BIN, SL[0], "resume", tmp, str(KS), str(seed)] + [f"{tmp}_d{j}" for j in range(len(SL))], threads).split()
+        return run([BIN, SL[0], "resume", tmp, str(KS), str(seed)] + [f"{tmp}_d{j}" for j in range(len(SL))] + (["--twist", twist] if twist else []), threads).split()
     if mode == "score":
         strings, out = sys.argv[4], sys.argv[5]; lines = [l.strip() for l in open(strings) if l.strip()]
         done = sum(1 for _ in open(out)) if os.path.exists(out) else 0

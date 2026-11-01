@@ -163,16 +163,30 @@ int main(int argc, char** argv) {
         // gsamp2 plan resume stringsfile K seed dumpprefix1 [dumpprefix2 ...]: sum the dumped tables of all slices for each
         // line, then run steps K..ns-1 with '?' sampled. Prints: bits, log2 Pr(full string), log2 Pr(prefix of K steps),
         // then the conditionals of steps K..ns-1.  Pr(prefix) = 2^-K * || summed true table ||^2.
-        int K = atoi(argv[4]); unsigned long long seed = strtoull(argv[5], 0, 10); int nsl = argc - 6; FILE* g = fopen(argv[3], "r"); char line[4096]; long li = 0;
+        // Optional trailing "--twist file": slice vertices with neighbours in the suffix. The table is indexed by the linear
+        // functional the prefix imposes on the suffix, so the slice's extra phase (-1)^{<s, x_suffix>} is a translation of its
+        // table: slice j's entry (c, tq) is read from (c ^ cshift_j, tq ^ tqshift_j). Line j of the file: "cshift tqshift"
+        // (written by sliced_plans.py).
+        int nsl = argc - 6; const char* twistf = nullptr; if (argc >= 8 && !strcmp(argv[argc - 2], "--twist")) { twistf = argv[argc - 1]; nsl -= 2; }
+        int K = atoi(argv[4]); unsigned long long seed = strtoull(argv[5], 0, 10); FILE* g = fopen(argv[3], "r"); char line[4096]; long li = 0;
         std::vector<double> cond(ns); int nk = K < ns ? st[K].nk : 0; std::vector<uint64_t> tqs = coset_offsets(K); int ntq = (int)tqs.size();
         int64_t Nt = ((int64_t)1 << nk) * ntq; std::vector<std::vector<cf>> tabs(nsl, std::vector<cf>(Nt)); std::vector<double> ls(nsl);
+        std::vector<uint64_t> cshift(nsl, 0); std::vector<std::vector<int>> tperm(nsl, std::vector<int>(ntq));
+        for (int s = 0; s < nsl; s++) for (int t = 0; t < ntq; t++) tperm[s][t] = t;
+        if (twistf) { FILE* tf = fopen(twistf, "r"); if (!tf) { fprintf(stderr, "missing twist file\n"); return 12; }
+            for (int s = 0; s < nsl; s++) { unsigned long long cs, tqs_; if (fscanf(tf, "%llu %llu", &cs, &tqs_) != 2) { fprintf(stderr, "bad twist line %d\n", s); return 13; }
+                if (cs >> nk) { fprintf(stderr, "twist cshift exceeds the kept coordinates\n"); return 14; } cshift[s] = cs;
+                for (int t = 0; t < ntq; t++) { int pos = -1; for (int u = 0; u < ntq; u++) if (tqs[u] == (tqs[t] ^ tqs_)) pos = u;
+                    if (pos < 0) { fprintf(stderr, "twist tqshift %llu does not map the coset offsets of step %d onto themselves\n", tqs_, K); return 14; } tperm[s][t] = pos; } }
+            fclose(tf); }
         while (fgets(line, sizeof line, g)) { if ((int)strlen(line) < ns) continue; std::vector<int> fb(ns);
             for (int k = 0; k < ns; k++) fb[k] = line[k] == '?' ? -1 : line[k] - '0';
             double L = -1e300;
             for (int s = 0; s < nsl; s++) { char fn[1024]; snprintf(fn, sizeof fn, "%s_%ld.bin", argv[6 + s], li); FILE* o = fopen(fn, "rb"); if (!o) { fprintf(stderr, "missing %s\n", fn); return 9; }
                 int nk2, ntq2; if (fread(&nk2, 4, 1, o) != 1 || nk2 != nk || fread(&ntq2, 4, 1, o) != 1 || ntq2 != ntq || fread(&ls[s], 8, 1, o) != 1 || fread(tabs[s].data(), sizeof(cf), Nt, o) != (size_t)Nt) { fprintf(stderr, "bad dump %s\n", fn); return 10; } fclose(o); L = std::max(L, ls[s]); }
             double norm = 0; int64_t idx = 0;
-            for (int64_t c = 0; c < ((int64_t)1 << nk); c++) for (uint64_t tq : tqs) { cd acc = 0; for (int s = 0; s < nsl; s++) acc += cd(tabs[s][idx]) * std::exp2(ls[s] - L);
+            for (int64_t c = 0; c < ((int64_t)1 << nk); c++) for (int ti = 0; ti < ntq; ti++) { uint64_t tq = tqs[ti]; cd acc = 0;
+                for (int s = 0; s < nsl; s++) acc += cd(tabs[s][((int64_t)((uint64_t)c ^ cshift[s])) * ntq + tperm[s][ti]]) * std::exp2(ls[s] - L);
                 if (K < ns) mem[base_of(st[K], c) ^ tq] = cf(acc); else mem[0] = cf(acc); norm += std::norm(acc); idx++; }
             double lp_prefix = -K + std::log2(norm) + 2 * L; double prev = norm, logscale = L;
             std::mt19937_64 r2(seed + (unsigned long long)li); double lps = run_steps(K, ns, fb.data(), bits.data(), cond.data(), &r2, &prev, &logscale);
