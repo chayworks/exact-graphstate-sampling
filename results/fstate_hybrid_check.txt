@@ -1,0 +1,6 @@
+# python fstate_hybrid_check.py work/fstate_hybrid_samples.txt results/samples_nq70.txt work/fstate_hybrid_rescore_out.txt
+# run: gsamp2 hybrid, width-30 in-place plan (cloud2/nq70_inplace_plan.txt), 150 proposals, 50 bits proposed + 20 sampled, cap 1.03, seed 7, laptop 16 threads
+proposals 150, accepted 147 (98.0%); z: mean 0.99997, sd 0.00100, min 0.9970, max 1.0025; above cap: 0
+linear XEB of accepted hybrid samples vs own exact probabilities: +1.018 +/- 0.128; exact sampler (1,012 samples): +1.020 +/- 0.047; difference -0.02 sigma
+mean log2 Pr: hybrid -69.366 +/- 0.089; exact -69.398 +/- 0.038
+re-scored 3 accepted samples with prob mode: max |log2 Pr difference| = 9.1e-07

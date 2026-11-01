@@ -1,0 +1,11 @@
+it 0: current width 34 obj 40.87; best 34 / 40.87
+it 2000: current width 60 obj 63.89; best 34 / 40.87
+it 4000: current width 73 obj 76.89; best 34 / 40.87
+it 6000: current width 77 obj 81.35; best 34 / 40.87
+it 8000: current width 82 obj 86.66; best 34 / 40.87
+it 10000: current width 89 obj 92.50; best 34 / 40.87
+it 12000: current width 92 obj 94.97; best 34 / 40.87
+it 14000: current width 91 obj 95.39; best 34 / 40.87
+it 16000: current width 89 obj 93.61; best 34 / 40.87
+it 18000: current width 87 obj 90.78; best 34 / 40.87
+best over 8 chains: width 34, log2 sum 2^r = 40.87

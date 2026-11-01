@@ -433,7 +433,55 @@ depolarisation (Figure 4).
 *Figure 4. Distribution of z-scores of all 1-, 2-, 3- and 4-bit parity means over IBM's 1,726 shots and over our 1,012 exact samples, against the standard normal that an exactly uniform marginal implies. The χ² p-values are those quoted in this section for the shots and in §4 item 7 for the samples (`hw_marginals.py`).* This is consistent with the mixture
 fit of §3.2 and is, we think, a useful fact for the experimenters.
 
-## 7. What this does and does not show
+## 7. The doped instance
+
+IBM's flagship variant, `nq70_depth70_checks27_doped`, inserts 468 T gates throughout the same 70-qubit brickwork and
+measures in Z; its README calls it adversarial for both tensor-network and stabilizer methods (best known stabilizer
+rank 2^{185.5}) and reports a hardware fidelity of 0.26 ± 0.02 after post-selection. The only classical entry on the
+tracker computes exact amplitudes by tensor-network contraction on GPUs (#242); nothing has sampled it.
+
+**T gates as projected ancillas.** For a data qubit q, a fresh ancilla a in |0⟩, CNOT(q → a), and the projection of a
+onto |φ⟩ = (|0⟩ + e^{−iπ/4}|1⟩)/√2 give ⟨φ|_a CNOT |ψ⟩_q|0⟩_a = T|ψ⟩/√2 for every |ψ⟩ (the orthogonal outcome gives
+ZT|ψ⟩/√2, so each projection succeeds with probability exactly ½ whatever the state). The projection is a product
+measurement: apply T then H to the ancilla and keep outcome 0. Hence the doped circuit is a Clifford circuit on
+70 + 468 = 538 qubits followed by a product measurement, a graph state measured in a product basis, and
+Pr(all 468 projections succeed) = 2^{−468} exactly, so Pr_doped(b) = 2^{468}·Pr_gadget(b, anc = 0). We checked the
+identity on 20 random circuits against dense statevectors (1e-10), the whole pipeline on 25 more (1e-15), and the
+sampler binary itself on 12 (1e-8), each with a control that drops the ancilla's T (`doped_gadget.py`, `test_doped.py`,
+`test_gsamp2_doped.py`).
+
+**Width.** On the 538-vertex graph the natural order has width 137, but a spatial sweep (qubit 0 to 69, each qubit's
+ancillas in time order then its data vertex) has width **34** (`results/doped/doped_widths.json`): the cut between the
+left and right halves of the chain is crossed only by the CZ gates on one bond, at most 35 of them, and the sweep
+realises nearly that bound; simulated annealing from the sweep and single- and double-vertex slice searches found
+nothing lower. One exact amplitude therefore costs a table of 2^{34} complex64 (128 GiB) and 2^{40.9} table updates.
+
+**Why the chain rule fails here, and what replaces it.** The orthonormality identity traces out the unmeasured suffix,
+but the ancillas must be projected, not traced (a traced ancilla dephases its T gate). Putting all ancillas before any
+sampled data qubit makes the prefix–suffix cut contain the whole ancilla|data cut, whose rank is 70; exact chain-rule
+sampling would need 2^{70} entries. Instead we move the last m = 20 data vertices to the end of the sweep order, which
+leaves the width at 34 and makes the final cuts 20, 20, 19, …, 1, and sample in two stages: a proposal draws the
+first 50 data bits uniformly; one pass gives their exact marginal Pr(prefix, anc = 0) (the 20 unmeasured data qubits
+are traced by orthonormality) together with exact draws of the last 20 bits from their conditionals; the proposal is
+accepted with probability z/c where z = 2^{50}·2^{468}·Pr(prefix, anc = 0) is the marginal in units of the uniform
+distribution. Because z averages 2^{20} output probabilities it is concentrated near 1 (relative spread about
+2^{−10}), so with c = 1.03 almost every proposal is accepted, and the accepted output follows the Born distribution
+exactly except for the mass of prefixes with z > c, which is recorded for every proposal and, under the
+Porter–Thomas model, is below 10⁻³⁰. On small T-circuits the hybrid sampler reproduces the exact output distribution
+(total variation at the level of an ideal sampler of the same size) and a cap set below the true maximum of z is
+detected as a biased output (`test_hybrid.py`). At full scale we ran it on the 70-qubit fstate instance, where the
+exact sampler is the ground truth: 150 proposals with the width-30 plan (50 bits proposed, 20 drawn exactly), 147
+accepted, z between 0.9970 and 1.0025 (spread 0.0010, as the 2^{−10} estimate predicts), no proposal above the cap;
+the accepted samples' XEB against their own exact probabilities is 1.018 ± 0.128 against the exact sampler's
+1.020 ± 0.047, their mean log₂ Pr −69.37 ± 0.09 against −69.40 ± 0.04, and three accepted samples re-scored in
+prob mode agree with the sampler's reported log₂ Pr to 9·10⁻⁷ (`results/fstate_hybrid_check.txt`,
+`results/fstate_hybrid_samples.txt`). Each sample costs about one width-34 pass.
+
+{Results of cloud run 7, in progress on a 32-core, 256 GiB node: exact probabilities of IBM's published doped shots
+with uniform controls, their XEB and fidelity estimates, the hybrid samples with their acceptance rate and maximum z,
+and the cross-order gate.}
+
+## 8. What this does and does not show
 
 It shows:
 - the 70-qubit instance is sampled exactly, from the Born distribution, on a laptop, so it does not
@@ -458,7 +506,7 @@ with a few hundred non-Clifford gates, as in the sibling instance, defeats this 
 case the exact scorer here can still compute full-depth XEB for any graph-state run up to about 80 qubits,
 so an experiment at that scale can report an exact benchmark instead of an extrapolated one.
 
-## 8. Related work
+## 9. Related work
 
 - Rank-width simulability of graph-state measurements: Van den Nest, Dür, Vidal, Briegel, PRA 75, 012337 (2007).
 - Perfect sampling of matrix product states: Ferris & Vidal, PRB 85, 165146 (2012).

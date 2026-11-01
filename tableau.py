@@ -33,12 +33,13 @@ class Tableau:
         s.r ^= s.xs[:, a] & s.xs[:, b] & (s.zs[:, a] ^ s.zs[:, b])
         s.zs[:, a] ^= s.xs[:, b]; s.zs[:, b] ^= s.xs[:, a]
     def apply(s, name, qs):
-        {"h": s.h, "s": s.s_, "sdg": s.sdg, "sx": s.sx, "x": s.x, "z": s.z}[name](*qs) if name != "cz" else s.cz(*qs)
+        {"h": s.h, "s": s.s_, "sdg": s.sdg, "sx": s.sx, "sxdg": s.sxdg, "x": s.x, "z": s.z}[name](*qs) if name != "cz" else s.cz(*qs)
+    def sxdg(s, q): s.h(q); s.sdg(q); s.h(q)      # H S^dag H = sqrt(X)^dag up to global phase
 
 def clifford_body(path):
     """Return (n, tableau of the leading Clifford part, remaining non-Clifford tail ops)."""
     n, ops = parse(path)
-    cl = {"h", "s", "sdg", "sx", "x", "z", "cz"}
+    cl = {"h", "s", "sdg", "sx", "sxdg", "x", "z", "cz"}
     T = Tableau(n); i = 0
     for i, (name, qs) in enumerate(ops):
         if name not in cl: break

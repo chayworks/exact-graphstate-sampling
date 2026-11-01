@@ -1,0 +1,18 @@
+{
+ "natural (data 0..69, then ancillas in time order)": {
+  "width": 137,
+  "log2_sum_2r": 143.07106443517287
+ },
+ "ancillas in time order, then data 0..69": {
+  "width": 70,
+  "log2_sum_2r": 78.35525726083902
+ },
+ "spatial sweep: qubit 0..69, each qubit's ancillas (time order) then its data vertex": {
+  "width": 34,
+  "log2_sum_2r": 40.86737930369989
+ },
+ "spatial sweep, data vertex first in each group": {
+  "width": 35,
+  "log2_sum_2r": 41.18380085024202
+ }
+}

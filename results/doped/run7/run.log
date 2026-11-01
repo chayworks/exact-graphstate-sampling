@@ -1,0 +1,33 @@
+2026-11-01T03:18:06Z boot nproc=32 mem=249G cpu= AMD EPYC 7571
+2026-11-01T08:44:02Z gate (cross-order, 1 shot): PASS [-68.29533088] [-68.295331335]; 9872s for the m20 pass; peak 	Maximum resident set size (kbytes): 134226760
+2026-11-01T08:49:05Z progress shots=0 samples= proposals=
+2026-11-01T08:54:07Z progress shots=0 samples= proposals=
+2026-11-01T08:59:10Z progress shots=0 samples= proposals=
+2026-11-01T09:04:13Z progress shots=0 samples= proposals=
+2026-11-01T09:09:17Z progress shots=0 samples= proposals=
+2026-11-01T09:14:20Z progress shots=0 samples= proposals=
+2026-11-01T09:19:23Z progress shots=0 samples= proposals=
+2026-11-01T09:24:26Z progress shots=0 samples= proposals=
+2026-11-01T09:29:28Z progress shots=0 samples= proposals=
+2026-11-01T09:34:31Z progress shots=0 samples= proposals=
+2026-11-01T09:39:34Z progress shots=0 samples= proposals=
+2026-11-01T09:44:38Z progress shots=0 samples= proposals=
+2026-11-01T09:49:41Z progress shots=0 samples= proposals=
+2026-11-01T09:54:44Z progress shots=0 samples= proposals=
+2026-11-01T09:59:47Z progress shots=0 samples= proposals=
+2026-11-01T10:04:50Z progress shots=0 samples= proposals=
+2026-11-01T10:09:52Z progress shots=0 samples= proposals=
+2026-11-01T10:14:56Z progress shots=0 samples= proposals=
+2026-11-01T10:19:59Z progress shots=0 samples= proposals=
+2026-11-01T10:25:02Z progress shots=0 samples= proposals=
+2026-11-01T10:30:05Z progress shots=0 samples= proposals=
+2026-11-01T10:35:09Z progress shots=0 samples= proposals=
+2026-11-01T10:40:12Z progress shots=0 samples= proposals=
+2026-11-01T10:45:16Z progress shots=0 samples= proposals=
+2026-11-01T10:50:19Z progress shots=0 samples= proposals=
+2026-11-01T10:55:22Z progress shots=0 samples= proposals=
+2026-11-01T11:00:26Z progress shots=0 samples= proposals=
+2026-11-01T11:05:29Z progress shots=0 samples= proposals=
+2026-11-01T11:10:31Z progress shots=0 samples= proposals=
+2026-11-01T11:14:46Z scoring ended: 0 strings (first 16 are uniform controls) in 9043s
+2026-11-01T11:15:34Z progress shots=0 samples=0 proposals=0
