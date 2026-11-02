@@ -1,0 +1,8 @@
+2026-11-01T19:40:09Z boot nproc=16 mem=123G cpu= AMD EPYC 9R14
+2026-11-01T21:18:41Z gate (shot #1 vs run 7): PASS [-68.295331107] run-7 value -68.295330880; 5888s for one sliced pass (4 slice passes); peak 	Maximum resident set size (kbytes): 67118812
+2026-11-01T21:23:43Z progress shots=0 samples= proposals=
+(... one progress line every 5 min, shots=0 ...)
+2026-11-01T22:54:12Z progress shots=0 samples= proposals=
+2026-11-01T22:59:13Z progress shots=1 samples= proposals=
+2026-11-01T23:04:14Z progress shots=1 samples= proposals=
+(terminated by us at 23:05 UTC to free the on-demand quota for run 12)

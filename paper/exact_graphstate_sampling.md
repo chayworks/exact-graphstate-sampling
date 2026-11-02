@@ -195,8 +195,33 @@ is 0.83 ± 0.22. The cross-check scheduled in that run produced nothing (its com
 killed by the kernel; `results/nq76/run.log`), so it was repeated in a second run. The independent sliced
 amplitude engine, rebuilt with complex64 tables and itself gated on the two known 70-qubit values (−69.5085289 and −68.8761655 against −69.5085302 and −68.8761651), recomputes
 the first two samples' log₂ Pr as −74.1389442 and −75.3402128 against the sampler's −74.1389441 and
-−75.3402127 (`results/nq76/analysis.txt`). An 80-qubit instance (seed 1080) has an order of width 35, a
-275 GB table; its inputs are prepared and the run waits on cloud capacity.
+−75.3402127 (`results/nq76/analysis.txt`).
+
+### 3.4 An 80-qubit instance, sampled on one node
+
+The 80-qubit, depth-80 instance (seed 1080, 1,573 edges) has an order of width 35, a 275 GB in-place table that no
+single node in our quota holds. Slicing one vertex (fixing its variable and summing the two half-problems) lowers the
+width to 34, but every vertex of this dense graph (degrees 30–50) has neighbours among the 20 sampled suffix qubits,
+which the slicing of §7 forbids: the slice's phase on a suffix neighbour cannot be folded into that neighbour's weight,
+because the suffix steps run once on the summed table. The way out is a property of the table itself. The in-place
+table is the dual representation: its entry at logical coordinate u is the summed weight of all prefix assignments
+whose linear functional on the suffix is φ(u) = Σ_i u_i B_i, where B is the cut basis the planner stores, and the
+partial amplitude is F(x_S) = Σ_u T(u)(−1)^{⟨φ(u),x_S⟩}. A phase (−1)^{⟨s,x_S⟩} on the suffix is therefore a
+translation of the table, T(u) → T(u + a) with s = Σ a_i B_i, which exists whenever s lies in the span of B; at the
+summation cut of a hybrid run (rank ≤ 20, spanned by 59 prefix rows) it always did. The planner writes the
+translation for each slice and the engine applies it when it sums the dumps (`sliced_plans.py`, `gsamp2 resume
+--twist`). We checked the representation entry by entry against a brute-force sum on a toy T-gadget circuit
+(`test_dual_table.py`, 2·10⁻⁸), the twisted two-slice sampler against the unsliced one on that toy (9·10⁻⁸ in log₂ Pr,
+with the untwisted sum off by 2.5 as a control) and at full scale on the 70-qubit instance (three proposals, identical
+sampled bits, 1.7·10⁻⁶ in log₂ Pr; a driver sample re-scored sliced and unsliced to 3.5·10⁻⁷; `test_twist.py`). The
+same checks ran as gates on the cloud node before the 80-qubit sampling (`results/nq80/run.log`).
+
+With vertex 34 sliced (width 34, 137 GB) and the last 20 qubits drawn exactly, one r7a.8xlarge (32 cores, 256 GiB)
+produced **{N} exact samples of the 80-qubit instance at {t} s each** (two passes of 2^{34} per proposal; `results/nq80/`):
+{acc} of {nprop} proposals accepted, z between {zmin} and {zmax}, none above the cap; XEB against their own exact
+probabilities {xeb}; the first two samples re-scored with an unrelated slicing (vertices 10 and 40, four slice passes)
+agree to {xc}. A scan of 16 other circuit seeds at n = 80 found widths 35–36 only
+(`results/frontier_instances/fi80_cseed_scan.log`), so the slicing, not a lucky instance, is what put 80 qubits on one node.
 
 ## 4. Verification
 
@@ -494,7 +519,10 @@ read from that run's output file):
 | 9 | r7iz.8xlarge, huge pages | m = 20 / m = 10 | −68.295331925 / −68.295330954 | 4,919 |
 | 10 | r7a.4xlarge, 128 GiB | two slices at ancillas 135, 104 (4 plans of width 33) | −68.295331107 | 5,888 (4 slice passes) |
 
-The five values span 1.1·10⁻⁶ in log₂, the rounding level of complex64 tables accumulated in different orders. The
+The five values span 1.1·10⁻⁶ in log₂, the rounding level of complex64 tables accumulated in different orders. Runs 9
+and 10 then scored the same uniformly random control string (not a hardware shot) at −72.910036757 and −72.910036839,
+an agreement of 8·10⁻⁸ between a different machine, layout and slicing; both runs ended before reaching further strings
+(run 9 was reclaimed by the spot market, run 10 was stopped to free its quota). The
 sixth value comes from a different method altogether: the tensor-network entry #242 published its amplitudes
 (Zenodo 10.5281/zenodo.21912448; q0-first strings, which are our Qiskit strings reversed, all 2,051 matching), and its
 shot 1 has log₂ p = −68.295074. The relative difference between the two methods is 1.8·10⁻⁴, within the precision of a

@@ -1,0 +1,113 @@
+Amazon Linux 2023 repository                     85 MB/s |  87 MB     00:01    
+Amazon Linux 2023 Kernel Livepatch repository   939 kB/s |  89 kB     00:00    
+Package libgomp-14.2.1-7.amzn2023.0.2.x86_64 is already installed.
+Package time-1.9-16.amzn2023.0.2.x86_64 is already installed.
+Dependencies resolved.
+================================================================================
+ Package              Arch     Version                      Repository     Size
+================================================================================
+Installing:
+ gcc-c++              x86_64   11.5.0-5.amzn2023.0.5        amazonlinux    15 M
+Installing dependencies:
+ annobin-docs         noarch   12.69-1.amzn2023.0.1         amazonlinux    93 k
+ annobin-plugin-gcc   x86_64   12.69-1.amzn2023.0.1         amazonlinux   974 k
+ cpp                  x86_64   11.5.0-5.amzn2023.0.5        amazonlinux    11 M
+ gc                   x86_64   8.0.4-5.amzn2023.0.2         amazonlinux   105 k
+ gcc                  x86_64   11.5.0-5.amzn2023.0.5        amazonlinux    36 M
+ gcc-plugin-annobin   x86_64   11.5.0-5.amzn2023.0.5        amazonlinux    38 k
+ glibc-devel          x86_64   2.34-231.amzn2023.0.5        amazonlinux    33 k
+ glibc-headers-x86    noarch   2.34-231.amzn2023.0.5        amazonlinux   439 k
+ guile22              x86_64   2.2.7-2.amzn2023.0.3         amazonlinux   6.4 M
+ kernel6.18-headers   x86_64   1:6.18.56-125.164.amzn2023   amazonlinux   1.6 M
+ libmpc               x86_64   1.2.1-2.amzn2023.0.2         amazonlinux    62 k
+ libstdc++-devel      x86_64   11.5.0-5.amzn2023.0.5        amazonlinux   2.2 M
+ libtool-ltdl         x86_64   2.4.7-1.amzn2023.0.3         amazonlinux    38 k
+ libxcrypt-devel      x86_64   4.4.33-7.amzn2023            amazonlinux    32 k
+ make                 x86_64   1:4.3-5.amzn2023.0.2         amazonlinux   534 k
+
+Transaction Summary
+================================================================================
+Install  16 Packages
+
+Total download size: 74 M
+Installed size: 238 M
+Downloading Packages:
+(1/16): annobin-docs-12.69-1.amzn2023.0.1.noarc 3.2 MB/s |  93 kB     00:00    
+(2/16): annobin-plugin-gcc-12.69-1.amzn2023.0.1  26 MB/s | 974 kB     00:00    
+(3/16): gc-8.0.4-5.amzn2023.0.2.x86_64.rpm      4.1 MB/s | 105 kB     00:00    
+(4/16): cpp-11.5.0-5.amzn2023.0.5.x86_64.rpm     78 MB/s |  11 MB     00:00    
+(5/16): gcc-plugin-annobin-11.5.0-5.amzn2023.0. 1.5 MB/s |  38 kB     00:00    
+(6/16): glibc-devel-2.34-231.amzn2023.0.5.x86_6 1.2 MB/s |  33 kB     00:00    
+(7/16): gcc-c++-11.5.0-5.amzn2023.0.5.x86_64.rp  77 MB/s |  15 MB     00:00    
+(8/16): glibc-headers-x86-2.34-231.amzn2023.0.5 7.5 MB/s | 439 kB     00:00    
+(9/16): kernel6.18-headers-6.18.56-125.164.amzn  51 MB/s | 1.6 MB     00:00    
+(10/16): libmpc-1.2.1-2.amzn2023.0.2.x86_64.rpm 2.1 MB/s |  62 kB     00:00    
+(11/16): guile22-2.2.7-2.amzn2023.0.3.x86_64.rp  75 MB/s | 6.4 MB     00:00    
+(12/16): libstdc++-devel-11.5.0-5.amzn2023.0.5.  65 MB/s | 2.2 MB     00:00    
+(13/16): libtool-ltdl-2.4.7-1.amzn2023.0.3.x86_ 1.4 MB/s |  38 kB     00:00    
+(14/16): libxcrypt-devel-4.4.33-7.amzn2023.x86_ 1.1 MB/s |  32 kB     00:00    
+(15/16): make-4.3-5.amzn2023.0.2.x86_64.rpm      17 MB/s | 534 kB     00:00    
+(16/16): gcc-11.5.0-5.amzn2023.0.5.x86_64.rpm    80 MB/s |  36 MB     00:00    
+--------------------------------------------------------------------------------
+Total                                           139 MB/s |  74 MB     00:00     
+Running transaction check
+Transaction check succeeded.
+Running transaction test
+Transaction test succeeded.
+Running transaction
+  Preparing        :                                                        1/1 
+  Installing       : libmpc-1.2.1-2.amzn2023.0.2.x86_64                    1/16 
+  Installing       : cpp-11.5.0-5.amzn2023.0.5.x86_64                      2/16 
+  Installing       : libtool-ltdl-2.4.7-1.amzn2023.0.3.x86_64              3/16 
+  Installing       : libstdc++-devel-11.5.0-5.amzn2023.0.5.x86_64          4/16 
+  Installing       : kernel6.18-headers-1:6.18.56-125.164.amzn2023.x86_    5/16 
+  Installing       : glibc-headers-x86-2.34-231.amzn2023.0.5.noarch        6/16 
+  Installing       : libxcrypt-devel-4.4.33-7.amzn2023.x86_64              7/16 
+  Installing       : glibc-devel-2.34-231.amzn2023.0.5.x86_64              8/16 
+  Installing       : gc-8.0.4-5.amzn2023.0.2.x86_64                        9/16 
+  Installing       : guile22-2.2.7-2.amzn2023.0.3.x86_64                  10/16 
+  Installing       : make-1:4.3-5.amzn2023.0.2.x86_64                     11/16 
+  Installing       : gcc-11.5.0-5.amzn2023.0.5.x86_64                     12/16 
+  Running scriptlet: gcc-11.5.0-5.amzn2023.0.5.x86_64                     12/16 
+  Installing       : annobin-docs-12.69-1.amzn2023.0.1.noarch             13/16 
+  Installing       : annobin-plugin-gcc-12.69-1.amzn2023.0.1.x86_64       14/16 
+  Running scriptlet: annobin-plugin-gcc-12.69-1.amzn2023.0.1.x86_64       14/16 
+  Installing       : gcc-c++-11.5.0-5.amzn2023.0.5.x86_64                 15/16 
+  Installing       : gcc-plugin-annobin-11.5.0-5.amzn2023.0.5.x86_64      16/16 
+  Running scriptlet: gcc-plugin-annobin-11.5.0-5.amzn2023.0.5.x86_64      16/16 
+  Verifying        : annobin-docs-12.69-1.amzn2023.0.1.noarch              1/16 
+  Verifying        : annobin-plugin-gcc-12.69-1.amzn2023.0.1.x86_64        2/16 
+  Verifying        : cpp-11.5.0-5.amzn2023.0.5.x86_64                      3/16 
+  Verifying        : gc-8.0.4-5.amzn2023.0.2.x86_64                        4/16 
+  Verifying        : gcc-11.5.0-5.amzn2023.0.5.x86_64                      5/16 
+  Verifying        : gcc-c++-11.5.0-5.amzn2023.0.5.x86_64                  6/16 
+  Verifying        : gcc-plugin-annobin-11.5.0-5.amzn2023.0.5.x86_64       7/16 
+  Verifying        : glibc-devel-2.34-231.amzn2023.0.5.x86_64              8/16 
+  Verifying        : glibc-headers-x86-2.34-231.amzn2023.0.5.noarch        9/16 
+  Verifying        : guile22-2.2.7-2.amzn2023.0.3.x86_64                  10/16 
+  Verifying        : kernel6.18-headers-1:6.18.56-125.164.amzn2023.x86_   11/16 
+  Verifying        : libmpc-1.2.1-2.amzn2023.0.2.x86_64                   12/16 
+  Verifying        : libstdc++-devel-11.5.0-5.amzn2023.0.5.x86_64         13/16 
+  Verifying        : libtool-ltdl-2.4.7-1.amzn2023.0.3.x86_64             14/16 
+  Verifying        : libxcrypt-devel-4.4.33-7.amzn2023.x86_64             15/16 
+  Verifying        : make-1:4.3-5.amzn2023.0.2.x86_64                     16/16 
+
+Installed:
+  annobin-docs-12.69-1.amzn2023.0.1.noarch                                      
+  annobin-plugin-gcc-12.69-1.amzn2023.0.1.x86_64                                
+  cpp-11.5.0-5.amzn2023.0.5.x86_64                                              
+  gc-8.0.4-5.amzn2023.0.2.x86_64                                                
+  gcc-11.5.0-5.amzn2023.0.5.x86_64                                              
+  gcc-c++-11.5.0-5.amzn2023.0.5.x86_64                                          
+  gcc-plugin-annobin-11.5.0-5.amzn2023.0.5.x86_64                               
+  glibc-devel-2.34-231.amzn2023.0.5.x86_64                                      
+  glibc-headers-x86-2.34-231.amzn2023.0.5.noarch                                
+  guile22-2.2.7-2.amzn2023.0.3.x86_64                                           
+  kernel6.18-headers-1:6.18.56-125.164.amzn2023.x86_64                          
+  libmpc-1.2.1-2.amzn2023.0.2.x86_64                                            
+  libstdc++-devel-11.5.0-5.amzn2023.0.5.x86_64                                  
+  libtool-ltdl-2.4.7-1.amzn2023.0.3.x86_64                                      
+  libxcrypt-devel-4.4.33-7.amzn2023.x86_64                                      
+  make-1:4.3-5.amzn2023.0.2.x86_64                                              
+
+Complete!

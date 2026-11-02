@@ -1,0 +1,8 @@
+	Command being timed: "python3 doped_sampler.py score doped_m20sl_s00.txt doped_m20_step_vertices.json gate_shots.txt gate.txt --qiskit --slices doped_m20sl_s00.txt,doped_m20sl_s01.txt,doped_m20sl_s10.txt,doped_m20sl_s11.txt --K 518"
+	User time (seconds): 90450.40
+	System time (seconds): 20.54
+	Percent of CPU this job got: 1536%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 1:38:07
+	Maximum resident set size (kbytes): 67118812
+	Minor (reclaiming a frame) page faults: 154110
+	Exit status: 0

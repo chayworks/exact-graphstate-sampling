@@ -1,0 +1,32 @@
+2026-11-01T18:33:22Z boot nproc=32 mem=247G cpu= Intel(R) Xeon(R) Gold 6455B
+2026-11-01T21:17:29Z gate (cross-order, 1 shot): PASS [-68.295331925] [-68.295330954]; 4919s for the m20 pass; peak 	Maximum resident set size (kbytes): 134227596
+2026-11-01T21:22:31Z progress shots=0 samples= proposals=
+2026-11-01T21:27:33Z progress shots=0 samples= proposals=
+2026-11-01T21:32:35Z progress shots=0 samples= proposals=
+2026-11-01T21:37:37Z progress shots=0 samples= proposals=
+2026-11-01T21:42:39Z progress shots=0 samples= proposals=
+2026-11-01T21:47:41Z progress shots=0 samples= proposals=
+2026-11-01T21:52:43Z progress shots=0 samples= proposals=
+2026-11-01T21:57:45Z progress shots=0 samples= proposals=
+2026-11-01T22:02:47Z progress shots=0 samples= proposals=
+2026-11-01T22:07:50Z progress shots=0 samples= proposals=
+2026-11-01T22:12:52Z progress shots=0 samples= proposals=
+2026-11-01T22:17:54Z progress shots=0 samples= proposals=
+2026-11-01T22:22:56Z progress shots=0 samples= proposals=
+2026-11-01T22:27:58Z progress shots=0 samples= proposals=
+2026-11-01T22:33:00Z progress shots=0 samples= proposals=
+2026-11-01T22:38:02Z progress shots=0 samples= proposals=
+2026-11-01T22:43:04Z progress shots=1 samples= proposals=
+2026-11-01T22:48:06Z progress shots=1 samples= proposals=
+2026-11-01T22:53:08Z progress shots=1 samples= proposals=
+2026-11-01T22:58:10Z progress shots=1 samples= proposals=
+2026-11-01T23:03:12Z progress shots=1 samples= proposals=
+2026-11-01T23:08:14Z progress shots=1 samples= proposals=
+2026-11-01T23:13:16Z progress shots=1 samples= proposals=
+2026-11-01T23:18:18Z progress shots=1 samples= proposals=
+2026-11-01T23:23:21Z progress shots=1 samples= proposals=
+2026-11-01T23:28:23Z progress shots=1 samples= proposals=
+2026-11-01T23:33:25Z progress shots=1 samples= proposals=
+2026-11-01T23:38:27Z progress shots=1 samples= proposals=
+2026-11-01T23:43:29Z progress shots=1 samples= proposals=
+2026-11-01T23:48:31Z progress shots=1 samples= proposals=
