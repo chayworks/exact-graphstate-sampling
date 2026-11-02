@@ -58,13 +58,15 @@ Four further results follow from having the exact probabilities in hand.
    0.26 ± 0.02.
 
 Two further facts follow from the stabilizer structure. The output distribution of the instance is **exactly
-uniform on every set of at most 14 qubits** (the minimum stabilizer weight of the graph state is exactly 15,
-proven by exhaustive enumeration), so no statistic on fewer than 15 qubits can see the signal, and verification of such an
-experiment is global by nature. Conversely any low-order bias in the hardware shots is pure noise, detectable
-without simulation: all 70 single-bit, 2,415 pair, 54,740 triple and 916,895 quadruple parities of IBM's
-post-selected shots are at chance (χ² p = 0.78, 0.36, 0.28, 0.95). With 1,726 shots that rules out any qubit or
-parity whose marginal departs from ½ by more than about 4 percentage points (3σ); biases below that, as a 1%
-per-qubit error rate would leave, are beneath the test's power.
+uniform on every set of at most 14 qubits**: the graph state is a [[70, 0, 15]] stabilizer code, equivalently a
+14-uniform state, its distance 15 proven by exhaustive enumeration, so no statistic on fewer than 15 qubits can see
+the signal, and verification of such an experiment is global by nature. The same fact limits what low-order
+statistics of the hardware shots can show: a Pauli error anywhere in the circuit leaves a stabilizer state with the
+same group up to signs, whose marginals below weight 15 are still exactly uniform, so only readout asymmetry and
+non-Pauli channels can bias them. All 70 single-bit, 2,415 pair, 54,740 triple and 916,895 quadruple parities of
+IBM's post-selected shots are at chance (χ² p = 0.78, 0.36, 0.28, 0.95), which bounds such biases at about
+4 percentage points per qubit or parity (3σ with 1,726 shots) and says nothing about the Pauli-type noise that
+presumably dominates the fidelity loss.
 
 The method is two standard ingredients joined by one identity: the rank-width simulability of graph-state
 measurements (Van den Nest et al. 2007) and perfect sampling in the style of Ferris and Vidal (2012), joined
@@ -472,6 +474,12 @@ those elements of sign(S) Π_j n_j[S_j] = ±3^{−|U|/2}, an odd number of terms
 vanish. ∎ (For a general product basis with nonzero Bloch components "if" still holds and "only if" holds
 unless three such terms cancel exactly.)
 
+In coding terms |G⟩ is a [[n, 0, d_min]] stabilizer code and d_min is its distance; the uniformity of every marginal
+on fewer than d_min qubits in every product basis is the statement that the state is (d_min − 1)-uniform, the known
+equivalence between k-uniform states and pure codes of distance k + 1 (Scott 2004). The "if" direction of the
+proposition is that fact; the "only if" for the face-state basis is the part specific to this measurement; and the
+minimum-weight search below is a code-distance computation.
+
 For IBM's instance **d_min = 15 exactly**, by a three-way split that is exhaustive (`minweight_exact.py`,
 `results/minweight_exact.txt`): a stabilizer of weight ≤ 14 has either at most 11 X-support vertices (all
 2.6·10¹² such v enumerated, lightest 15; `minweight.cpp`, `results/minweight_k11.txt`), or at most 11
@@ -500,17 +508,25 @@ The threshold grows with the size of the experiment. For generated instances of 
 | minimum stabilizer weight d_min | 6 | 8 | 9 | 12 | 15 |
 
 So the smallest marginal that carries any signal grows roughly like n/5: at 100 qubits one would expect every
-marginal on about 20 qubits to be exactly uniform.
+marginal on about 20 qubits to be exactly uniform. The ratio d_min/n ≈ 0.19–0.21 at n = 60–70 is close to the quantum
+Gilbert–Varshamov rate for random stabilizer codes of rate zero (δ ≈ 0.19), as one would expect of a random-like
+construction; we note this as an observation.
 
-The same fact turns the hardware shots into a simulation-free diagnostic. Any deviation of a ≤ 14-qubit
-marginal of the device from uniform is noise, measurable from the shots alone. For IBM's 1,726 post-selected
-shots all 70 single-bit means (χ² 61 on 70, p = 0.78), 2,415 pair parities (p = 0.36, largest |z| 4.4),
-54,740 triple parities (p = 0.28) and 916,895 quadruple parities (p = 0.95, largest |z| 5.6, which is p ≈ 0.02
-after correcting for the number of tests) are at chance (`results/hw_marginals.txt`). What 1,726 shots can detect is a qubit or parity whose marginal
-departs from ½ by more than about 4 percentage points (3σ). Within that power the errors that bring the fidelity to
-about 0.46 leave no low-order trace: no qubit biased by 4 points or more, no pair, triple or quadruple parity at that
-level. Smaller biases, as a 1% per-qubit error rate would leave, are below the test's reach, so the result is
-consistent with global depolarisation but does not establish it (Figure 4).
+The same fact turns the hardware shots into a simulation-free diagnostic, but of a restricted kind. A Pauli error
+anywhere in the circuit, propagated through the Clifford part, acts on |G⟩ as a Pauli operator and leaves a
+stabilizer state with the same group up to signs; by the proposition its marginals on fewer than 15 qubits are still
+exactly uniform, whatever the error rate, and so are those of any mixture of such states. Pauli-type noise
+(depolarising, dephasing, Pauli errors on the gates, and the frames selected by the Pauli checks) therefore cannot
+bias these marginals at all. A coherent mis-rotation of the final layer cannot either, since the "if" direction holds
+in every product basis. What can is asymmetric readout (a bit that reads 1 more often than 0 regardless of the state)
+and non-Pauli channels such as amplitude damping or leakage. For IBM's 1,726 post-selected shots all 70 single-bit
+means (χ² 61 on 70, p = 0.78), 2,415 pair parities (p = 0.36, largest |z| 4.4), 54,740 triple parities (p = 0.28) and
+916,895 quadruple parities (p = 0.95, largest |z| 5.6, which is p ≈ 0.02 after correcting for the number of tests) are
+at chance (`results/hw_marginals.txt`). What 1,726 shots can detect is a marginal departing from ½ by more than about
+4 percentage points (3σ), so the statement is: after post-selection, readout asymmetry and other non-Pauli effects on
+IBM Boston are below about 4 points on every qubit and every parity of up to four qubits. The test says nothing about
+the Pauli-type noise that presumably accounts for most of the gap between fidelity 0.46 and 1, which is why it is
+consistent with, but no evidence for, global depolarisation (Figure 4).
 
 ![Low-order parities of the hardware shots](fig/fig4_marginals.png)
 
@@ -531,7 +547,11 @@ onto |φ⟩ = (|0⟩ + e^{−iπ/4}|1⟩)/√2 give ⟨φ|_a CNOT |ψ⟩_q|0⟩_
 ZT|ψ⟩/√2, so each projection succeeds with probability exactly ½ whatever the state). The projection is a product
 measurement: apply T then H to the ancilla and keep outcome 0. Hence the doped circuit is a Clifford circuit on
 70 + 468 = 538 qubits followed by a product measurement, a graph state measured in a product basis, and
-Pr(all 468 projections succeed) = 2^{−468} exactly, so Pr_doped(b) = 2^{468}·Pr_gadget(b, anc = 0). We checked the
+Pr(all 468 projections succeed) = 2^{−468} exactly, so Pr_doped(b) = 2^{468}·Pr_gadget(b, anc = 0). This gadget is the
+T-injection that Renaud's `dcs-rankwidth` (tracker #249) applies with a linear rank-width order to a different doped
+instance (64 qubits, 314 T gates, width 36, probabilities on 192-core, 3 TB nodes); what is added here is its
+application to the 70-qubit flagship with an order of width 34 on one 128 GiB node, the string-by-string comparison
+with #242, and the hybrid sampler below. We checked the
 identity on 20 random circuits against dense statevectors (1e-10), the whole pipeline on 25 more (1e-15), and the
 sampler binary itself on 12 (1e-8), each with a control that drops the ancilla's T (`doped_gadget.py`, `test_doped.py`,
 `test_gsamp2_doped.py`).
@@ -621,8 +641,9 @@ It shows:
   80 on a 256 GiB node, and a 32 TB node would take the fitted width to about 90), within a supercomputer's to
   about 90 at the ceiling, and that no choice of graph changes this by more than a few qubits (random graphs
   measured within one of the brickwork);
-- the output distribution is exactly uniform on every set of at most 14 qubits, and IBM's shots show no
-  low-order bias above the 4-point level that 1,726 shots can detect;
+- the output distribution is exactly uniform on every set of at most 14 qubits (the graph state is a [[70, 0, 15]]
+  code), and IBM's shots show no readout-type bias above the 4-point level that 1,726 shots can detect (Pauli noise
+  cannot show in these marginals, so this is not a statement about the noise that sets the fidelity);
 - the doped flagship's amplitudes are computed exactly on one node after the T-gadget (width 34), agreeing with the
   tensor-network entry #242 string by string.
 
@@ -645,9 +666,12 @@ scale can report an exact benchmark instead of an extrapolated one.
 - Rank-width simulability of graph-state measurements: Van den Nest, Dür, Vidal, Briegel, PRA 75, 012337 (2007).
 - Schmidt decomposition of graph states across a cut (the orthonormality identity of §2): Hein, Eisert, Briegel,
   PRA 69, 062311 (2004).
+- k-uniform states and codes of distance k + 1 (the framing of §6): Scott, PRA 69, 052330 (2004).
 - Perfect sampling of matrix product states: Ferris & Vidal, PRB 85, 165146 (2012).
 - ZX-calculus rank-width contraction: Kuyanov & Kissinger, arXiv:2603.06764.
-- Exact amplitudes of IBM's doped circuits by T-injection and rank-width: Renaud, `dcs-rankwidth`; tracker #249.
+- Exact amplitudes of a doped instance by T-injection and linear rank-width: Kim Renaud (Calcul Québec),
+  `dcs-rankwidth`, tracker #249 (22 September 2026): the 64-qubit, 314-T instance of #245, width 36, 1,389
+  probabilities at 382 s each on 192-core nodes, linear XEB 0.390 [0.325, 0.457].
 - Capped rejection sampling for this instance on GPUs: tracker #260 (Qiu, 30 October 2026; closed by its author on
   2 November in favour of #261).
 - Exact sampling of this instance by a half/half split on 8 H200 GPUs: tracker #261 (Zhongpu Qiu, Shanghai AI
