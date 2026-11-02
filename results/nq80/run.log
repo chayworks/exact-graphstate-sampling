@@ -1,0 +1,74 @@
+2026-11-01T23:13:33Z boot nproc=32 mem=246G cpu= AMD EPYC 9R14
+2026-11-01T23:14:21Z gate70: PASS [-69.508529982592, -68.876164845958] (23s for 2 strings)
+2026-11-01T23:15:12Z gate twist70: PASS ['-70.187057782949', '-68.696386734722', '-69.196550842810'] ['-70.187058605461', '-68.696386725067', '-69.196551123982'] bits equal: [True, True, True] (51s)
+2026-11-01T23:20:14Z progress samples=1 proposals=1 xcheck=
+2026-11-01T23:25:16Z progress samples=2 proposals=2 xcheck=
+2026-11-01T23:30:18Z progress samples=3 proposals=3 xcheck=
+2026-11-01T23:35:20Z progress samples=4 proposals=4 xcheck=
+2026-11-01T23:40:21Z progress samples=6 proposals=6 xcheck=
+2026-11-01T23:45:23Z progress samples=7 proposals=7 xcheck=
+2026-11-01T23:50:25Z progress samples=8 proposals=8 xcheck=
+2026-11-01T23:55:27Z progress samples=9 proposals=9 xcheck=
+2026-11-02T00:00:29Z progress samples=11 proposals=11 xcheck=
+2026-11-02T00:05:32Z progress samples=12 proposals=12 xcheck=
+2026-11-02T00:10:34Z progress samples=13 proposals=13 xcheck=
+2026-11-02T00:15:36Z progress samples=14 proposals=14 xcheck=
+2026-11-02T00:20:37Z progress samples=16 proposals=16 xcheck=
+2026-11-02T00:25:39Z progress samples=17 proposals=17 xcheck=
+2026-11-02T00:30:41Z progress samples=18 proposals=18 xcheck=
+2026-11-02T00:35:43Z progress samples=19 proposals=19 xcheck=
+2026-11-02T00:40:45Z progress samples=21 proposals=21 xcheck=
+2026-11-02T00:45:47Z progress samples=22 proposals=22 xcheck=
+2026-11-02T00:50:50Z progress samples=23 proposals=23 xcheck=
+2026-11-02T00:55:51Z progress samples=24 proposals=24 xcheck=
+2026-11-02T01:00:53Z progress samples=26 proposals=26 xcheck=
+2026-11-02T01:05:55Z progress samples=27 proposals=27 xcheck=
+2026-11-02T01:10:57Z progress samples=28 proposals=28 xcheck=
+2026-11-02T01:15:59Z progress samples=29 proposals=29 xcheck=
+2026-11-02T01:21:02Z progress samples=30 proposals=30 xcheck=
+2026-11-02T01:26:04Z progress samples=32 proposals=32 xcheck=
+2026-11-02T01:31:06Z progress samples=33 proposals=33 xcheck=
+2026-11-02T01:36:08Z progress samples=34 proposals=34 xcheck=
+2026-11-02T01:41:11Z progress samples=35 proposals=35 xcheck=
+2026-11-02T01:46:13Z progress samples=36 proposals=37 xcheck=
+2026-11-02T01:51:15Z progress samples=37 proposals=38 xcheck=
+2026-11-02T01:56:16Z progress samples=38 proposals=39 xcheck=
+2026-11-02T02:01:18Z progress samples=39 proposals=40 xcheck=
+2026-11-02T02:06:21Z progress samples=40 proposals=41 xcheck=
+2026-11-02T02:11:22Z progress samples=42 proposals=43 xcheck=
+2026-11-02T02:16:24Z progress samples=43 proposals=44 xcheck=
+2026-11-02T02:21:27Z progress samples=44 proposals=45 xcheck=
+2026-11-02T02:26:29Z progress samples=45 proposals=46 xcheck=
+2026-11-02T02:31:31Z progress samples=47 proposals=48 xcheck=
+2026-11-02T02:36:33Z progress samples=48 proposals=49 xcheck=
+2026-11-02T02:41:35Z progress samples=49 proposals=50 xcheck=
+2026-11-02T02:46:37Z progress samples=50 proposals=51 xcheck=
+2026-11-02T02:51:39Z progress samples=52 proposals=53 xcheck=
+2026-11-02T02:56:41Z progress samples=53 proposals=54 xcheck=
+2026-11-02T03:01:43Z progress samples=54 proposals=55 xcheck=
+2026-11-02T03:06:45Z progress samples=55 proposals=56 xcheck=
+2026-11-02T03:11:48Z progress samples=57 proposals=58 xcheck=
+2026-11-02T03:16:50Z progress samples=58 proposals=59 xcheck=
+2026-11-02T03:21:52Z progress samples=59 proposals=60 xcheck=
+2026-11-02T03:26:54Z progress samples=60 proposals=61 xcheck=
+2026-11-02T03:31:56Z progress samples=61 proposals=62 xcheck=
+2026-11-02T03:36:58Z progress samples=63 proposals=64 xcheck=
+2026-11-02T03:42:00Z progress samples=64 proposals=65 xcheck=
+2026-11-02T03:47:02Z progress samples=65 proposals=66 xcheck=
+2026-11-02T03:52:03Z progress samples=66 proposals=67 xcheck=
+2026-11-02T03:57:06Z progress samples=68 proposals=69 xcheck=
+2026-11-02T04:02:08Z progress samples=69 proposals=70 xcheck=
+2026-11-02T04:07:10Z progress samples=70 proposals=71 xcheck=
+2026-11-02T04:12:12Z progress samples=71 proposals=72 xcheck=
+2026-11-02T04:17:15Z progress samples=73 proposals=74 xcheck=
+2026-11-02T04:22:17Z progress samples=74 proposals=75 xcheck=
+2026-11-02T04:27:19Z progress samples=75 proposals=76 xcheck=
+2026-11-02T04:32:21Z progress samples=76 proposals=77 xcheck=
+2026-11-02T04:37:23Z progress samples=77 proposals=78 xcheck=
+2026-11-02T04:42:25Z progress samples=78 proposals=79 xcheck=
+2026-11-02T04:43:33Z sampling ended: 79 accepted of 80 proposals in 19700s; max z 1.001777; peak 	Maximum resident set size (kbytes): 134222824
+2026-11-02T04:47:27Z progress samples=79 proposals=80 xcheck=0
+2026-11-02T04:52:29Z progress samples=79 proposals=80 xcheck=1
+2026-11-02T04:57:31Z progress samples=79 proposals=80 xcheck=1
+2026-11-02T04:59:19Z xcheck ended: 2 strings re-scored with the pair slicing in 945s
+2026-11-02T04:59:19Z finish: complete

@@ -3,7 +3,7 @@
 **A laptop draws exact samples from the ideal output distribution of the 70-qubit, depth-70 random-graph-state
 circuit that IBM and the University of Chicago ran as a quantum-advantage candidate (Quantum Advantage Tracker
 #151), in about 18 s per sample. The same code scores IBM's 1,726 published hardware shots exactly, at full
-depth, and samples a 76-qubit instance of the construction on one cloud node.**
+depth, and samples 76- and 80-qubit instances of the construction on one cloud node.**
 
 Technical note: [`paper/exact_graphstate_sampling.pdf`](paper/exact_graphstate_sampling.pdf) (Markdown source alongside).
 
@@ -14,6 +14,7 @@ Technical note: [`paper/exact_graphstate_sampling.pdf`](paper/exact_graphstate_s
 | IBM's hardware shots scored exactly | **linear XEB 0.466 ± 0.031**; controls consistent with zero; every shot agrees with the independent code of #260 to 9.4e-6 | `results/ibmxeb/analysis.txt` |
 | Fidelity of IBM's run, from exact probabilities | 0.457 ± 0.037 (XEB) and 0.48 [0.43, 0.54] (mixture MLE), against IBM's DFE 0.37 (≥ 0.092) | `results/ibmxeb/analysis.txt` |
 | 76-qubit, depth-76 instance | **19 exact samples, 190 s each**, 69 GB, two reproduced to 1e-7 by the independent engine | `results/nq76/analysis.txt` |
+| 80-qubit, depth-80 instance on one 256 GiB node | **79 exact samples, 246 s per proposal**, width 35 sliced to 34 by a translation of the dual table; two re-scored by an unrelated slicing to 5e-7 | `results/nq80/analysis.txt` |
 | Conditionals checked without a dynamic program | stabilizer-group formula matches the sampler to 3.3e-8 on all 1,726 shots | `results/chain/stabprefix_ibm_fwd.txt` |
 | Ceiling for every graph | width ≤ ⌊n/2⌋, so 2^{n/2} entries suffice for any graph state in any product basis: 275 GB at 70 qubits, 281 TB at 90; random graphs G(70, ½) reach 32, brickwork 31 | note §5, `results/ceiling_tightness.jsonl` |
 | Where the signal is | minimum stabilizer weight 15 (proven), so every marginal on ≤ 14 qubits is exactly uniform; IBM's shots show no 1-, 2-, 3- or 4-bit bias (χ² p = 0.78, 0.36, 0.28, 0.95) | `results/minweight_exact.txt`, `results/hw_marginals.txt` |
@@ -108,9 +109,14 @@ Full-instance runs (all on AWS r7a.4xlarge, 16 cores, AMD EPYC 9R14, 123 GB):
   of log₂ Pr); per-step hardware/ideal ratios at the 8 informative qubits are 0.43–0.54.
 - **76 qubits, 2026-10-31:** seed-1076 instance of the construction, width 33, 19 exact samples in 3,604 s, 69 GB
   (`results/nq76/`); the independent engine, gated on the two known 70-qubit values, reproduces two samples to 1e-7.
+- **80 qubits, 2026-11-02:** seed-1080 instance, width 35 (275 GB), run at width 34 on one r7a.8xlarge (256 GiB) by
+  slicing vertex 34 with a translation of the dual table (`sliced_plans.py`, `gsamp2 resume --twist`): 79 exact samples,
+  79 of 80 proposals accepted, 246 s per proposal, peak 128 GiB (`results/nq80/`); two samples re-scored with the
+  (10, 40) pair slicing agree to 5e-7; gates on the node: two known 70-qubit values to 2.6e-7 and twisted vs unsliced
+  hybrid on three 70-qubit proposals to 8.2e-7 with identical bits.
 
 Self-consistency, not an independent check: the linear XEB of our own samples is 1.020 ± 0.047
-(2⁷⁰ Σp² ≈ 2.02, Porter–Thomas would give 2); for the 76-qubit samples 0.83 ± 0.22.
+(2⁷⁰ Σp² ≈ 2.02, Porter–Thomas would give 2); for the 76-qubit samples 0.83 ± 0.22; for the 80-qubit samples 1.02 ± 0.14.
 
 ## Relation to prior work
 
@@ -119,9 +125,10 @@ Rank-width simulation of graph-state measurements is known (Van den Nest, Dür, 
 (2026-10-30) applies it to this instance with capped rejection sampling on two H200 GPUs, which is not an exact
 Born sampler. New here: exact Born sampling through the prefix-marginal identity, the in-place single-table
 layout and the laptop run, the exact full-depth scoring of IBM's hardware shots with controls and fidelity
-estimators, the stabilizer-only check of the sampler's conditionals, the measured 76-qubit point and the
-⌊n/2⌋ ceiling. The claim is about this family of experiments, not a new complexity result. The doped sibling
-instance (468 T gates) is outside the reach of this method.
+estimators, the stabilizer-only check of the sampler's conditionals, the measured 76- and 80-qubit points, the
+dual-table translation that makes dense graphs sliceable, and the ⌊n/2⌋ ceiling. The claim is about this family of
+experiments, not a new complexity result. The doped sibling instance (468 T gates) is reached through the T-gadget
+and the hybrid sampler (`results/doped/`), at about 1.5–2.7 h per IBM shot on one node.
 
 ## Author
 

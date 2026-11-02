@@ -27,7 +27,9 @@ Three further results follow from having the exact probabilities in hand.
 2. **The frontier, measured rather than projected.** The width that governs the attack grows as 0.49·n − 2.9
    for this construction at depth n, so memory doubles every two qubits. We sampled a 76-qubit, depth-76
    instance exactly on the same 16-core node class (19 samples, 190 s each, 69 GB), with two samples reproduced
-   to 10⁻⁷ by an independent engine. An 80-qubit instance is prepared (275 GB).
+   to 10⁻⁷ by an independent engine. An 80-qubit, depth-80 instance (width 35, a 275 GB table) was then sampled
+   exactly on one 256 GiB node by slicing one vertex with a translation of the dual table (§3.4): 79 exact samples
+   at 246 s per proposal, two re-scored by an unrelated slicing to 5·10⁻⁷.
 3. **A ceiling that holds for every graph.** Because a cut rank never exceeds min(|P|, n − |P|), *any*
    n-qubit graph state measured in *any* product basis is exactly samplable with 2^{⌊n/2⌋} table entries:
    275 GB at 70 qubits, 2.2 TB at 76, 281 TB at 90, 9 PB at 100. No graph-state sampling experiment with
@@ -64,6 +66,7 @@ three different dynamic-program paths.
 | Agreement with the independent code of #260 | 1,726 of 1,726 shots within 9.4·10⁻⁶ in log₂ Pr (median 2.8·10⁻⁷) | `results/ibmxeb/analysis.txt` |
 | Fidelity of IBM's run from exact probabilities | 0.457 ± 0.037 (XEB) and 0.48 [0.43, 0.54] (mixture MLE); IBM's DFE 0.37, ≥ 0.092 | `results/ibmxeb/analysis.txt` |
 | 76-qubit, depth-76 instance sampled exactly | **19 samples, 190 s each**, 69 GB, two reproduced to 10⁻⁷ by the independent engine | `results/nq76/analysis.txt` |
+| 80-qubit, depth-80 instance sampled exactly on one 256 GiB node | **79 samples, 246 s per proposal**, width 35 sliced to 34 (128 GiB) by a translation of the dual table; two re-scored by an unrelated slicing to 5·10⁻⁷ | `results/nq80/analysis.txt` |
 | Fine-structure check without a dynamic program | stabilizer-group formula reproduces the sampler's conditionals to 3.3·10⁻⁸ on all shots | `results/chain/stabprefix_ibm_fwd.txt` |
 | Ceiling for every graph | width ≤ ⌊n/2⌋: 275 GB at n = 70, 281 TB at n = 90; random graphs G(70, ½) reach width 32, brickwork 31 | Proposition in §5, `results/ceiling_tightness.jsonl` |
 | Low-order marginals of the ideal distribution | exactly uniform on every set of ≤ 14 qubits (minimum stabilizer weight 15, proven) | `results/minweight_exact.txt`, `results/minweight_k11.txt`, `results/minweight_case1_k11.txt` |
@@ -217,10 +220,14 @@ sampled bits, 1.7·10⁻⁶ in log₂ Pr; a driver sample re-scored sliced and u
 same checks ran as gates on the cloud node before the 80-qubit sampling (`results/nq80/run.log`).
 
 With vertex 34 sliced (width 34, 137 GB) and the last 20 qubits drawn exactly, one r7a.8xlarge (32 cores, 256 GiB)
-produced **{N} exact samples of the 80-qubit instance at {t} s each** (two passes of 2^{34} per proposal; `results/nq80/`):
-{acc} of {nprop} proposals accepted, z between {zmin} and {zmax}, none above the cap; XEB against their own exact
-probabilities {xeb}; the first two samples re-scored with an unrelated slicing (vertices 10 and 40, four slice passes)
-agree to {xc}. A scan of 16 other circuit seeds at n = 80 found widths 35–36 only
+produced **79 exact samples of the 80-qubit instance at 246 s per proposal** (two passes of 2^{34} per proposal, peak
+resident set 128 GiB, 5.5 h of sampling; `results/nq80/`): 79 of 80 proposals accepted, z between 0.9970 and 1.0018
+(the spread expected for m = 20 is 2^{−10}), none above the cap; mean log₂ Pr −79.29 ± 0.12 against −80 for the uniform
+distribution; XEB against their own exact probabilities 1.02 ± 0.14; all 79 strings distinct. The first two samples,
+re-scored with an unrelated slicing (vertices 10 and 40, four slice passes of 472 s), agree with the sampler to
+5.2·10⁻⁷ and 4.4·10⁻⁷ in log₂ Pr. Before sampling, the node passed two gates: the two known 70-qubit values to
+2.6·10⁻⁷, and the twisted two-slice run against the unsliced hybrid sampler on three 70-qubit proposals (identical
+bits, 8.2·10⁻⁷ in log₂ Pr). A scan of 16 other circuit seeds at n = 80 found widths 35–36 only
 (`results/frontier_instances/fi80_cseed_scan.log`), so the slicing, not a lucky instance, is what put 80 qubits on one node.
 
 ## 4. Verification
@@ -335,7 +342,7 @@ longer search on the real instance reaches 30).
 | 60 | 26 | 1.1 GB | 2^30.8 |
 | **70** | **31** | **34 GB** | **2^36.0** |
 | **76 (sampled)** | **33** | **69 GB in-place** | **2^38.2** |
-| 80 | 36 (35 found later) | 1.1 TB (275 GB in-place) | 2^41.2 |
+| **80 (sampled)** | **35, sliced to 34** | **275 GB in-place; 137 GB per slice** | **2^41.2** |
 | 90 | 42 | 70 TB | 2^46.3 |
 | 100 | 47 | 2.3 PB | 2^51.4 |
 | 110 | 51 | 36 PB | 2^55.9 |
@@ -343,7 +350,7 @@ longer search on the real instance reaches 30).
 
 ![Hardness frontier](fig/fig1_frontier.png)
 
-*Figure 1. Best width found versus n for the construction, the ⌊n/2⌋ ceiling that holds for every graph, the two instances sampled exactly, and the memory of the in-place table. Shaded bands mark what a laptop, one cloud node, a supercomputer, and no existing machine can hold. The 76- and 80-qubit order searches are in `results/frontier_instances/` (fi76_s2: width 33, log₂ Σ_k 2^{r_k} = 36.2, i.e. 2^{38.2} updates; fi80_s5: width 35).*
+*Figure 1. Best width found versus n for the construction, the ⌊n/2⌋ ceiling that holds for every graph, the three instances sampled exactly, and the memory of the in-place table. Shaded bands mark what a laptop, one cloud node, a supercomputer, and no existing machine can hold. The 76- and 80-qubit order searches are in `results/frontier_instances/` (fi76_s2: width 33, log₂ Σ_k 2^{r_k} = 36.2, i.e. 2^{38.2} updates; fi80_s5: width 35, run at width 34 with one vertex sliced, §3.4).*
 
 The width fits 0.492·n − 2.9; at every n it is between n/2 − 4 and n/2 − 3. So memory doubles with
 every two qubits. At depth n, this method moves from one server (n = 70) to one large-memory node
@@ -553,7 +560,7 @@ It shows:
   demonstrate a task beyond classical reach;
 - the published hardware data can be benchmarked exactly at full depth, which the experiment's own README
   describes as impossible, and the resulting fidelity estimate is tighter than the one obtained on the device;
-- the same construction stays within one node's reach to about 80 qubits (measured at 76), within a
+- the same construction stays within one node's reach to about 80 qubits (measured at 76 and at 80), within a
   supercomputer's to about 90, and that no choice of graph changes this by more than a few qubits (random
   graphs measured within one of the brickwork);
 - the output distribution is exactly uniform on every set of at most 14 qubits, and IBM's shots show no
@@ -568,8 +575,9 @@ It does not show:
 **What we would suggest the experimenters run next.** At depth n with n ≥ 100, the ceiling alone puts any
 graph beyond rank-width methods (9 PB), with no dependence on the particular graph; alternatively, doping
 with a few hundred non-Clifford gates, as in the sibling instance, defeats this method outright. In either
-case the exact scorer here can still compute full-depth XEB for any graph-state run up to about 80 qubits,
-so an experiment at that scale can report an exact benchmark instead of an extrapolated one.
+case the exact scorer here can still compute full-depth XEB for any graph-state run up to about 80 qubits
+(demonstrated at 80 on one node, §3.4), so an experiment at that scale can report an exact benchmark instead of
+an extrapolated one.
 
 ## 9. Related work
 

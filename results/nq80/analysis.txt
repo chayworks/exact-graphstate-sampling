@@ -1,0 +1,9 @@
+# python nq80_analyze.py results/nq80/samples_nq80.txt results/nq80/xcheck_nq80.txt --n 80
+80 proposals, 79 accepted (98.8%); above cap: 0
+z: mean 0.99983, sd 0.00096, min 0.9970, max 1.0018  (2^-10 = 0.00098 expected spread for m = 20)
+linear XEB of accepted samples vs own exact probabilities: +1.020 +/- 0.138
+mean log2 Pr: -79.293 +/- 0.118; min -82.888, max -77.304; -n = -80
+time per proposal: mean 245.9 s, min 238.6, max 274.8
+cross-check 0100000111011101...: pair slicing -80.504555519, sampler -80.504556036, diff 5.2e-07
+cross-check 1111011101110001...: pair slicing -78.720162133, sampler -78.720162570, diff 4.4e-07
+max |diff| over 2 re-scored samples: 5.2e-07
