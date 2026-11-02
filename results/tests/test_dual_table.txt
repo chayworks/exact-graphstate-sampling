@@ -1,0 +1,5 @@
+unsliced: dump vs brute-force dual table, max |diff| 1.8e-08 over 2 strings (4 nonzero entries)
+slice x_9 = 0: dump vs brute-force dual table, max |diff| 6.7e-16 (2 nonzero entries)
+slice x_9 = 1: dump vs brute-force dual table, max |diff| 2.4e-08 (2 nonzero entries)
+slice identity F = F0 + (-1)^<s,x> F1 on all suffix assignments: max |diff| 5.6e-17; without the sign (control) 1.414
+exit 0

@@ -1,0 +1,2 @@
+40 circuits, every string: max |p_chain - p_sv| = 2.00e-15; unnormalised first-step total off by 1.0e-15; negative control (coherent sum) max conditional diff = 0.333
+exit 0

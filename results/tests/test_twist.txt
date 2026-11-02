@@ -1,0 +1,10 @@
+D:\GIT\Innovation\graphsamp\test_twist.py:82: RuntimeWarning: overflow encountered in scalar negative
+  others.sort(key=lambda v: (-any(u in suf for u in np.nonzero(A[v])[0]), -A[v].sum()))      # prefer a second vertex with suffix neighbours
+toy seed 23: 6 data + 4 ancillas, K = 7, suffix [3, 4, 5], slice candidates with suffix neighbours and a valid twist: [2, 9]
+toy: hybrid 2^k Pr vs dense max diff 5.2e-10; k = 4, N = 10, K = 7
+1a. one slice vertex 9 (suffix neighbours [np.int64(3)]): twisted sum vs unsliced hybrid: log2 Pr 9.1e-08, prefix 2.6e-09; untwisted control 2.54
+1b. two slice vertices 9,0: four twisted slices vs unsliced: log2 Pr 9.1e-08, prefix 2.6e-09 (twist True)
+2.  fstate order width 30; best single slice with a valid twist: vertex 21 -> width 30
+2.  70 qubits, slice vertex 21 (width 30, twist True): same sampled bits True; log2 Pr 1.8e-06, prefix 3.2e-07; first suffix conditional: twisted diff 0.0e+00, untwisted control diff 0.001 (the prefix norm alone does not see the shift on a stabilizer state)
+    log2 Pr of the 3 proposals: ['-70.187057955396', '-68.696386651430', '-69.196550644134']
+exit 0

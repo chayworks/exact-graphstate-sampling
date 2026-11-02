@@ -1,0 +1,2 @@
+min |<G_A|U|S>| over 150 circuits = 0.999999999999998; negative control (one edge flipped) max overlap <= 0.500
+exit 0

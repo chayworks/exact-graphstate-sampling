@@ -1,0 +1,2 @@
+30 circuits, every string, arena 2^R: max |p - p_sv| = 1.44e-15; negative control (tau swapped) = 0.152
+exit 0

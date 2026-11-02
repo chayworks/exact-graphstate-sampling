@@ -14,7 +14,7 @@ Technical note: [`paper/exact_graphstate_sampling.pdf`](paper/exact_graphstate_s
 | IBM's hardware shots scored exactly | **linear XEB 0.466 ± 0.031**; controls consistent with zero; every shot agrees with the independent code of #260 to 9.4e-6 | `results/ibmxeb/analysis.txt` |
 | Fidelity of IBM's run, from exact probabilities | 0.457 ± 0.037 (XEB) and 0.48 [0.43, 0.54] (mixture MLE), against IBM's DFE 0.37 (≥ 0.092) | `results/ibmxeb/analysis.txt` |
 | 76-qubit, depth-76 instance | **19 exact samples, 190 s each**, 69 GB, two reproduced to 1e-7 by the independent engine | `results/nq76/analysis.txt` |
-| 80-qubit, depth-80 instance on one 256 GiB node | **79 exact samples, 246 s per proposal**, width 35 sliced to 34 by a translation of the dual table; two re-scored by an unrelated slicing to 5e-7 | `results/nq80/analysis.txt` |
+| 80-qubit, depth-80 instance on one 256 GiB node (hybrid sampler) | **79 samples, 246 s per proposal**, width 35 sliced to 34 by a translation of the dual table; 79 of 80 proposals accepted, prefix marginals 0.997–1.002 against a cap of 1.03 (Born law conditioned on the cap, not exact); two re-scored by a second slicing to 5e-7 | `results/nq80/analysis.txt` |
 | Conditionals checked without a dynamic program | stabilizer-group formula matches the sampler to 3.3e-8 on all 1,726 shots | `results/chain/stabprefix_ibm_fwd.txt` |
 | Ceiling for every graph | width ≤ ⌊n/2⌋, so 2^{n/2} entries suffice for any graph state in any product basis: 275 GB at 70 qubits, 281 TB at 90; random graphs G(70, ½) reach 32, brickwork 31 | note §5, `results/ceiling_tightness.jsonl` |
 | Where the signal is | minimum stabilizer weight 15 (proven), so every marginal on ≤ 14 qubits is exactly uniform; IBM's shots show no 1-, 2-, 3- or 4-bit bias (χ² p = 0.78, 0.36, 0.28, 0.95) | `results/minweight_exact.txt`, `results/hw_marginals.txt` |
@@ -110,8 +110,10 @@ Full-instance runs (all on AWS r7a.4xlarge, 16 cores, AMD EPYC 9R14, 123 GB):
 - **76 qubits, 2026-10-31:** seed-1076 instance of the construction, width 33, 19 exact samples in 3,604 s, 69 GB
   (`results/nq76/`); the independent engine, gated on the two known 70-qubit values, reproduces two samples to 1e-7.
 - **80 qubits, 2026-11-02:** seed-1080 instance, width 35 (275 GB), run at width 34 on one r7a.8xlarge (256 GiB) by
-  slicing vertex 34 with a translation of the dual table (`sliced_plans.py`, `gsamp2 resume --twist`): 79 exact samples,
-  79 of 80 proposals accepted, 246 s per proposal, peak 128 GiB (`results/nq80/`); two samples re-scored with the
+  slicing vertex 34 with a translation of the dual table (`sliced_plans.py`, `gsamp2 resume --twist`), hybrid sampler
+  (60 bits proposed and accepted against their exact marginal, cap 1.03, 20 bits drawn exactly): 79 samples,
+  79 of 80 proposals accepted, z in [0.9970, 1.0018], 246 s per proposal, peak 128 GiB (`results/nq80/`); the output is
+  the Born law conditioned on z ≤ 1.03 and is not labelled exact (note §3.4); two samples re-scored with the
   (10, 40) pair slicing agree to 5e-7; gates on the node: two known 70-qubit values to 2.6e-7 and twisted vs unsliced
   hybrid on three 70-qubit proposals to 8.2e-7 with identical bits.
 

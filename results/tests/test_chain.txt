@@ -1,0 +1,6 @@
+prob mode: 25 circuits, every string, max |p - p_sv| = 5.79e-09; negative control (M rows swapped) = 0.481
+sample mode: 20000 samples, TV to exact = 0.0570 (exact-sampler finite-size TV, 20 draws: 0.0570); reported Pr of each sample vs exact: max diff 7.56e-10
+prob mode: 25 circuits, every string, max |p - p_sv| = 5.79e-09; negative control = 0.481
+sample mode: 20000 samples, TV = 0.0570 (ideal sampler, same size: 0.0570)
+chain mode: 12 circuits x 6 strings; max |cond - ref| = 1.03e-07; max |log2P - ref|, |log2P - prob mode| = 7.01e-07 over 71 strings with Pr > 1e-12; negative control (M rows swapped) = 0.577
+exit 0

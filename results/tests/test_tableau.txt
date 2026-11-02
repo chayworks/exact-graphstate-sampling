@@ -1,0 +1,2 @@
+200 random circuits: max |P psi - psi| = 2.63e-16   negative control (one sign flipped): 2.00
+exit 0

@@ -1,0 +1,2 @@
+40 cases (C++ binary, slicing 0-3 vertices): max rel err 1.26e-14; negative control rel diff 2.433
+exit 0

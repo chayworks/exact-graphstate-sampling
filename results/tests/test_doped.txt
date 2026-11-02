@@ -1,0 +1,2 @@
+25 random T-circuits (2-4 qubits, 1-4 T gates): max |2^k |amp_gadget|^2 - |amp_T|^2| = 1.22e-15; control (no T in the ancilla tail) differs in 11/25
+exit 0
