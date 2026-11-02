@@ -10,6 +10,22 @@ this note is read from a committed artifact listed in the appendix, including th
 
 ## Abstract
 
+IBM and the University of Chicago posted a 70-qubit, depth-70 random-graph-state sampling experiment as a candidate
+for verifiable quantum advantage (Quantum Advantage Tracker #151), with extrapolated classical costs of 10²⁵ s
+(matrix product states) and 10⁷ s per sample (extended stabilizer simulation). We sample the instance exactly from
+its ideal Born distribution with a cut-rank dynamic program on the underlying graph state, at 13 s per sample on one
+16-core CPU node and 18 s per sample on a laptop with an 8.6 GB table, and compute the exact probability of each of
+the 1,726 published hardware shots: linear cross-entropy 0.466 ± 0.031, a quantity the instance's documentation said
+could only be extrapolated. The width that governs the method grows as about n/2 − 4 for this construction, so memory
+doubles every two qubits; we sample a 76-qubit instance exactly and an 80-qubit instance with a capped hybrid sampler
+on one node, and note that any graph state measured in any product basis is samplable with 2^{⌊n/2⌋} table entries.
+The graph state is a [[70, 0, 15]] code, so every marginal on at most 14 qubits is exactly uniform. Writing each T
+gate of IBM's doped sibling instance as a projected ancilla brings it into the same framework at width 34: its exact
+amplitudes, computed on one node, agree with a 256-GPU tensor-network computation string by string. Concurrent work
+(tracker #261) samples the same 70-qubit instance exactly on 8 GPUs with 32 times the memory used here.
+
+## 1. Introduction
+
 In 2026 IBM and the University of Chicago posted a 70-qubit, depth-70 random-graph-state sampling experiment as
 a candidate for verifiable quantum advantage (Quantum Advantage Tracker #151), with a measured state fidelity of
 0.37 and extrapolated classical costs of 10²⁵ s (matrix product states) and 10⁷ s per sample (extended
@@ -95,7 +111,12 @@ three different dynamic-program paths.
 | Low-order marginals of the ideal distribution | exactly uniform on every set of ≤ 14 qubits (minimum stabilizer weight 15, proven) | `results/minweight_exact.txt`, `results/minweight_k11.txt`, `results/minweight_case1_k11.txt` |
 | Hardware shots, simulation-free test | 70 single-bit, 2,415 pair, 54,740 triple and 916,895 quadruple parities at chance (χ² p = 0.78, 0.36, 0.28, 0.95) | `results/hw_marginals.txt` |
 
-## 1. The task
+The rest of the note is organised as follows: §1.1 states the task; §2 the method; §3 the results on the 70-, 76-
+and 80-qubit instances and on IBM's shots; §4 the verification; §5 the hardness frontier and the ceiling; §6 the
+stabilizer structure of the output and the simulation-free test of the shots; §7 the doped instance; §8 what the
+work does and does not show; §9 related work; and the appendix lists the artifact behind every number.
+
+### 1.1 The task
 
 Circuit `nq70_depth70_checks27_basis_fstate`, Quantum Advantage Tracker issue #151:
 1. Hadamards on 70 qubits in a line.
@@ -360,7 +381,14 @@ bits, 8.2·10⁻⁷ in log₂ Pr). A scan of 16 other circuit seeds at n = 80 fo
    (p = 0.92). A scan of 300 blocks of 1,012 consecutive seeds shows no bias in the generator (mean χ² over 70
    draws 70.3 ± 0.7; `results/rng_scan.txt`). The excess therefore sits in bits that are, to within 10⁻³,
    the generator's own sign bits, and the drawing step passes where the dynamic program's conditionals matter.
-   We record the single-bit p = 0.010 as a flag, not an explanation.
+   We record the single-bit p = 0.010 as a flag, not an explanation. A second run of 1,012 samples with each
+   sample's generator seeded through `std::seed_seq` from (seed, i) instead of the raw integer seed + i
+   (`gsamp2 sample2`, width-30 in-place plan, 190 min on the laptop, 11.3 s per sample;
+   `results/samples_nq70_reseeded.txt`, `time_nq70_reseeded.txt`) shows no excess: single-bit χ² 65 on 70
+   (p = 0.65), pairs p = 0.31, triples p = 0.64, quadruples p = 0.64 (`results/hw_marginals_reseeded.txt`, same
+   script, hardware block reproduced to the digit), self-XEB 1.031 ± 0.045, Porter–Thomas KS 0.018
+   (`results/porter_thomas_nq70_reseeded.txt`). The p = 0.010 of the first run is therefore a property of that seed
+   block, not of the drawing step, which the direct test above had already cleared.
 
 ![Where the information lives](fig/fig3_information.png)
 

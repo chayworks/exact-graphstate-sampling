@@ -145,6 +145,15 @@ int main(int argc, char** argv) {
         long N = atol(argv[3]); unsigned long long seed = strtoull(argv[4], 0, 10);
         for (long i = 0; i < N; i++) { std::mt19937_64 rng(seed + i); double lp = chain(nullptr, bits.data(), &rng);
             for (int k = 0; k < ns; k++) putchar('0' + bits[k]); printf(" %.12f %llu\n", lp, seed + i); fflush(stdout); }
+    } else if (!strcmp(argv[2], "sample2")) {
+        // Like sample, but each sample's generator is seeded through std::seed_seq from (seed, i) instead of the raw
+        // integer seed + i, so consecutive samples do not share correlated initial states (the production run used
+        // sample; this mode exists to repeat it with an independent stream, results/samples_nq70_reseeded.txt).
+        long N = atol(argv[3]); unsigned long long seed = strtoull(argv[4], 0, 10);
+        for (long i = 0; i < N; i++) {
+            std::seed_seq sq{(unsigned)(seed & 0xffffffffu), (unsigned)(seed >> 32), (unsigned)(i & 0xffffffffu), (unsigned)(i >> 32), 0x9E3779B9u};
+            std::mt19937_64 rng(sq); double lp = chain(nullptr, bits.data(), &rng);
+            for (int k = 0; k < ns; k++) putchar('0' + bits[k]); printf(" %.12f %llu\n", lp, seed + i); fflush(stdout); }
     } else if (!strcmp(argv[2], "prefix")) {
         // gsamp2 plan prefix stringsfile K outprefix: run the forced steps 0..K-1 of each line and dump the table
         // (binary: int32 nk, double logscale, 2^nk complex64 at logical indices c) to outprefix_<line>.bin.

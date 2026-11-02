@@ -95,7 +95,7 @@ Each test has a negative control that is caught.
 | `minweight.py`, `minweight.cpp` | minimum stabilizer weight of the graph state (packed arithmetic checked against dense on 50 random v) | no weight ≤ 11 (exhaustive to 11 chosen vertices); weight 15 found; d_min = 15 proven with `minweight_exact.py` + `minweight_case1.cpp` |
 | `minweight_scan.py` | the same for generated instances, proof condition met | d_min = 6, 8, 9, 12 at n = 30, 40, 50, 60 |
 | `minweight_split_test.py` | the three-way split of `minweight_exact.py` against the direct answers at n = 30, 40 | agree (6, 8); at n = 30 only case 2 finds it, without it: 8 |
-| `hw_marginals.py` | 1-, 2-, 3-, 4-bit parities of IBM's shots and our samples vs the exactly uniform ideal (χ²) | shots p = 0.78/0.36/0.28/0.95; samples 0.010/0.76/0.97/0.12; biased-bit control p < 1e-4 |
+| `hw_marginals.py` | 1-, 2-, 3-, 4-bit parities of IBM's shots and our samples vs the exactly uniform ideal (χ²) | shots p = 0.78/0.36/0.28/0.95; samples 0.010/0.76/0.97/0.12 (first seed block), 0.65/0.31/0.64/0.64 (reseeded rerun, `results/hw_marginals_reseeded.txt`); biased-bit control p < 1e-4 |
 | `rng_check.py`, `rngbits.cpp` | samples' first 30 bits (the exact-½ prefix of the production order) = sign bits of std::mt19937_64(10⁶ + i); 300-block scan of the generator | 1012/1012; seed+1 control 0/1012; scan χ² 70.3 ± 0.7 on 70 |
 | `fidelity_mle_synth.py` | both fidelity estimators on synthetic shots of known F = 0, 0.4, 1 | 0.00/0.00, 0.42/0.41, 0.94/0.98 (XEB/MLE) |
 | `draw_check.py` | drawing step: residuals b_k − Pr(b_k = 1 \| prefix) from the exact conditionals, per-step z | steps 51–70 p = 0.29, all p = 0.026; p^1.1 control p = 7e-50 |
@@ -107,6 +107,11 @@ Full-instance runs (all on AWS r7a.4xlarge, 16 cores, AMD EPYC 9R14, 123 GB):
   `results/time_nq70.txt`), peak RSS 34.4 GB; inputs hash-identical to this repository (`results/inputs.sha256`);
   instance QASM SHA-256 `e0189bdd2e67d1456cb92f5c750b880cbee935220e539c04934906a94535ea5f`. The run first
   reproduced three 55-qubit samples bit for bit (`results/check55_result.txt`).
+- **Reseeded rerun, 2026-11-02 (laptop, Docker, 16 threads):** 1,012 further samples with `gsamp2 sample2` (each
+  sample's generator seeded through `std::seed_seq` from the seed and the index), width-30 in-place plan, 190 min,
+  11.3 s per sample (`results/samples_nq70_reseeded.txt`, `time_nq70_reseeded.txt`): all distinct, self-XEB
+  1.031 ± 0.045, Porter–Thomas KS 0.018, low-order marginals at chance (1–4-bit χ² p = 0.65/0.31/0.64/0.64), which
+  settles the first run's single-bit p = 0.010 as a seed-block fluctuation.
 - **IBM's shots, 2026-10-31:** 1,726 strings at 6.9 s each, 17.2 GB (`results/ibmxeb/`). XEB 0.466 ± 0.031; 64
   uniform strings +0.16 ± 0.12; 64 bit-reversed shots −0.15 ± 0.10; per-shot agreement with #260's FP64 code
   9.4e-6 at worst, median 2.8e-7.
