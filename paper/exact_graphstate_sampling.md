@@ -518,8 +518,9 @@ read from that run's output file):
 | 7 | same | width 34, m = 10 (different order) | −68.295331335 | — |
 | 9 | r7iz.8xlarge, huge pages | m = 20 / m = 10 | −68.295331925 / −68.295330954 | 4,919 |
 | 10 | r7a.4xlarge, 128 GiB | two slices at ancillas 135, 104 (4 plans of width 33) | −68.295331107 | 5,888 (4 slice passes) |
+| 11 | r7iz.8xlarge, two-table engine | same two slices, two tables of 2^{33} | −68.295331101 | 1,592 (4 slice passes) |
 
-The five values span 1.1·10⁻⁶ in log₂, the rounding level of complex64 tables accumulated in different orders. Runs 9
+The six values span 1.1·10⁻⁶ in log₂, the rounding level of complex64 tables accumulated in different orders; the two-table engine (run 11) does the same sliced evaluation in 1,592 s against 4,919 s for the in-place engine on the same machine type, 3.1 times faster per shot. Runs 9
 and 10 then scored the same uniformly random control string (not a hardware shot) at −72.910036757 and −72.910036839,
 an agreement of 8·10⁻⁸ between a different machine, layout and slicing; both runs ended before reaching further strings
 (run 9 was reclaimed by the spot market, run 10 was stopped to free its quota). The
