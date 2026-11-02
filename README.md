@@ -7,6 +7,12 @@ depth, and samples 76- and 80-qubit instances of the construction on one cloud n
 
 Technical note: [`paper/exact_graphstate_sampling.pdf`](paper/exact_graphstate_sampling.pdf) (Markdown source alongside).
 
+Concurrent work: tracker issue #261 (Zhongpu Qiu, 2 November 2026) reports exact samples of the same 70-qubit instance
+on 8 H200 GPUs by splitting the qubits into two halves of 35 (a 2^35 table of 256 GiB, 2.42 s per sample) and scores
+IBM's shots at the same 0.466 ± 0.031. The width-30 order used here needs 32 times less memory, which is what puts the
+instance on a laptop; the 76- and 80-qubit runs and the doped-instance results below are outside that method's reach
+(its issue says so). Our first exact samples are dated 29 October 2026 (`results/run.log`); #261 was posted first.
+
 | | Result | Artifact |
 |---|---|---|
 | Exact samples of IBM's instance | **1,012 samples, 13.0 s each** on 16 cores (34 GB); **~18 s each on a laptop** (8.6 GB table) | `results/samples_nq70.txt`, `results/laptop_samples_w30.txt` |

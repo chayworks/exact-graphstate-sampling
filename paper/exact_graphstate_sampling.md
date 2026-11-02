@@ -15,7 +15,12 @@ a candidate for verifiable quantum advantage (Quantum Advantage Tracker #151), w
 0.37 and extrapolated classical costs of 10²⁵ s (matrix product states) and 10⁷ s per sample (extended
 stabilizer simulation). We show that the instance is sampled **exactly from the ideal Born distribution** by a
 cut-rank dynamic program: **13.0 s per sample on one 16-core CPU node** (1,012 samples, 34 GB), and
-**18 s per sample on a laptop** with an 8.6 GB table. No rejection, no truncation, no GPU.
+**18 s per sample on a laptop** with an 8.6 GB table. No rejection, no truncation, no GPU. Concurrently, tracker
+entry #261 (Qiu, 2 November 2026) reports exact samples of the same instance on 8 H200 GPUs at 2.42 s per sample by
+splitting the qubits into two halves of 35 and drawing one half from a 2^{35} conditional table (256 GiB): that is
+the ceiling of item 3 below with no order search, 32 times the memory used here, and it scores IBM's shots at the
+same 0.466 ± 0.031. Our results on the laptop, at 76 and 80 qubits, and on the doped instance (item 4) are not
+reached by that method.
 
 Four further results follow from having the exact probabilities in hand.
 
@@ -643,7 +648,14 @@ scale can report an exact benchmark instead of an extrapolated one.
 - Perfect sampling of matrix product states: Ferris & Vidal, PRB 85, 165146 (2012).
 - ZX-calculus rank-width contraction: Kuyanov & Kissinger, arXiv:2603.06764.
 - Exact amplitudes of IBM's doped circuits by T-injection and rank-width: Renaud, `dcs-rankwidth`; tracker #249.
-- Capped rejection sampling for this instance on GPUs: tracker #260.
+- Capped rejection sampling for this instance on GPUs: tracker #260 (Qiu, 30 October 2026; closed by its author on
+  2 November in favour of #261).
+- Exact sampling of this instance by a half/half split on 8 H200 GPUs: tracker #261 (Zhongpu Qiu, Shanghai AI
+  Laboratory and Beijing Normal University, 2 November 2026): 1,726 samples in 1,265 s, 2.42 s per sample, a 2^{35}
+  conditional table of 256 GiB in complex64; its amplitudes re-scored in complex128 to 3.3·10⁻⁶; IBM's shots at
+  0.466 ± 0.031. The issue states the method "needs a Clifford circuit followed only by single-qubit rotations" and
+  does not apply to the doped instances. Our first exact samples of the instance (29 October 2026, `results/run.log`)
+  predate it; its posting predates ours.
 - Exact tensor-network amplitudes for the doped 70-qubit instance: Manabe, Gu, Pan, arXiv:2608.13110; amplitudes and
   contraction paths at Zenodo 10.5281/zenodo.21912448 (CC BY 4.0), used in §7 for the string-by-string comparison.
 - The random-graph-state hardness argument behind the construction: arXiv:2412.07058.
