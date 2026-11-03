@@ -1,0 +1,4 @@
+2026-11-02T00:23:09Z boot nproc=32 mem=247G cpu= Intel(R) Xeon(R) Gold 6455B
+2026-11-02T00:50:05Z gate (shot #1 vs runs 7/9/10): PASS [-68.295331101] reference -68.295331 (runs 7, 9, 10); 1591s for one sliced pass (4 slice passes); peak 	Maximum resident set size (kbytes): 134262440
+2026-11-02T00:55:07Z progress shots=0 samples= proposals=
+(spot termination, service initiated 2026-11-02 00:56:22 UTC)

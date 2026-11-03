@@ -21,6 +21,7 @@ instance on a laptop; the 76- and 80-qubit runs and the doped-instance results b
 | Fidelity of IBM's run, from exact probabilities | 0.457 ± 0.037 (XEB) and 0.48 [0.43, 0.54] (mixture MLE), against IBM's DFE 0.37 (≥ 0.092) | `results/ibmxeb/analysis.txt` |
 | 76-qubit, depth-76 instance | **19 exact samples, 190 s each**, 69 GB, two reproduced to 1e-7 by the independent engine | `results/nq76/analysis.txt` |
 | 80-qubit, depth-80 instance on one 256 GiB node (hybrid sampler) | **79 samples, 246 s per proposal**, width 35 sliced to 34 by a translation of the dual table; 79 of 80 proposals accepted, prefix marginals 0.997–1.002 against a cap of 1.03 (Born law conditioned on the cap, not exact); two re-scored by a second slicing to 5e-7 | `results/nq80/analysis.txt` |
+| IBM's doped flagship (468 T gates) on one node | width 34 after the T-gadget; **17 shots match #242 to a constant factor of 1.8e-4**, 1,165 s per shot; **first 13 hybrid samples** (13 of 13 accepted, z 0.998–1.001 vs cap 1.03) | `results/doped/run11/` |
 | Conditionals checked without a dynamic program | stabilizer-group formula matches the sampler to 3.3e-8 on all 1,726 shots | `results/chain/stabprefix_ibm_fwd.txt` |
 | Ceiling for every graph | width ≤ ⌊n/2⌋, so 2^{n/2} entries suffice for any graph state in any product basis: 275 GB at 70 qubits, 281 TB at 90; random graphs G(70, ½) reach 32, brickwork 31 | note §5, `results/ceiling_tightness.jsonl` |
 | Where the signal is | minimum stabilizer weight 15 (proven), so every marginal on ≤ 14 qubits is exactly uniform; IBM's shots show no 1-, 2-, 3- or 4-bit bias (χ² p = 0.78, 0.36, 0.28, 0.95) | `results/minweight_exact.txt`, `results/hw_marginals.txt` |
@@ -141,7 +142,9 @@ layout and the laptop run, the exact full-depth scoring of IBM's hardware shots 
 estimators, the stabilizer-only check of the sampler's conditionals, the measured 76- and 80-qubit points, the
 dual-table translation that makes dense graphs sliceable, and the ⌊n/2⌋ ceiling. The claim is about this family of
 experiments, not a new complexity result. The doped sibling instance (468 T gates) is reached through the T-gadget
-and the hybrid sampler (`results/doped/`), at about 1.5–2.7 h per IBM shot on one node.
+and the hybrid sampler (`results/doped/`): 1,165 s per IBM shot on one 256 GiB node with the two-table engine, 17 shots
+matching the tensor-network entry #242 to a constant factor of 1.8e-4, and the first 13 hybrid samples of the instance
+(13 of 13 accepted, `results/doped/run11/`).
 
 ## Author
 

@@ -1,10 +1,30 @@
-# Cloud run 11, first attempt (doped instance, two-table engine gsamp.cpp, two-vertex slicing)
+# Cloud run 11 (second attempt, on-demand): IBM's doped shots scored and the first hybrid samples
 
-r7iz.8xlarge spot (Intel Xeon Gold 6455B, 32 vCPU, 247 GiB), us-east-1b, booted 2026-11-02 00:23 UTC, reclaimed by
-spot 00:56 UTC, six minutes after the gate. Inputs (sha256 in `inputs.sha256`): the four width-33 two-table slice plans
-doped_m20g_s{00,01,10,11} (slice vertices 135, 104; `sliced_plans_gsamp.py`), `doped_sampler.py --slices --K 518 --bin ./gsamp`.
+Node: r7a.8xlarge on-demand (32 vCPU AMD EPYC 9R14, 246 GB), us-east-1a, launch template version 3 =
+`cloud_doped/run_gsamp.sh`; booted 14:58:52 UTC 2026-11-02, finished and self-terminated 00:50:53 UTC 2026-11-03.
+Engine: two-table sampler `gsamp.cpp` on the four width-33 slice plans (`cloud_doped/doped_m20g_s00..s11.txt`, slices
+at ancilla vertices 135 and 104, K = 518); inputs and their SHA-256 in `inputs.sha256`. The first attempt of this run
+(spot, reclaimed after its gate) is archived in `attempt1_spot/`.
 
-- `gate.txt`: IBM doped shot #1 = -68.295331101 in **1,591.8 s** (one sliced evaluation = 4 slice passes of two 2^33
-  tables; `time_gate.txt`: 26:32 wall, peak RSS 134,262,440 kB). Runs 7/9/10 gave -68.295330880 / -68.295331925,
-  -68.295330954 / -68.295331107; run 9 needed 4,919 s on the same machine type with the in-place engine: 3.1x per shot.
-- No IBM shots were scored before the termination (`run.log`). The run was relaunched with the same inputs (run 11b).
+Timeline (`run.log`):
+- 15:18:44 gate: shot 1 of IBM's 2,051 doped shots re-scored at −68.295330552 (reference −68.295331 from runs 7, 9, 10):
+  PASS; 1,168 s for one sliced evaluation (4 slice passes), peak resident set 134,262,660 kB (`gate.txt`,
+  `gate_result.txt`, `time_gate.txt`).
+- 15:18 to 20:37 scoring: IBM's shots taken from the end of the published list (shot 2051, 2050, ...; `score_list.txt`,
+  two uniform controls last and not reached): 16 shots in 19,145 s, 1,165 s each (`shots_scored.txt`, lines
+  `<Qiskit string> <log2 Pr> <seconds>`).
+- 20:37 to 00:50 sampling: hybrid sampler, seed 20261101, cap 1.03, m = 20 (50 data bits proposed, 20 drawn exactly):
+  13 proposals in 15,183 s, 13 accepted, z in [0.9981, 1.0007], 1,166 s per proposal (`samples.txt`, lines
+  `ACC|rej <70 data bits, qubit order> <log2 Pr_doped> z=<...> <seconds>`).
+
+Analyses:
+- `tn242_compare.txt` (`python doped_tn242_compare.py results/doped/tn242_log2p.txt results/doped/run11/shots_scored.txt`):
+  all 16 shots match strings in #242's Zenodo release; log₂ difference ours − TN: mean −2.56e-4, max |.| 2.76e-4, every
+  shot within [−2.76, −2.50]e-4, i.e. a constant factor of 1 − 1.8e-4 between the two pipelines (origin unidentified).
+- `analysis.txt` (`python doped_analyze.py results/doped/run11 0`): the 16 shots' linear XEB +0.332 ± 0.253
+  (bootstrap 95% [−0.136, +0.829]); hybrid sampler 13 of 13 accepted, z mean 0.9996, sd 0.0008, none above the cap;
+  accepted samples' self-consistency XEB +0.807 ± 0.358; mean time per proposal 1,166 s.
+- `porter_thomas_samples.txt` (`python porter_thomas_test.py results/doped/run11/samples.txt 70 --acc`): mean z
+  1.81 ± 0.36 (Porter–Thomas 2), mean log₂ Pr −69.59 ± 0.36 (Porter–Thomas −69.39), KS 0.14 (5% level 0.38).
+
+The samples are the Born law conditioned on z ≤ 1.03 (hybrid sampler), not exact samples; see the note, §7.

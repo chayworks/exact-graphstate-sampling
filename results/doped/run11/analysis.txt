@@ -1,0 +1,6 @@
+scored strings: 16 (0 uniform controls + 16 IBM doped shots); mean time per pass 1165 s on this node
+IBM doped shots      N=   16  linear XEB +0.3321 +/- 0.2533  (bootstrap 95% [-0.136, +0.829])
+uniform controls     N=    0  linear XEB +nan +/- nan  (bootstrap 95% [+nan, +nan])
+hybrid sampler: 13 accepted of 13 proposals (100.0%); prefix marginal z: mean 0.9996, sd 0.0008, min 0.9981, max 1.0007; proposals above the cap: 0; mean time per proposal 1166 s
+accepted samples: self-consistency linear XEB +0.807 +/- 0.358 (ideal: 2^70 sum p^2 - 1, about +1)
+fidelity of IBM's doped shots: F_xeb = XEB / (E[z] - 1) = 0.411 (E[z] - 1 = 0.807 from 13 samples, large uncertainty); F_mle (clean-or-uniform mixture, profile 95%) = 0.391 [0.000, 0.846]; IBM reports 0.26-0.32
