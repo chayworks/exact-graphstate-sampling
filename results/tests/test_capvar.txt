@@ -1,0 +1,5 @@
+prob mode: 25 circuits, every string, max |p - p_sv| = 5.79e-09; negative control (M rows swapped) = 0.481
+sample mode: 20000 samples, TV to exact = 0.0570 (exact-sampler finite-size TV, 20 draws: 0.0570); reported Pr of each sample vs exact: max diff 7.56e-10
+40 random circuits (3-8 qubits, random prefixes), 38 with a nontrivial prefix group: max |E[z^2] brute - grouped| = 3.55e-15; largest change from a flipped sign (control) = 8.889e-01
+exported work/capvar_test_gens.txt: n = 8, K = 6, group size 64, expected E[z^2] = 5.618655692730
+exit 0

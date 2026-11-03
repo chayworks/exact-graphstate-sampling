@@ -18,7 +18,9 @@ its ideal Born distribution with a cut-rank dynamic program on the underlying gr
 the 1,726 published hardware shots: linear cross-entropy 0.466 ± 0.031, a quantity the instance's documentation said
 could only be extrapolated. The width that governs the method grows as about n/2 − 4 for this construction, so memory
 doubles every two qubits; we sample a 76-qubit instance exactly and an 80-qubit instance with a capped hybrid sampler
-on one node, and note that any graph state measured in any product basis is samplable with 2^{⌊n/2⌋} table entries.
+on one node (at 70 qubits the cap's excluded mass is bounded rigorously, below 1.1·10⁻³, by an exact enumeration of
+the 2^{30} stabilizers supported on the prefix), and note that any graph state measured in any product basis is
+samplable with 2^{⌊n/2⌋} table entries.
 The graph state is a [[70, 0, 15]] code, so every marginal on at most 14 qubits is exactly uniform. Writing each T
 gate of IBM's doped sibling instance as a projected ancilla brings it into the same framework at width 34: its exact
 amplitudes, computed on one node, agree with a 256-GPU tensor-network computation shot by shot up to one common
@@ -297,8 +299,8 @@ exact probabilities 1.02 ± 0.14, KS distance to z·e^{−z} 0.095 (5% level 0.1
 all 79 strings distinct. These samples follow the Born law conditioned on z ≤ c. The excluded mass is the
 probability, over uniformly random 60-bit prefixes, that z exceeds 1.03: 80 proposals bound it only at the
 few-percent level, the observed spread of 10⁻³ puts the cap 30 standard deviations out under a Gaussian model, and we
-have no rigorous bound (it would need the second moment of the prefix marginal over all 2^{60} prefixes, which we did
-not compute), so we do not call them exact samples. The first two were re-scored with a second slicing of the same
+have no rigorous bound at this size (the exact second moment, computed at 70 qubits in §7 from 2^{30} prefix
+stabilizers, would need 2^{40} here), so we do not call them exact samples. The first two were re-scored with a second slicing of the same
 engine (vertices 10 and 40, four slice passes of 472 s), which agrees with the sampler to 5.2·10⁻⁷ and 4.4·10⁻⁷ in
 log₂ Pr; no independent engine has evaluated an 80-qubit probability (the independent engine's checks are at 70 and
 76 qubits). Before sampling, the node passed two gates: the two known 70-qubit values to
@@ -618,7 +620,23 @@ on z ≤ c. The mass of prefixes with z > c is what separates this from exact sa
 proposal, its observed spread puts the cap about 30 standard deviations out, and under a Gaussian model for z that
 mass is below 10⁻³⁰; but we have not bounded it rigorously (that needs the second moment of the prefix marginal over
 all prefixes, which we did not compute), so we call the output capped rather than exact. The difference from #260 is
-one of degree: there the cap sits at O(1) times the spread of the capped quantity, here at 30 standard deviations. On small T-circuits the hybrid sampler reproduces the exact output distribution
+one of degree: there the cap sits at O(1) times the spread of the capped quantity, here at 30 standard deviations.
+
+For the 70-qubit instance the excluded mass is now bounded without a model. The second moment of z over uniformly
+random prefixes is a sum over the stabilizers supported on the prefix: E[z²] = Σ_U 3^{−|U|} (Σ_{S: supp S = U} v(S))²,
+where U runs over supports, v(S) = ±1 is the sign of S times the signs of the measured Bloch components on its
+support, and pairs of stabilizers with different supports cancel in the sum over the prefix bits (`capvar.py`,
+checked against brute force over every prefix string on 38 random circuits to 4·10⁻¹⁵ with a flipped-sign control,
+`results/tests/test_capvar.txt`). For the first 50 qubits of the width-30 order that group has 2^{30} elements;
+enumerating all of them by a Gray code with phase tracking (`capvar.cpp`, 24 minutes on the laptop) gives
+E[z²] = 1.000000970065, i.e. Var(z) = 9.70·10⁻⁷ against the 1.00·10⁻⁶ observed over the 150 proposals; 98.4% of the
+elements have a support of their own and the cross terms sum to −2·10⁻¹¹ (`results/capvar_nq70_K50.txt`). Chebyshev
+then gives Pr_uniform(z > 1.03) ≤ 1.08·10⁻³, and by Cauchy–Schwarz the Born mass of those prefixes is at most
+Pr + √(Var · Pr) = 1.11·10⁻³, so the accepted output of the hybrid sampler on this instance is within total-variation
+distance 1.1·10⁻³ of the Born distribution, proven, with the model estimate (10⁻³⁰) far inside it. The same
+enumeration at 80 qubits has 2^{40} elements with almost as many distinct supports, beyond the memory of any hashing
+scheme, and for the doped order it has 2^{485}; there the excluded mass stays model-estimated, with the 70-qubit case
+as the calibration (the model's variance is the exact one to 3%). On small T-circuits the hybrid sampler reproduces the exact output distribution
 (total variation at the level of an ideal sampler of the same size) and a cap set below the true maximum of z is
 detected as a biased output (`test_hybrid.py`). At full scale we ran it on the 70-qubit fstate instance, where the
 exact sampler is the ground truth: 150 proposals with the width-30 plan (50 bits proposed, 20 drawn exactly), 147
@@ -713,8 +731,9 @@ It does not show:
 - a new complexity-theoretic result; the rank-width reduction is from 2007 and the ceiling is elementary;
 - priority on attacking this instance; #260 applied the same reduction with capped rejection sampling the
   day before our first run, and we cite it throughout;
-- exact samples of the doped instance (its hybrid sampler is capped, as at 80 qubits), or anything about
-  graph-state experiments with entangled measurements.
+- exact samples of the doped instance or at 80 qubits (the hybrid sampler is capped; its excluded mass is proven
+  below 1.1·10⁻³ at 70 qubits and model-estimated there), or anything about graph-state experiments with entangled
+  measurements.
 
 **What we would suggest the experimenters run next.** At depth n with n ≥ 100, the ceiling alone puts any
 graph beyond rank-width methods (9 PB), with no dependence on the particular graph. Doping with a few hundred
@@ -795,6 +814,7 @@ lines of the cloud runs and the machines they ran on.
 | Minimum stabilizer weight 15, three-way certificate, validation on 30/40 qubits, scan (§6) | `results/minweight_exact.txt`, `minweight_k11.txt`, `minweight_case1_k11.txt`, `minweight_split_test.txt`, `minweight_scan.txt`, `nq70_graph_geninverse.txt`, `nq70_graph_kernel.txt` | `minweight_exact.py`, `minweight.cpp`, `minweight_case1.cpp`, `minweight_split_test.py`, `minweight_scan.py` |
 | Doped instance: gadget identity, widths (§7) | `results/tests/doped_gadget.txt`, `test_doped.txt`, `test_gsamp2_doped.txt`; `results/doped/doped_widths.json` | `doped_gadget.py`, `test_doped.py`, `test_gsamp2_doped.py`; `doped_to_qasm.py` + order sweep |
 | Doped shot 1 seven ways; 16 further shots; first 13 samples (§7) | `results/doped/run7/`, `run9/`, `run10/`, `run11/` (`shots_scored.txt`, `samples.txt`, `tn242_compare.txt`, `analysis.txt`, `porter_thomas_samples.txt`) | `cloud_doped/run*.sh`; `doped_sampler.py`; `doped_tn242_compare.py`; `doped_analyze.py` |
+| Exact second moment of the prefix marginal at 70 qubits, K = 50: Var(z) = 9.70·10⁻⁷, TV bound 1.1·10⁻³ (§7) | `results/capvar_nq70_K50.txt`, `capvar_nq70_K50_gens.txt`, `results/tests/test_capvar.txt` | `capvar.py export ...; capvar` (C++), `test_capvar.py` |
 | Hybrid sampler at 70 qubits against the exact sampler (§7, Figure 6) | `results/fstate_hybrid_check.txt`, `fstate_hybrid_samples.txt` | `fstate_hybrid_check.py` |
 | #242's amplitudes: Porter–Thomas, fidelity three ways, local 8-qubit estimator (§7) | `results/doped/tn242_log2p.txt`, `tn242_fidelity.txt`, `tn242_porter_thomas.txt`, `tn242_log_xeb.json` | `doped_tn242_analysis.py` on the Zenodo release |
 | Small-circuit correctness tests with negative controls (§4.1) | `results/tests/*.txt` (each ends with the script's exit code) | `test_*.py` (`doped_gadget.txt` ends in a traceback after its self-test passed, because the script then expects a circuit to convert) |

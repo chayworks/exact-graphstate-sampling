@@ -1,0 +1,14 @@
+# python capvar.py export cloud7/nq70.qasm cloud2/w30_step_qubits.json 50 work/capvar_nq70_K50.txt ; ./capvar work/capvar_nq70_K50.txt 7 32   (gcc:14 container, 32 threads, 128 partitions; real 24m21s)
+K = 50, group size 2^30 = 1073741824, distinct supports = 1056235486, largest |group sum| = 43
+E[z^2] = 1.000000970065   Var(z) = 9.700647e-07   (diagonal sum_{S!=I} 3^-|S| = 9.700860e-07)
+Chebyshev: Pr_uniform(z > 1.01) <= 9.701e-03
+Chebyshev: Pr_uniform(z > 1.02) <= 2.425e-03
+Chebyshev: Pr_uniform(z > 1.03) <= 1.078e-03
+Chebyshev: Pr_uniform(z > 1.05) <= 3.880e-04
+Chebyshev: Pr_uniform(z > 1.10) <= 9.701e-05
+# stderr tail:
+
+real	24m20.897s
+user	42m46.970s
+sys	0m57.971s
+exit 0
