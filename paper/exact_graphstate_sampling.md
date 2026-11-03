@@ -756,42 +756,37 @@ on 256 H100 GPUs and published them [10], which §7 compares string by string. T
 13. S. Ghosh, D. Hangleiter and J. Helsen, Random regular graph states are complex at almost any depth,
     arXiv:2412.07058 (2024).
 
-## Appendix: artifacts
+## Appendix: the artifact behind each claim
 
-All paths are relative to the repository root.
+All paths are relative to the repository root (`graphsamp/` in the working repository; the root of the public
+repository). Commands run from that root; `results/run.log` and the per-run `README.md` files record the exact command
+lines of the cloud runs and the machines they ran on.
 
-- `results/samples_nq70.txt`, `run.log`, `time_nq70.txt`, `inputs.sha256`, `check55_result.txt`: the
-  production sampling run and its reproduction check.
-- `results/xcheck70_independent.txt`, `xcheck70d.txt`, `xcheck70e_laptop.txt`: independent
-  recomputation of five cloud samples, the 10-bit control, and one laptop sample.
-- `results/laptop_samples_w30.txt`: the laptop run (3 samples, timing).
-- `results/ibmxeb/`: exact log₂ Pr of the 1,726 hardware shots and the controls, timing, gate,
-  input hashes, and `analysis.txt` (XEB, comparison with #260, fidelity estimators).
-- `results/chain/`: per-step conditionals of all shots and samples along two orders, the stabilizer-only
-  comparison, the cross-order comparison and the information profile.
-- `results/nq76/`: the 76-qubit samples, timing, gate, independent check and `analysis.txt` (`xcheck_out.txt` holds, for the
-  two strings listed in `xcheck_make_run6.txt`, the real and imaginary parts of the amplitude scaled by 2^{n/2};
-  `report_run.py` converts them as log₂ Pr = log₂(re² + im²) − n to the values quoted in `analysis.txt`).
-- `results/nq80/`: the 80-qubit hybrid-sampler run (gates, proposals with z, re-scored strings, timing, `analysis.txt`,
-  `porter_thomas_nq80.txt`).
-- `results/doped/`: the doped instance (widths, runs 7–11, the #242 comparison and the analysis of its amplitudes).
-- `results/porter_thomas_nq70.txt`: the Porter–Thomas test of the 1,012 samples.
-- `results/tests/`: the printed output of every `test_*.py` script and of the self-test of `doped_gadget.py`, run on the
-  laptop on 2 November 2026 (each file ends with the script's exit code; `doped_gadget.txt` ends in a traceback
-  because the script expects a circuit to convert after its self-test, which had already passed).
-- `results/uniform_prefix_check.txt`: the engine-independent uniformity check.
-- `results/minweight.txt`, `results/minweight_k11.txt`, `results/minweight_exact.txt`, `results/nq70_graph_adjacency.txt`,
-  `results/minweight_scan.txt`: the stabilizer minimum-weight searches (IBM's instance and the generated ones) and the
-  graph they ran on.
-- `results/hw_marginals.txt`, `results/rng_check.txt`, `results/rng_scan.txt`, `results/rngbits_seeds_*.txt`,
-  `results/draw_check.txt`: the low-order marginal test of the shots and samples, the random-stream identity check
-  and scan, and the drawing-step test.
-- `results/minweight_case1_k11.txt`, `results/minweight_split_test.txt`, `results/nq70_graph_geninverse.txt`,
-  `results/nq70_graph_kernel.txt`: the second enumeration of the minimum-weight proof, its validation on smaller
-  instances, and the generalised inverse and kernel it used.
-- `results/fidelity_mle_synthetic.txt`: the fidelity estimators on synthetic shots of known fidelity.
-- `results/ceiling_tightness.jsonl`, `results/ceiling_tightness.cmd.txt`: widths of random graphs and brickwork
-  instances against the ceiling, and the command that produced them.
-- `results/frontier_instances/`: order searches for the 74-, 76-, 78- and 80-qubit generated instances.
-- `results/frontier.jsonl`: the frontier search output.
-- `README.md`: the test table, the commands that reproduce each number, and the modes of the samplers.
+| Claim (section) | Artifact | Produced by |
+|---|---|---|
+| 1,012 exact samples, 13,202 s, peak 34.4 GB (§3.1) | `results/samples_nq70.txt`, `run.log`, `time_nq70.txt`, `inputs.sha256` | `gsamp` sample mode on `cloud/nq70_plan.txt` (command in `run.log`) |
+| Bit-for-bit reproduction of 55-qubit samples (§4.3) | `results/check55_result.txt` | `xcheck55.py` |
+| Laptop: 3 samples in 55 s, 8.6 GB (§3.1) | `results/laptop_samples_w30.txt` | `gsamp2 cloud2/nq70_inplace_plan.txt sample 3 2000000` |
+| Independent engine: 5 cloud samples to 10⁻⁶, 10-bit control, 1 laptop sample (§4.2) | `results/xcheck70_independent.txt`, `xcheck70d.txt`, `xcheck70e_laptop.txt` | `xcheck70c.py`, `xcheck70d.py`, `xcheck70e.py` |
+| Self-XEB 1.020 ± 0.047 (§3.1) | `results/ibmxeb/analysis.txt` | `analyze.py results/samples_nq70.txt cloud/nq70_step_qubits.json` |
+| Porter–Thomas test of the samples (§3.1) | `results/porter_thomas_nq70.txt` | `porter_thomas_test.py results/samples_nq70.txt 70` |
+| Reseeded rerun: 1,012 samples, marginals at chance (§4.7) | `results/samples_nq70_reseeded.txt`, `time_nq70_reseeded.txt`, `hw_marginals_reseeded.txt`, `porter_thomas_nq70_reseeded.txt` | `gsamp2 ... sample2 1012 3000000` (Docker, laptop); `hw_marginals.py`; `porter_thomas_test.py` |
+| IBM's 1,726 shots: XEB 0.466 ± 0.031, controls, #260 agreement, 6.9 s/shot (§3.2) | `results/ibmxeb/*_out.txt`, `time_ibm.txt`, `gate_result.txt`, `analysis.txt` | `ibm_xeb_prep.py`; `gsamp2 ... prob`; `ibm_xeb_analyze.py` |
+| Fidelity estimators and their synthetic calibration (§3.2) | `results/ibmxeb/analysis.txt`, `results/fidelity_mle_synthetic.txt` | `ibm_fidelity_mle.py`, `fidelity_mle_synth.py` |
+| Per-step conditionals, stabilizer-only check, cross-order check, information profile (§4.5, §4.6, Figure 3) | `results/chain/` (`stabprefix_*.txt`, `analysis_crossorder.txt`, `analysis_profile.txt`) | `gsamp2 ... chain`; `stabprefix.py`; `chain_profile.py` |
+| Engine-independent uniform-prefix check (§4.4) | `results/uniform_prefix_check.txt` | `check_uniform_prefix.py` |
+| Low-order marginals of shots and samples, biased-bit control (§4.7, §6, Figure 4) | `results/hw_marginals.txt`, `hw_marginals.json`, `hw_marginals_z.npz` | `hw_marginals.py` |
+| Random-stream identity and scan; drawing-step test (§4.7) | `results/rng_check.txt`, `rng_scan.txt`, `rngbits_seeds_*.txt`, `draw_check.txt` | `rngbits.cpp`, `rng_check.py`, `draw_check.py` |
+| 76-qubit run: 19 samples, 190 s each, independent check (§3.3) | `results/nq76/` (`samples_nq76.txt`, `time_sample.txt`, `xcheck_out.txt`, `analysis.txt`) | cloud run 5/6 (`run.log`); `report_run.py` (`xcheck_out.txt` holds re, im of the amplitude scaled by 2^{n/2}; log₂ Pr = log₂(re² + im²) − n) |
+| 80-qubit run: gates, 79 hybrid samples, re-scored strings (§3.4) | `results/nq80/` (`samples_nq80.txt`, `xcheck_nq80.txt`, `gate*_result.txt`, `time_sample.txt`, `analysis.txt`, `porter_thomas_nq80.txt`) | cloud run 12 (`cloud_nq80/run_hybrid.sh`); `nq80_analyze.py` |
+| Dual-table translation and twist checks (§3.4) | `results/tests/test_dual_table.txt`, `test_twist.txt`; `results/nq80/gate_tw_result.txt` | `test_dual_table.py`, `test_twist.py`; run 12 gate |
+| Frontier widths n = 30–120 (§5, Figure 1) | `results/frontier.jsonl`; `results/frontier_instances/*.log` | `frontier.py`; `frontier_instance.py` + `order_search.py` |
+| Ceiling tightness on random graphs (§5) | `results/ceiling_tightness.jsonl`, `ceiling_tightness.cmd.txt` | `ceiling_tightness.py` (command in the `.cmd.txt`) |
+| Cut-rank profiles (Figure 5) | `cloud/nq70_step_qubits.json`, `results/nq70_graph_adjacency.txt`, the in-place plans | `paper/make_figures.py` |
+| Minimum stabilizer weight 15, three-way certificate, validation on 30/40 qubits, scan (§6) | `results/minweight_exact.txt`, `minweight_k11.txt`, `minweight_case1_k11.txt`, `minweight_split_test.txt`, `minweight_scan.txt`, `nq70_graph_geninverse.txt`, `nq70_graph_kernel.txt` | `minweight_exact.py`, `minweight.cpp`, `minweight_case1.cpp`, `minweight_split_test.py`, `minweight_scan.py` |
+| Doped instance: gadget identity, widths (§7) | `results/tests/doped_gadget.txt`, `test_doped.txt`, `test_gsamp2_doped.txt`; `results/doped/doped_widths.json` | `doped_gadget.py`, `test_doped.py`, `test_gsamp2_doped.py`; `doped_to_qasm.py` + order sweep |
+| Doped shot 1 seven ways; 16 further shots; first 13 samples (§7) | `results/doped/run7/`, `run9/`, `run10/`, `run11/` (`shots_scored.txt`, `samples.txt`, `tn242_compare.txt`, `analysis.txt`, `porter_thomas_samples.txt`) | `cloud_doped/run*.sh`; `doped_sampler.py`; `doped_tn242_compare.py`; `doped_analyze.py` |
+| Hybrid sampler at 70 qubits against the exact sampler (§7, Figure 6) | `results/fstate_hybrid_check.txt`, `fstate_hybrid_samples.txt` | `fstate_hybrid_check.py` |
+| #242's amplitudes: Porter–Thomas, fidelity three ways, local 8-qubit estimator (§7) | `results/doped/tn242_log2p.txt`, `tn242_fidelity.txt`, `tn242_porter_thomas.txt`, `tn242_log_xeb.json` | `doped_tn242_analysis.py` on the Zenodo release |
+| Small-circuit correctness tests with negative controls (§4.1) | `results/tests/*.txt` (each ends with the script's exit code) | `test_*.py` (`doped_gadget.txt` ends in a traceback after its self-test passed, because the script then expects a circuit to convert) |
+| Test table, reproduction commands, sampler modes | `README.md` | |
