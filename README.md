@@ -2,7 +2,7 @@
 
 **A laptop draws exact samples from the ideal output distribution of the 70-qubit, depth-70 random-graph-state
 circuit that IBM and the University of Chicago ran as a quantum-advantage candidate (Quantum Advantage Tracker
-#151), in about 18 s per sample. The same code scores IBM's 1,726 published hardware shots exactly, at full
+#151), in about 11 s per sample (1,012 samples on 32 threads; 18 s on 16 threads). The same code scores IBM's 1,726 published hardware shots exactly, at full
 depth, and samples 76- and 80-qubit instances of the construction on one cloud node.**
 
 Technical note: [`paper/exact_graphstate_sampling.pdf`](paper/exact_graphstate_sampling.pdf) (Markdown source alongside).
@@ -15,7 +15,7 @@ instance on a laptop; the 76- and 80-qubit runs and the doped-instance results b
 
 | | Result | Artifact |
 |---|---|---|
-| Exact samples of IBM's instance | **1,012 samples, 13.0 s each** on 16 cores (34 GB); **~18 s each on a laptop** (8.6 GB table) | `results/samples_nq70.txt`, `results/laptop_samples_w30.txt` |
+| Exact samples of IBM's instance | **1,012 samples, 13.0 s each** on 16 cores (34 GB); **11.3 s each on a laptop** (1,012 samples on 32 threads; 8.6 GB table) | `results/samples_nq70.txt`, `results/laptop_samples_w30.txt` |
 | Independent engine, different algorithm | 6 samples reproduced to 1e-6 in log₂ Pr; 10-bit-flip control moves by 3.37 | `results/xcheck70_independent.txt`, `results/xcheck70d.txt` |
 | IBM's hardware shots scored exactly | **linear XEB 0.466 ± 0.031**; controls consistent with zero; every shot agrees with the independent code of #260 to 9.4e-6 | `results/ibmxeb/analysis.txt` |
 | Fidelity of IBM's run, from exact probabilities | 0.457 ± 0.037 (XEB) and 0.48 [0.43, 0.54] (mixture MLE), against IBM's DFE 0.37 (≥ 0.092) | `results/ibmxeb/analysis.txt` |
@@ -59,7 +59,7 @@ n-qubit graph state in *any* product basis with 2^{⌊n/2⌋} entries. That ceil
 python test_tableau.py && python test_graphform.py && python test_plan.py && python test_amp.py   # exact vs statevector
 python test_sampler.py && python test_inplace.py && python test_stabprefix.py                     # samplers and the stabilizer formula
 g++ -O3 -march=native -fopenmp -o gsamp2 gsamp2.cpp                                               # in-place sampler (widths to 40)
-./gsamp2 cloud_ibmxeb/nq70_inplace_plan.txt sample 3 2000000      # 3 exact samples of IBM's instance, 8.6 GB, ~18 s each on 16 threads
+./gsamp2 cloud_ibmxeb/nq70_inplace_plan.txt sample 3 2000000      # 3 exact samples of IBM's instance, 8.6 GB, ~18 s each on 16 threads (11 s on 32) on 16 threads
 ./gsamp2 cloud_ibmxeb/nq70_inplace_plan.txt prob strings.txt      # exact log2 Pr of given bitstrings (IBM's shots: cloud_ibmxeb/)
 ./gsamp2 cloud_ibmxeb/nq70_inplace_plan.txt chain strings.txt     # same, plus every conditional Pr(b_k | b_1..b_{k-1})
 g++ -O3 -march=native -fopenmp -DDP_FLOAT -o dp dp.cpp      # independent sliced amplitude engine (xcheck_make.py builds its jobs)

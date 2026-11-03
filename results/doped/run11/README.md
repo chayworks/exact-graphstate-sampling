@@ -19,8 +19,9 @@ Timeline (`run.log`):
 
 Analyses:
 - `tn242_compare.txt` (`python doped_tn242_compare.py results/doped/tn242_log2p.txt results/doped/run11/shots_scored.txt`):
-  all 16 shots match strings in #242's Zenodo release; log₂ difference ours − TN: mean −2.56e-4, max |.| 2.76e-4, every
-  shot within [−2.76, −2.50]e-4, i.e. a constant factor of 1 − 1.8e-4 between the two pipelines (origin unidentified).
+  all 16 shots match strings in #242's Zenodo release; log₂ difference ours − TN: mean −2.56e-4, max |.| 2.76e-4; 15 of 16
+  within [−2.76, −2.54]e-4 and the least probable shot (log₂ p −74.73) at −1.63e-4, i.e. a common factor of 1 − 1.8e-4
+  between the two pipelines (origin unidentified) plus rounding that is largest on the smallest amplitude.
 - `analysis.txt` (`python doped_analyze.py results/doped/run11 0`): the 16 shots' linear XEB +0.332 ± 0.253
   (bootstrap 95% [−0.136, +0.829]); hybrid sampler 13 of 13 accepted, z mean 0.9996, sd 0.0008, none above the cap;
   accepted samples' self-consistency XEB +0.807 ± 0.358; mean time per proposal 1,166 s.
