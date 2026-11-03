@@ -706,28 +706,47 @@ the width grows with the number and placement of T gates is measured at that one
 computes full-depth XEB for any graph-state run up to about 80 qubits on one node (§3.4), so an experiment at that
 scale can report an exact benchmark instead of an extrapolated one.
 
-## 9. Related work
+## 9. Related work and references
 
-- Rank-width simulability of graph-state measurements: Van den Nest, Dür, Vidal, Briegel, PRA 75, 012337 (2007).
-- Schmidt decomposition of graph states across a cut (the orthonormality identity of §2): Hein, Eisert, Briegel,
-  PRA 69, 062311 (2004).
-- k-uniform states and codes of distance k + 1 (the framing of §6): Scott, PRA 69, 052330 (2004).
-- Perfect sampling of matrix product states: Ferris & Vidal, PRB 85, 165146 (2012).
-- ZX-calculus rank-width contraction: Kuyanov & Kissinger, arXiv:2603.06764.
-- Exact amplitudes of a doped instance by T-injection and linear rank-width: Kim Renaud (Calcul Québec),
-  `dcs-rankwidth`, tracker #249 (22 September 2026): the 64-qubit, 314-T instance of #245, width 36, 1,389
-  probabilities at 382 s each on 192-core nodes, linear XEB 0.390 [0.325, 0.457].
-- Capped rejection sampling for this instance on GPUs: tracker #260 (Qiu, 30 October 2026; closed by its author on
-  2 November in favour of #261).
-- Exact sampling of this instance by a half/half split on 8 H200 GPUs: tracker #261 (Zhongpu Qiu, Shanghai AI
-  Laboratory and Beijing Normal University, 2 November 2026): 1,726 samples in 1,265 s, 2.42 s per sample, a 2^{35}
-  conditional table of 256 GiB in complex64; its amplitudes re-scored in complex128 to 3.3·10⁻⁶; IBM's shots at
-  0.466 ± 0.031. The issue states the method "needs a Clifford circuit followed only by single-qubit rotations" and
-  does not apply to the doped instances. Our first exact samples of the instance (29 October 2026, `results/run.log`)
-  predate it; its posting predates ours.
-- Exact tensor-network amplitudes for the doped 70-qubit instance: Manabe, Gu, Pan, arXiv:2608.13110; amplitudes and
-  contraction paths at Zenodo 10.5281/zenodo.21912448 (CC BY 4.0), used in §7 for the string-by-string comparison.
-- The random-graph-state hardness argument behind the construction: arXiv:2412.07058.
+The method is the linear-order case of the rank-width simulability of graph-state measurements [1], with the Schmidt
+structure of graph states across a cut [2] supplying the prefix marginals and chain-rule sampling in the manner of
+perfect sampling for tensor networks [4]. The stabilizer-code framing of §6 is the equivalence between k-uniform states
+and pure codes of distance k + 1 [3]. Rank-width contraction of ZX diagrams [5] is the general form of the same idea.
+On the tracker, Renaud [6] applied the T-gadget with a linear rank-width order to a different doped instance (64 qubits,
+314 T gates, width 36, probabilities only); Qiu [7, 8] attacked the 70-qubit instance of §1.1 with capped rejection
+sampling and then with exact half/half sampling on 8 H200 GPUs (1,726 samples in 1,265 s; the half/half split is the
+ceiling of §5 with no order search, 32 times the memory used here, and its issue states that it does not apply to the
+doped instances); Manabe, Gu and Pan [9] computed exact amplitudes of the doped instance by tensor-network contraction
+on 256 H100 GPUs and published them [10], which §7 compares string by string. The experiment itself is described in
+[11] and [12]; the random-graph-state hardness argument behind the construction is [13]. Our first exact samples of the
+70-qubit instance are dated 29 October 2026 (`results/run.log`); [8] was posted first.
+
+1. M. Van den Nest, W. Dür, G. Vidal and H. J. Briegel, Classical simulation versus universality in measurement-based
+   quantum computation, Phys. Rev. A 75, 012337 (2007).
+2. M. Hein, J. Eisert and H. J. Briegel, Multiparty entanglement in graph states, Phys. Rev. A 69, 062311 (2004).
+3. A. J. Scott, Multipartite entanglement, quantum-error-correcting codes, and entangling power of quantum evolutions,
+   Phys. Rev. A 69, 052330 (2004).
+4. A. J. Ferris and G. Vidal, Perfect sampling with unitary tensor networks, Phys. Rev. B 85, 165146 (2012).
+5. F. Kuyanov and A. Kissinger, Efficient classical simulation of low-rank-width quantum circuits using ZX-calculus,
+   arXiv:2603.06764 (2026).
+6. K. Renaud, injected_graph_scan_nq64_depth73 (code `dcs-rankwidth`), Quantum Advantage Tracker issue #249,
+   https://github.com/quantum-advantage-tracker/quantum-advantage-tracker.github.io/issues/249 (22 September 2026).
+7. Z. Qiu, capped rejection sampling of random_graph_sampling_nq70_depth70_checks27_basis_fstate, Quantum Advantage
+   Tracker issue #260 (30 October 2026; closed by the author on 2 November 2026 in favour of [8]).
+8. Z. Qiu, Exact sampling of random_graph_sampling_nq70_depth70_checks27_basis_fstate: 1,726 samples in 1,265 s on
+   8 H200 GPUs, Quantum Advantage Tracker issue #261,
+   https://github.com/quantum-advantage-tracker/quantum-advantage-tracker.github.io/issues/261 (2 November 2026).
+9. H. Manabe, H. Gu and F. Pan, Classical simulation and design frontiers for IBM's doped Clifford sampling experiment,
+   arXiv:2608.13110 (2026); tracker issue #242.
+10. H. Manabe, H. Gu and F. Pan, Data for exact tensor-network simulation of IBM's doped-Clifford circuit, Zenodo,
+    doi:10.5281/zenodo.21912448 (2026), CC BY 4.0.
+11. Quantum Advantage Tracker, random_graph_sampling_nq70_depth70_checks27_basis_fstate (issue #151, 29 April 2026) and
+    doped_random_graph_sampling_nq70_depth70_checks27 (issue #228, 9 July 2026),
+    https://github.com/quantum-advantage-tracker/quantum-advantage-tracker.github.io.
+12. S. Martiel, J.-U. Chung, A. Seif, S. Ghosh, I. Hincks, A. Deshpande, H. Manabe, H. Gu, F. Pan, B. Fefferman,
+    J. M. Gambetta and A. Javadi-Abhari, Sampling hard circuits with verifiably high fidelity, arXiv:2607.25941 (2026).
+13. S. Ghosh, D. Hangleiter and J. Helsen, Random regular graph states are complex at almost any depth,
+    arXiv:2412.07058 (2024).
 
 ## Appendix: artifacts
 
