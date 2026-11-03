@@ -147,6 +147,10 @@ GF(2)-linear map (c, x_v) ↦ c′. We evaluate it in gather form: a `pdep` scat
 dimension at most 2. A generic matrix product state of the same cut needs bond dimension 2^r and therefore
 cost polynomial in 2^r; here the cost is linear in 2^r.
 
+![Cut-rank profiles](fig/fig5_rankprofile.png)
+
+*Figure 5. Cut rank r_k after step k along the orders used in this note, against the fraction of the order processed: IBM's 70-qubit instance in the production order (width 31) and the width-30 order, the 80-qubit instance in its sliced order (width 34), and the 538-vertex gadget graph of the doped instance in the sweep order (width 34). The in-place table at step k holds 2^{r_{k−1}+1} entries, so the width is one more than the largest r_k shown. The dotted line is the ceiling min(k, n − k) for n = 70 (`paper/make_figures.py`, from the committed plans and `results/nq70_graph_adjacency.txt`).*
+
 **Exact sampling.** With prefix P measured with outcomes b_P, the post-measurement state is
 
   2^{-|P|/2} Σ_c P[c] Z^{B c} |G_F⟩.
@@ -618,6 +622,10 @@ the accepted samples' XEB against their own exact probabilities is 1.018 ± 0.12
 1.020 ± 0.047, their mean log₂ Pr −69.37 ± 0.09 against −69.40 ± 0.04, and three accepted samples re-scored in
 prob mode agree with the sampler's reported log₂ Pr to 9·10⁻⁷ (`results/fstate_hybrid_check.txt`,
 `results/fstate_hybrid_samples.txt`). Each sample costs about one width-34 pass.
+
+![Hybrid sampler marginals](fig/fig6_cap.png)
+
+*Figure 6. The prefix marginal z of every proposal of the hybrid sampler on the three instances it was run on (70-qubit Clifford instance, 150 proposals; 80-qubit instance, 80; doped instance, 13), in units of the uniform distribution. The spread is 10⁻³, as the average of 2^{20} Porter–Thomas probabilities predicts, and the cap c = 1.03 lies about 30 standard deviations to the right of every observed value; the mass beyond it is what separates these samples from exact ones (`results/fstate_hybrid_samples.txt`, `results/nq80/samples_nq80.txt`, `results/doped/run11/samples.txt`).*
 
 **Full scale: the first IBM doped shot, five ways.** The first of IBM's 2,051 published doped shots was scored on
 three rented nodes with three different arrangements of the same computation (`graphsamp/results/doped/`, each value

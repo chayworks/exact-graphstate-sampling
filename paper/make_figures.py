@@ -87,3 +87,57 @@ axs[0].set_ylabel("density"); h, l = axs[0].get_legend_handles_labels(); fig.leg
 fig.suptitle("IBM's shots carry no low-order bias: every marginal on ≤ 14 qubits of the ideal output is exactly uniform", fontsize=9.5)
 fig.tight_layout(rect=(0, 0.08, 1, 1)); fig.savefig(OUT + "fig4_marginals.png", dpi=220); plt.close(fig)
 print("wrote", OUT)
+
+# ---- fig 5: cut-rank profiles along the orders ---------------------------------------------------------------------
+def gf2_rank(M):
+    M = M.copy() % 2; r = 0; rows, cols = M.shape
+    for c in range(cols):
+        piv = next((i for i in range(r, rows) if M[i, c]), None)
+        if piv is None: continue
+        M[[r, piv]] = M[[piv, r]]
+        for i in range(rows):
+            if i != r and M[i, c]: M[i, :] ^= M[r, :]
+        r += 1
+        if r == rows: break
+    return r
+def profile_from_order(adj_path, order):
+    A = np.array([[int(c) for c in l.strip()] for l in open(adj_path) if l.strip()], np.uint8); n = len(A)
+    out = []
+    for k in range(1, n + 1):
+        P = order[:k]; F = order[k:]
+        out.append(gf2_rank(A[np.ix_(F, P)]) if F else 0)
+    return out
+def profile_from_plan(path):
+    L = open(path).read().split("\n"); n, steps, R = map(int, L[0].split())
+    return [int(l.split()[1]) for l in L[1:1 + steps]]
+w31 = profile_from_order(R + "nq70_graph_adjacency.txt", json.load(open("graphsamp/cloud/nq70_step_qubits.json")))
+w30 = profile_from_plan("graphsamp/cloud2/nq70_inplace_plan.txt")
+d34 = profile_from_plan("graphsamp/cloud_doped/doped_m20_inplace_plan.txt")
+f80 = profile_from_plan("graphsamp/cloud_nq80/fi80h_s0.txt")
+fig, ax = plt.subplots(figsize=(6.6, 4.0))
+for prof, lab, col, ls in [(w31, "IBM's 70-qubit instance, production order (width 31)", BLUE, "-"), (w30, "same instance, width-30 order", AQUA, "-"),
+                           (f80, "80-qubit instance, sliced order (width 34)", ORANGE, "-"), (d34, "doped instance: 538-vertex gadget graph, sweep order (width 34)", INK, "--")]:
+    n = len(prof); ax.plot(np.arange(1, n + 1) / n, prof, ls, lw=1.4, color=col, label=lab)
+x = np.linspace(0, 1, 200); ax.plot(x, 70 * np.minimum(x, 1 - x), ":", color=MUTED, lw=1, label="ceiling for 70 qubits: min(k, n − k)")
+ax.set_xlabel("fraction of the order processed, k / n"); ax.set_ylabel("cut rank r_k after step k"); ax.set_ylim(0, 40)
+ax.legend(fontsize=7.2, loc="upper right"); ax.grid(alpha=0.25, lw=0.5)
+ax.set_title("Cut-rank profiles along the orders: the table at step k has 2^{r_k} entries")
+fig.tight_layout(); fig.savefig(OUT + "fig5_rankprofile.png", dpi=220); plt.close(fig)
+print("fig5 maxima:", max(w31), max(w30), max(f80), max(d34))
+
+# ---- fig 6: hybrid-sampler prefix marginals against the cap --------------------------------------------------------
+def zs(path):
+    return np.array([float(l.split("z=")[1].split()[0]) for l in open(path) if l.startswith(("ACC", "rej"))])
+runs = [(zs(R + "fstate_hybrid_samples.txt"), "70-qubit Clifford instance, 150 proposals (K = 50)", BLUE),
+        (zs(R + "nq80/samples_nq80.txt"), "80-qubit instance, 80 proposals (K = 60)", ORANGE),
+        (zs(R + "doped/run11/samples.txt"), "doped instance, 13 proposals (K = 50, run 11)", AQUA)]
+fig, ax = plt.subplots(figsize=(6.6, 3.6))
+bins = np.linspace(0.994, 1.006, 25)
+for z, lab, col in runs:
+    ax.hist(z, bins=bins, histtype="step", lw=1.6, color=col, label=f"{lab}: mean {z.mean():.4f}, sd {z.std(ddof=1):.4f}")
+ax.text(1.0058, ax.get_ylim()[1] * 0.55, "cap c = 1.03:\n30 sd to the right →", ha="right", fontsize=8, color=INK)
+ax.set_xlabel("prefix marginal z = 2^K Pr(first K bits) in units of the uniform distribution"); ax.set_ylabel("proposals")
+ax.set_xlim(0.994, 1.006); ax.legend(fontsize=7.2, loc="upper left"); ax.grid(alpha=0.25, lw=0.5)
+ax.set_title("Hybrid sampler: prefix marginals of every proposal, three instances")
+fig.tight_layout(); fig.savefig(OUT + "fig6_cap.png", dpi=220); plt.close(fig)
+print("fig6 z ranges:", [(float(z.min()), float(z.max())) for z, _, _ in runs])
