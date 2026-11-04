@@ -31,15 +31,22 @@ instance on a laptop; the 76- and 80-qubit runs and the doped-instance results b
 
 ## How it works
 
+**In one sentence:** this is the linear rank-width method for graph states (Van den Nest, Dür, Vidal and Briegel,
+PRA 75, 012337 (2007)): reduce the Clifford part to a graph state, sum the vertices out along a linear order, and keep
+a table of 2^(cut rank) numbers; the largest cut rank along the order is the width of that linear rank decomposition,
+an upper bound on the graph's linear rank-width. The orders here are found by a heuristic search, so the widths
+quoted (30 for IBM's #151 instance, 34 for its doped sibling) are upper bounds, not proven minima. The same reduction
+for doped circuits (each T gate as a projected ancilla) is Kim Renaud's `dcs-rankwidth` (tracker #249).
+
 The circuit is a Clifford body followed by one layer of single-qubit rotations. The Clifford state is a
 graph state |G_A⟩ up to local Cliffords, so every amplitude is a complex-weighted Ising sum on the graph:
 
     ⟨b|ψ⟩ = 2^{-n/2} Σ_x Π_j M_j[b_j, x_j] (−1)^{x^T A x}   (upper triangle)
 
 Summing over x one vertex at a time, the processed vertices P act on the rest only through the GF(2) vector
-A[F,P]·x_P, which takes 2^{r} values, r = cut rank of (P, F). The dynamic program therefore holds 2^{r}
-complex numbers, not the 2^{2r} of a generic matrix product state. The best order found for IBM's instance
-has r ≤ 30.
+A[F,P]·x_P, which takes 2^{r} values, r = cut rank of (P, F) = rank over GF(2) of the block A[F,P]. The dynamic
+program therefore holds 2^{r} complex numbers, not the 2^{2r} of a generic matrix product state. The best order found
+for IBM's instance has r ≤ 30 (linear rank-width ≤ 30).
 
 **The identity that makes exact sampling cheap.** After the first t qubits are measured, the unmeasured
 qubits are in Σ_c P_t[c] Z^{v(c)}|G_F⟩, and the states Z^v|G_F⟩ are orthonormal. So
@@ -52,8 +59,15 @@ entries, which is what puts the 70-qubit instance on a laptop.
 
 Since the cut rank of any prefix is at most min(|P|, n − |P|) ≤ ⌊n/2⌋, the same program samples *any*
 n-qubit graph state in *any* product basis with 2^{⌊n/2⌋} entries. That ceiling is 275 GB at n = 70 and
-281 TB at n = 90; IBM's construction sits within 3–4 of it.
+281 TB at n = 90; IBM's construction sits 3–5 below it at the search budgets used.
 
+**Scope and what has not been run.** The current version of IBM's paper (arXiv:2607.25941 v3) features a 64-qubit,
+depth-73 instance with 314 T gates on a ring (tracker #245). #249 reports linear rank-width ≤ 36 for it with the same
+reduction, which would be a 512 GiB table on a 1 TB node; this repository has **not** run that instance. Its results
+cover the 70-qubit #151 instance (exact sampling), 76- and 80-qubit instances of the same construction, and the
+70-qubit doped instance #228 (exact amplitudes; capped hybrid samples). On 17 doped shots our log₂ probabilities and
+the published amplitudes of #242 differ by a nearly constant factor of 1 − 1.8·10⁻⁴ whose cause we have not found
+(`results/doped/run11/tn242_compare.txt`).
 ## Reproduce
 
 ```
