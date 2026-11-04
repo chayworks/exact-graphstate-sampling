@@ -1,0 +1,4 @@
+122 samples of the 70-qubit instance from results/doped/run13/samples.txt
+mean z = 2.1808 +/- 0.1357 (Porter-Thomas: 2); mean z^2 = 6.985 +/- 0.895 (Porter-Thomas: 6)
+mean log2 Pr = -69.245 +/- 0.102 (Porter-Thomas: -69.390; uniform: -70)
+KS distance to z e^-z: 0.1075 (5% level 0.1231); to Exp(1), the wrong reference for samples drawn by p: 0.4225

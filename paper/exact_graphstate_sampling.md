@@ -77,7 +77,7 @@ Four further results follow from having the exact probabilities in hand.
    128 GiB of tables on one node (two slices of 2^{33} for the two-table engine), 1,165 s per amplitude. Seventeen of
    IBM's hardware shots agree with the 256-GPU tensor-network entry #242 to a common factor of 1.8·10⁻⁴ (16 of 17
    within 10⁻⁵ of it; shot 1 across seven of our computations to 1.4·10⁻⁶), #242's published amplitudes give the hardware fidelity 0.34 ± 0.03 three independent ways, above the
-   README's 0.26 ± 0.02, and the first 13 hybrid samples of the instance were drawn on the same node (13 of 13
+   README's 0.26 ± 0.02, and 135 hybrid samples of the instance were drawn on the same node (135 of 139 proposals
    accepted against the cap).
 
 Two further facts follow from the stabilizer structure. The output distribution of the instance is **exactly
@@ -111,7 +111,7 @@ three different dynamic-program paths.
 | Fidelity of IBM's run from exact probabilities | 0.457 ± 0.037 (XEB) and 0.48 [0.43, 0.54] (mixture MLE); IBM's DFE 0.37, ≥ 0.092 | `results/ibmxeb/analysis.txt` |
 | 76-qubit, depth-76 instance sampled exactly | **19 samples, 190 s each**, 69 GB, two reproduced to 10⁻⁷ by the independent engine | `results/nq76/analysis.txt` |
 | 80-qubit, depth-80 instance on one 256 GiB node (hybrid sampler, §3.4) | **79 samples, 246 s per proposal**, width 35 sliced to 34 (128 GiB) by a translation of the dual table; 79 of 80 proposals accepted, marginals 0.997–1.002 against a cap of 1.03; two re-scored by a second slicing to 5·10⁻⁷ | `results/nq80/analysis.txt` |
-| IBM's doped flagship (468 T gates): exact amplitudes and first samples on one node | width 34 after the T-gadget; 17 shots agree with the 256-GPU tensor-network entry #242 up to a common factor of 1 − 1.8·10⁻⁴, 15 of 16 within 10⁻⁵ of it (shot 1 computed seven ways to 1.4·10⁻⁶); 1,165 s per shot; 13 hybrid samples, 13 of 13 accepted | `results/doped/run11/` |
+| IBM's doped flagship (468 T gates): exact amplitudes and first samples on one node | width 34 after the T-gadget; 17 shots agree with the 256-GPU tensor-network entry #242 up to a common factor of 1 − 1.8·10⁻⁴, 15 of 16 within 10⁻⁵ of it (shot 1 computed seven ways to 1.4·10⁻⁶); 1,165 s per shot; 135 hybrid samples from 139 proposals | `results/doped/run11/`, `run13/` |
 | Output statistics of our 1,012 samples | Porter–Thomas: KS 0.016 to z·e^{−z} (5% level 0.043), mean z² 6.3 ± 0.3 against 6 | `results/porter_thomas_nq70.txt` |
 | Fine-structure check without a dynamic program | stabilizer-group formula reproduces the sampler's conditionals to 3.3·10⁻⁸ on all shots | `results/chain/stabprefix_ibm_fwd.txt` |
 | Ceiling for every graph | width ≤ ⌊n/2⌋: 275 GB at n = 70, 281 TB at n = 90; random graphs G(70, ½) reach width 32, brickwork 31 | Proposition in §5, `results/ceiling_tightness.jsonl` |
@@ -706,9 +706,11 @@ drew the first samples of the doped instance with the hybrid sampler: 13 proposa
 marginals z between 0.9981 and 1.0007 against the cap of 1.03 (mean 0.9996, sd 0.0008), 1,166 s per proposal
 (`samples.txt`); their log₂ Pr averages −69.59 ± 0.36 (Porter–Thomas −69.39) and their self-consistency XEB is
 0.81 ± 0.36, consistent with 1 at this sample size (`porter_thomas_samples.txt`). As at 80 qubits these are the Born
-law conditioned on z ≤ 1.03, not exact samples. A dedicated run on the same node class (run 13, about 130 proposals
-over 44 hours, in progress at the time of writing) extends this set; to our knowledge no other entry has sampled this
-instance.
+law conditioned on z ≤ 1.03, not exact samples. A dedicated run on the same node class (run 13,
+`results/doped/run13/`; gate on shot 1 to 10⁻⁶) added 126 proposals at 1,194 s each, 122 accepted, none above the cap,
+z between 0.99783 and 1.00269. Together runs 11 and 13 give 135 distinct samples from 139 proposals (z sd 0.00093);
+their self-consistency XEB is 1.15 ± 0.13 and their mean log₂ Pr −69.28 ± 0.10 against the Porter–Thomas −69.39. To
+our knowledge no other entry has sampled this instance.
 
 ## 8. What this does and does not show
 
@@ -813,7 +815,7 @@ lines of the cloud runs and the machines they ran on.
 | Cut-rank profiles (Figure 4) | `cloud/nq70_step_qubits.json`, `results/nq70_graph_adjacency.txt`, the in-place plans | `paper/make_figures.py` |
 | Minimum stabilizer weight 15, three-way certificate, validation on 30/40 qubits, scan (§6) | `results/minweight_exact.txt`, `minweight_k11.txt`, `minweight_case1_k11.txt`, `minweight_split_test.txt`, `minweight_scan.txt`, `nq70_graph_geninverse.txt`, `nq70_graph_kernel.txt` | `minweight_exact.py`, `minweight.cpp`, `minweight_case1.cpp`, `minweight_split_test.py`, `minweight_scan.py` |
 | Doped instance: gadget identity, widths (§7) | `results/tests/doped_gadget.txt`, `test_doped.txt`, `test_gsamp2_doped.txt`; `results/doped/doped_widths.json` | `doped_gadget.py`, `test_doped.py`, `test_gsamp2_doped.py`; `doped_to_qasm.py` + order sweep |
-| Doped shot 1 seven ways; 16 further shots; first 13 samples (§7) | `results/doped/run7/`, `run9/`, `run10/`, `run11/` (`shots_scored.txt`, `samples.txt`, `tn242_compare.txt`, `analysis.txt`, `porter_thomas_samples.txt`) | `cloud_doped/run*.sh`; `doped_sampler.py`; `doped_tn242_compare.py`; `doped_analyze.py` |
+| Doped shot 1 seven ways; 16 further shots; 135 samples (§7) | `results/doped/run7/`, `run9/`, `run10/`, `run11/`, `run13/` (`shots_scored.txt`, `samples.txt`, `tn242_compare.txt`, `analysis.txt`, `porter_thomas_samples.txt`) | `cloud_doped/run*.sh`; `doped_sampler.py`; `doped_tn242_compare.py`; `doped_analyze.py` |
 | Exact second moment of the prefix marginal at 70 qubits, K = 50: Var(z) = 9.70·10⁻⁷, TV bound 1.1·10⁻³ (§7) | `results/capvar_nq70_K50.txt`, `capvar_nq70_K50_gens.txt`, `results/tests/test_capvar.txt` | `capvar.py export ...; capvar` (C++), `test_capvar.py` |
 | Hybrid sampler at 70 qubits against the exact sampler (§7, Figure 6) | `results/fstate_hybrid_check.txt`, `fstate_hybrid_samples.txt` | `fstate_hybrid_check.py` |
 | #242's amplitudes: Porter–Thomas, fidelity three ways, local 8-qubit estimator (§7) | `results/doped/tn242_log2p.txt`, `tn242_fidelity.txt`, `tn242_porter_thomas.txt`, `tn242_log_xeb.json` | `doped_tn242_analysis.py` on the Zenodo release |
