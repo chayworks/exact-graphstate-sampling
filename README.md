@@ -21,7 +21,7 @@ instance on a laptop; the 76- and 80-qubit runs and the doped-instance results b
 | Fidelity of IBM's run, from exact probabilities | 0.457 ± 0.037 (XEB) and 0.48 [0.43, 0.54] (mixture MLE), against IBM's DFE 0.37 (≥ 0.092) | `results/ibmxeb/analysis.txt` |
 | 76-qubit, depth-76 instance | **19 exact samples, 190 s each**, 69 GB, two reproduced to 1e-7 by the independent engine | `results/nq76/analysis.txt` |
 | 80-qubit, depth-80 instance on one 256 GiB node (hybrid sampler) | **79 samples, 246 s per proposal**, width 35 sliced to 34 by a translation of the dual table; 79 of 80 proposals accepted, prefix marginals 0.997–1.002 against a cap of 1.03 (Born law conditioned on the cap, not exact); two re-scored by a second slicing to 5e-7 | `results/nq80/analysis.txt` |
-| IBM's doped flagship (468 T gates) on one node | width 34 after the T-gadget; **17 shots match #242 to a constant factor of 1.8e-4**, 1,165 s per shot; **first 13 hybrid samples** (13 of 13 accepted, z 0.998–1.001 vs cap 1.03) | `results/doped/run11/` |
+| IBM's doped flagship (468 T gates) on one node | width 34 after the T-gadget; **17 shots match #242 up to a common factor 1 − 1.8e-4** (15 of 16 within 1e-5 of it), 1,165 s per shot; **first 13 hybrid samples** (13 of 13 accepted, z 0.998–1.001 vs cap 1.03) | `results/doped/run11/` |
 | Hybrid sampler's cap, bounded without a model (70 qubits, K = 50) | exact second moment of the prefix marginal over all 2^30 prefix stabilizers: Var(z) = 9.70e-7 (observed 1.00e-6); Chebyshev + Cauchy–Schwarz: accepted output within **total variation 1.1e-3** of the Born law | `results/capvar_nq70_K50.txt`, `capvar.py`, `capvar.cpp`, `results/tests/test_capvar.txt` |
 | Conditionals checked without a dynamic program | stabilizer-group formula matches the sampler to 3.3e-8 on all 1,726 shots | `results/chain/stabprefix_ibm_fwd.txt` |
 | Ceiling for every graph | width ≤ ⌊n/2⌋, so 2^{n/2} entries suffice for any graph state in any product basis: 275 GB at 70 qubits, 281 TB at 90; random graphs G(70, ½) reach 32, brickwork 31 | note §5, `results/ceiling_tightness.jsonl` |
@@ -75,8 +75,8 @@ python test_tableau.py && python test_graphform.py && python test_plan.py && pyt
 python test_sampler.py && python test_inplace.py && python test_stabprefix.py                     # samplers and the stabilizer formula
 g++ -O3 -march=native -fopenmp -o gsamp2 gsamp2.cpp                                               # in-place sampler (widths to 40)
 ./gsamp2 cloud_ibmxeb/nq70_inplace_plan.txt sample 3 2000000      # 3 exact samples of IBM's instance, 8.6 GB, ~18 s each on 16 threads (11 s on 32) on 16 threads
-./gsamp2 cloud_ibmxeb/nq70_inplace_plan.txt prob strings.txt      # exact log2 Pr of given bitstrings (IBM's shots: cloud_ibmxeb/)
-./gsamp2 cloud_ibmxeb/nq70_inplace_plan.txt chain strings.txt     # same, plus every conditional Pr(b_k | b_1..b_{k-1})
+./gsamp2 cloud_ibmxeb/nq70_inplace_plan.txt prob cloud_ibmxeb/ibm_qiskit.txt   # exact log2 Pr of each line (here IBM's 1,726 shots, in step order)
+./gsamp2 cloud_ibmxeb/nq70_inplace_plan.txt chain cloud_ibmxeb/ibm_qiskit.txt  # same, plus every conditional Pr(b_k | b_1..b_{k-1})
 g++ -O3 -march=native -fopenmp -DDP_FLOAT -o dp dp.cpp      # independent sliced amplitude engine (xcheck_make.py builds its jobs)
 python ibm_xeb_analyze.py results/ibmxeb/ibm_out.txt results/ibmxeb/uniform_out.txt results/ibmxeb/reversed_out.txt
 python ibm_fidelity_mle.py results/ibmxeb/ibm_out.txt results/samples_nq70.txt
@@ -158,7 +158,7 @@ estimators, the stabilizer-only check of the sampler's conditionals, the measure
 dual-table translation that makes dense graphs sliceable, and the ⌊n/2⌋ ceiling. The claim is about this family of
 experiments, not a new complexity result. The doped sibling instance (468 T gates) is reached through the T-gadget
 and the hybrid sampler (`results/doped/`): 1,165 s per IBM shot on one 256 GiB node with the two-table engine, 17 shots
-matching the tensor-network entry #242 to a constant factor of 1.8e-4, and the first 13 hybrid samples of the instance
+matching the tensor-network entry #242 up to a common factor of 1 − 1.8e-4 (15 of 16 within 1e-5 of it; cause not found), and the first 13 hybrid samples of the instance
 (13 of 13 accepted, `results/doped/run11/`).
 
 ## Author

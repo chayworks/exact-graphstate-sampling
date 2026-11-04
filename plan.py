@@ -1,4 +1,7 @@
 """Plan the cut-rank dynamic program for  Z(w) = sum_x prod_j w_j(x_j) (-1)^{sum_{i<j} A_ij x_i x_j}.
+This is the linear rank-width method (Van den Nest, Duer, Vidal, Briegel, PRA 75, 012337 (2007)): the largest cut rank
+r_k along `order` is the width of the linear rank decomposition the order defines, an upper bound on the linear
+rank-width of A, and the table at step k has 2^{r_k} entries.
 
 Processing vertices in `order`, the processed vertices act on the future ones only through the field
 s = A[F, P] x_P, which lives in an r_k-dimensional GF(2) space (r_k = cut rank). States are coordinates

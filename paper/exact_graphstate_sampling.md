@@ -111,7 +111,7 @@ three different dynamic-program paths.
 | Fidelity of IBM's run from exact probabilities | 0.457 ± 0.037 (XEB) and 0.48 [0.43, 0.54] (mixture MLE); IBM's DFE 0.37, ≥ 0.092 | `results/ibmxeb/analysis.txt` |
 | 76-qubit, depth-76 instance sampled exactly | **19 samples, 190 s each**, 69 GB, two reproduced to 10⁻⁷ by the independent engine | `results/nq76/analysis.txt` |
 | 80-qubit, depth-80 instance on one 256 GiB node (hybrid sampler, §3.4) | **79 samples, 246 s per proposal**, width 35 sliced to 34 (128 GiB) by a translation of the dual table; 79 of 80 proposals accepted, marginals 0.997–1.002 against a cap of 1.03; two re-scored by a second slicing to 5·10⁻⁷ | `results/nq80/analysis.txt` |
-| IBM's doped flagship (468 T gates): exact amplitudes and first samples on one node | width 34 after the T-gadget; 17 shots agree with the 256-GPU tensor-network entry #242 to a constant factor of 1.8·10⁻⁴ (shot 1 computed seven ways to 1.4·10⁻⁶); 1,165 s per shot; 13 hybrid samples, 13 of 13 accepted | `results/doped/run11/` |
+| IBM's doped flagship (468 T gates): exact amplitudes and first samples on one node | width 34 after the T-gadget; 17 shots agree with the 256-GPU tensor-network entry #242 up to a common factor of 1 − 1.8·10⁻⁴, 15 of 16 within 10⁻⁵ of it (shot 1 computed seven ways to 1.4·10⁻⁶); 1,165 s per shot; 13 hybrid samples, 13 of 13 accepted | `results/doped/run11/` |
 | Output statistics of our 1,012 samples | Porter–Thomas: KS 0.016 to z·e^{−z} (5% level 0.043), mean z² 6.3 ± 0.3 against 6 | `results/porter_thomas_nq70.txt` |
 | Fine-structure check without a dynamic program | stabilizer-group formula reproduces the sampler's conditionals to 3.3·10⁻⁸ on all shots | `results/chain/stabprefix_ibm_fwd.txt` |
 | Ceiling for every graph | width ≤ ⌊n/2⌋: 275 GB at n = 70, 281 TB at n = 90; random graphs G(70, ½) reach width 32, brickwork 31 | Proposition in §5, `results/ceiling_tightness.jsonl` |
@@ -725,7 +725,7 @@ It shows:
   code), and IBM's shots show no readout-type bias above the 4-point level that 1,726 shots can detect (Pauli noise
   cannot show in these marginals, so this is not a statement about the noise that sets the fidelity);
 - the doped flagship's amplitudes are computed exactly on one node after the T-gadget (width 34), agreeing with the
-  tensor-network entry #242 string by string.
+  tensor-network entry #242 string by string up to a common factor of 1 − 1.8·10⁻⁴ whose cause is not identified.
 
 It does not show:
 - a new complexity-theoretic result; the rank-width reduction is from 2007 and the ceiling is elementary;
