@@ -1,0 +1,78 @@
+10N_Bipartite/20260117_0726/Dense/rank_0      N= 45 shots=  512 w=6 log2p hw   -33.55 ideal   -31.16 uniform   -45  F_XEB  0.630 +/- 0.066  exact sampler 3.2 ms/sample
+10N_Bipartite/20260117_0726/Dense/rank_1      N= 45 shots=  512 w=6 log2p hw   -32.49 ideal   -30.33 uniform   -45  F_XEB  0.730 +/- 0.125  exact sampler 3.4 ms/sample
+10N_Bipartite/20260117_0726/Dense/rank_2      N= 45 shots=  512 w=6 log2p hw   -33.71 ideal   -31.17 uniform   -45  F_XEB  0.700 +/- 0.068  exact sampler 3.4 ms/sample
+10N_Bipartite/20260117_0726/Medium/rank_0     N= 45 shots=  512 w=6 log2p hw   -33.04 ideal   -30.52 uniform   -45  F_XEB  0.667 +/- 0.073  exact sampler 3.5 ms/sample
+10N_Bipartite/20260117_0726/Medium/rank_1     N= 45 shots=  512 w=6 log2p hw   -32.48 ideal   -30.51 uniform   -45  F_XEB  0.786 +/- 0.093  exact sampler 3.7 ms/sample
+10N_Bipartite/20260117_0726/Medium/rank_2     N= 45 shots=  512 w=6 log2p hw   -32.79 ideal   -30.40 uniform   -45  F_XEB  0.668 +/- 0.082  exact sampler 3.7 ms/sample
+10N_Bipartite/20260117_0726/Sparse/rank_0     N= 45 shots=  512 w=6 log2p hw   -30.72 ideal   -28.72 uniform   -45  F_XEB  0.774 +/- 0.213  exact sampler 3.8 ms/sample
+10N_Bipartite/20260117_0726/Sparse/rank_1     N= 45 shots=  512 w=6 log2p hw   -29.84 ideal   -28.58 uniform   -45  F_XEB  1.264 +/- 0.379  exact sampler 3.6 ms/sample
+10N_Bipartite/20260117_0726/Sparse/rank_2     N= 45 shots=  512 w=6 log2p hw   -30.38 ideal   -28.34 uniform   -45  F_XEB  0.812 +/- 0.149  exact sampler 3.6 ms/sample
+10N_ER/20260117_0726/Dense/rank_0             N= 45 shots=  512 w=6 log2p hw   -37.19 ideal   -33.63 uniform   -45  F_XEB  0.123 +/- 0.043  exact sampler 3.7 ms/sample
+10N_ER/20260117_0726/Dense/rank_1             N= 45 shots=  512 w=6 log2p hw   -37.19 ideal   -33.48 uniform   -45  F_XEB  0.242 +/- 0.118  exact sampler 4.1 ms/sample
+10N_ER/20260117_0726/Dense/rank_2             N= 45 shots=  512 w=6 log2p hw   -36.34 ideal   -33.15 uniform   -45  F_XEB  0.439 +/- 0.250  exact sampler 3.6 ms/sample
+10N_ER/20260117_0726/Medium/rank_0            N= 45 shots=  512 w=6 log2p hw   -42.34 ideal   -41.38 uniform   -45  F_XEB  0.649 +/- 0.087  exact sampler 3.4 ms/sample
+10N_ER/20260117_0726/Medium/rank_1            N= 45 shots=  512 w=6 log2p hw   -42.47 ideal   -41.44 uniform   -45  F_XEB  0.706 +/- 0.085  exact sampler 3.9 ms/sample
+10N_ER/20260117_0726/Medium/rank_2            N= 45 shots=  512 w=6 log2p hw   -42.48 ideal   -41.54 uniform   -45  F_XEB  0.649 +/- 0.108  exact sampler 4.1 ms/sample
+10N_ER/20260117_0726/Sparse/rank_0            N= 45 shots=  512 w=6 log2p hw   -31.08 ideal   -31.75 uniform   -45  F_XEB  1.384 +/- 0.557  exact sampler 3.9 ms/sample
+10N_ER/20260117_0726/Sparse/rank_1            N= 45 shots=  512 w=6 log2p hw   -31.38 ideal   -31.72 uniform   -45  F_XEB  1.479 +/- 0.537  exact sampler 3.7 ms/sample
+10N_ER/20260117_0726/Sparse/rank_2            N= 45 shots=  512 w=6 log2p hw   -30.33 ideal   -32.00 uniform   -45  F_XEB  6.035 +/- 4.061  exact sampler 3.9 ms/sample
+14N_Bipartite/20260117_2227/Dense/rank_0      N= 91 shots=  512 w=6 log2p hw   -62.75 ideal   -57.56 uniform   -91  F_XEB  0.895 +/- 0.575  exact sampler 7.8 ms/sample
+14N_Bipartite/20260117_2227/Dense/rank_1      N= 91 shots=  512 w=6 log2p hw   -62.41 ideal   -57.73 uniform   -91  F_XEB  1.321 +/- 0.647  exact sampler 8.6 ms/sample
+14N_Bipartite/20260117_2227/Dense/rank_2      N= 91 shots=  512 w=6 log2p hw   -63.84 ideal   -57.39 uniform   -91  F_XEB  0.664 +/- 0.214  exact sampler 7.9 ms/sample
+14N_Bipartite/20260117_2227/Medium/rank_0     N= 91 shots=  512 w=6 log2p hw   -63.43 ideal   -58.22 uniform   -91  F_XEB  0.968 +/- 0.443  exact sampler 7.2 ms/sample
+14N_Bipartite/20260117_2227/Medium/rank_1     N= 91 shots=  512 w=6 log2p hw   -50.78 ideal   -45.89 uniform   -91  F_XEB  0.356 +/- 0.205  exact sampler 6.7 ms/sample
+14N_Bipartite/20260117_2227/Medium/rank_2     N= 91 shots=  512 w=6 log2p hw   -61.71 ideal   -57.39 uniform   -91  F_XEB  0.503 +/- 0.239  exact sampler 7.1 ms/sample
+14N_Bipartite/20260117_2227/Sparse/rank_0     N= 91 shots=  512 w=6 log2p hw   -50.48 ideal   -47.67 uniform   -91  F_XEB  0.725 +/- 0.657  exact sampler 6.9 ms/sample
+14N_Bipartite/20260117_2227/Sparse/rank_1     N= 91 shots=  512 w=6 log2p hw   -46.56 ideal   -41.70 uniform   -91  F_XEB  0.591 +/- 0.497  exact sampler 7.1 ms/sample
+14N_Bipartite/20260117_2227/Sparse/rank_2     N= 91 shots=  512 w=6 log2p hw   -45.89 ideal   -41.22 uniform   -91  F_XEB  0.954 +/- 0.584  exact sampler 7.1 ms/sample
+14N_ER/20260117_2227/Dense/rank_0             N= 91 shots=  512 w=6 log2p hw   -71.01 ideal   -61.71 uniform   -91  F_XEB  0.048 +/- 0.049  exact sampler 8.4 ms/sample
+14N_ER/20260117_2227/Dense/rank_1             N= 91 shots=  512 w=6 log2p hw   -72.07 ideal   -62.85 uniform   -91  F_XEB  0.020 +/- 0.019  exact sampler 10.2 ms/sample
+14N_ER/20260117_2227/Dense/rank_2             N= 91 shots=  512 w=6 log2p hw   -72.65 ideal   -62.53 uniform   -91  F_XEB  0.001 +/- 0.001  exact sampler 7.4 ms/sample
+14N_ER/20260117_2227/Medium/rank_0            N= 91 shots=  512 w=6 log2p hw   -89.23 ideal   -90.08 uniform   -91  F_XEB  2.060 +/- 0.185  exact sampler 7.6 ms/sample
+14N_ER/20260117_2227/Medium/rank_1            N= 91 shots=  512 w=6 log2p hw   -89.27 ideal   -89.94 uniform   -91  F_XEB  1.622 +/- 0.174  exact sampler 7.2 ms/sample
+14N_ER/20260117_2227/Medium/rank_2            N= 91 shots=  512 w=6 log2p hw   -89.16 ideal   -89.94 uniform   -91  F_XEB  1.955 +/- 0.178  exact sampler 7.2 ms/sample
+14N_ER/20260117_2227/Sparse/rank_0            N= 91 shots=  512 w=6 log2p hw   -54.96 ideal   -56.06 uniform   -91  F_XEB  1.601 +/- 1.385  exact sampler 7.2 ms/sample
+14N_ER/20260117_2227/Sparse/rank_1            N= 91 shots=  512 w=6 log2p hw   -54.20 ideal   -55.75 uniform   -91  F_XEB  2.145 +/- 1.440  exact sampler 7.4 ms/sample
+14N_ER/20260117_2227/Sparse/rank_2            N= 91 shots=  512 w=6 log2p hw   -53.81 ideal   -54.67 uniform   -91  F_XEB  0.304 +/- 0.202  exact sampler 7.0 ms/sample
+18N_Bipartite/20260120_1543/Dense/rank_0      N=153 shots=  512 w=6 log2p hw   -72.23 ideal   -63.06 uniform  -153  F_XEB  5.365 +/- 5.111  exact sampler 11.7 ms/sample
+18N_Bipartite/20260120_1543/Dense/rank_1      N=153 shots=  512 w=6 log2p hw  -107.85 ideal   -97.07 uniform  -153  F_XEB  0.026 +/- 0.017  exact sampler 11.5 ms/sample
+18N_Bipartite/20260120_1543/Dense/rank_2      N=153 shots=  512 w=6 log2p hw   -76.26 ideal   -69.17 uniform  -153  F_XEB  0.040 +/- 0.028  exact sampler 11.6 ms/sample
+18N_Bipartite/20260120_1543/Medium/rank_0     N=153 shots=  512 w=6 log2p hw  -102.47 ideal   -93.10 uniform  -153  F_XEB  0.021 +/- 0.016  exact sampler 11.6 ms/sample
+18N_Bipartite/20260120_1543/Medium/rank_1     N=153 shots=  512 w=6 log2p hw   -92.90 ideal   -85.49 uniform  -153  F_XEB  0.096 +/- 0.067  exact sampler 11.8 ms/sample
+18N_Bipartite/20260120_1543/Medium/rank_2     N=153 shots=  512 w=6 log2p hw   -97.29 ideal   -89.30 uniform  -153  F_XEB  0.291 +/- 0.289  exact sampler 11.8 ms/sample
+18N_Bipartite/20260120_1543/Sparse/rank_0     N=153 shots=  512 w=6 log2p hw   -65.02 ideal   -55.75 uniform  -153  F_XEB  0.523 +/- 0.423  exact sampler 7.8 ms/sample
+18N_Bipartite/20260120_1543/Sparse/rank_1     N=153 shots=  512 w=6 log2p hw   -50.68 ideal   -39.23 uniform  -153  F_XEB  0.025 +/- 0.017  exact sampler 7.7 ms/sample
+18N_Bipartite/20260120_1543/Sparse/rank_2     N=153 shots=  512 w=6 log2p hw   -52.54 ideal   -39.47 uniform  -153  F_XEB  0.645 +/- 0.423  exact sampler 6.0 ms/sample
+18N_ER/20260120_1543/Dense/rank_0             N=153 shots=  512 w=6 log2p hw  -122.17 ideal  -102.05 uniform  -153  F_XEB  0.000 +/- 0.000  exact sampler 6.4 ms/sample
+18N_ER/20260120_1543/Dense/rank_1             N=153 shots=  512 w=6 log2p hw  -121.91 ideal  -101.77 uniform  -153  F_XEB  0.000 +/- 0.000  exact sampler 6.3 ms/sample
+18N_ER/20260120_1543/Dense/rank_2             N=153 shots=  512 w=6 log2p hw  -121.45 ideal  -101.32 uniform  -153  F_XEB  0.000 +/- 0.000  exact sampler 6.3 ms/sample
+18N_ER/20260120_1543/Medium/rank_0            N=153 shots=  512 w=6 log2p hw  -149.43 ideal  -150.97 uniform  -153  F_XEB  3.449 +/- 0.895  exact sampler 6.3 ms/sample
+18N_ER/20260120_1543/Medium/rank_1            N=153 shots=  512 w=6 log2p hw  -148.57 ideal  -149.69 uniform  -153  F_XEB  2.044 +/- 0.365  exact sampler 6.3 ms/sample
+18N_ER/20260120_1543/Medium/rank_2            N=153 shots=  512 w=6 log2p hw  -149.42 ideal  -150.79 uniform  -153  F_XEB  2.666 +/- 0.462  exact sampler 6.3 ms/sample
+18N_ER/20260120_1543/Sparse/rank_0            N=153 shots=  512 w=6 log2p hw   -87.60 ideal   -91.67 uniform  -153  F_XEB  2.291 +/- 2.105  exact sampler 6.4 ms/sample
+18N_ER/20260120_1543/Sparse/rank_1            N=153 shots=  512 w=6 log2p hw   -87.92 ideal   -92.40 uniform  -153  F_XEB 649.328 +/- 777.896  exact sampler 6.8 ms/sample
+18N_ER/20260120_1543/Sparse/rank_2            N=153 shots=  512 w=6 log2p hw   -87.63 ideal   -90.59 uniform  -153  F_XEB  1.497 +/- 1.507  exact sampler 6.4 ms/sample
+8N_Bipartite/20260116_1608/Dense/rank_0       N= 28 shots=  512 w=4 log2p hw   -21.10 ideal   -19.93 uniform   -28  F_XEB  0.913 +/- 0.068  exact sampler 0.7 ms/sample
+8N_Bipartite/20260116_1608/Dense/rank_1       N= 28 shots=  512 w=4 log2p hw   -20.86 ideal   -19.48 uniform   -28  F_XEB  0.696 +/- 0.052  exact sampler 0.7 ms/sample
+8N_Bipartite/20260116_1608/Dense/rank_2       N= 28 shots=  512 w=4 log2p hw   -21.11 ideal   -20.15 uniform   -28  F_XEB  0.867 +/- 0.066  exact sampler 0.7 ms/sample
+8N_Bipartite/20260116_1608/Medium/rank_0      N= 28 shots=  512 w=4 log2p hw   -19.89 ideal   -19.40 uniform   -28  F_XEB  1.190 +/- 0.166  exact sampler 0.6 ms/sample
+8N_Bipartite/20260116_1608/Medium/rank_1      N= 28 shots=  512 w=4 log2p hw   -19.92 ideal   -19.25 uniform   -28  F_XEB  0.925 +/- 0.127  exact sampler 0.7 ms/sample
+8N_Bipartite/20260116_1608/Medium/rank_2      N= 28 shots=  512 w=4 log2p hw   -20.38 ideal   -19.67 uniform   -28  F_XEB  1.023 +/- 0.082  exact sampler 0.7 ms/sample
+8N_Bipartite/20260116_1608/Sparse/rank_0      N= 28 shots=  512 w=4 log2p hw   -18.94 ideal   -18.52 uniform   -28  F_XEB  1.232 +/- 0.278  exact sampler 0.6 ms/sample
+8N_Bipartite/20260116_1608/Sparse/rank_1      N= 28 shots=  512 w=4 log2p hw   -19.91 ideal   -19.62 uniform   -28  F_XEB  0.856 +/- 0.252  exact sampler 0.7 ms/sample
+8N_Bipartite/20260116_1608/Sparse/rank_2      N= 28 shots=  512 w=4 log2p hw   -18.22 ideal   -18.04 uniform   -28  F_XEB  1.085 +/- 0.243  exact sampler 0.6 ms/sample
+8N_ER/20260116_1609/Dense/rank_0              N= 28 shots=  512 w=4 log2p hw   -24.02 ideal   -21.60 uniform   -28  F_XEB  0.298 +/- 0.098  exact sampler 0.7 ms/sample
+8N_ER/20260116_1609/Dense/rank_1              N= 28 shots=  512 w=4 log2p hw   -23.73 ideal   -21.81 uniform   -28  F_XEB  0.387 +/- 0.075  exact sampler 0.7 ms/sample
+8N_ER/20260116_1609/Dense/rank_2              N= 28 shots=  512 w=4 log2p hw   -24.26 ideal   -22.30 uniform   -28  F_XEB  0.597 +/- 0.159  exact sampler 0.7 ms/sample
+8N_ER/20260116_1609/Medium/rank_0             N= 28 shots=  512 w=4 log2p hw   -26.59 ideal   -26.10 uniform   -28  F_XEB  0.832 +/- 0.082  exact sampler 0.7 ms/sample
+8N_ER/20260116_1609/Medium/rank_1             N= 28 shots=  512 w=4 log2p hw   -26.56 ideal   -26.15 uniform   -28  F_XEB  0.951 +/- 0.101  exact sampler 0.6 ms/sample
+8N_ER/20260116_1609/Medium/rank_2             N= 28 shots=  512 w=4 log2p hw   -27.41 ideal   -26.08 uniform   -28  F_XEB  0.513 +/- 0.054  exact sampler 0.6 ms/sample
+8N_ER/20260116_1609/Sparse/rank_0             N= 28 shots=  512 w=4 log2p hw   -20.32 ideal   -21.04 uniform   -28  F_XEB  1.361 +/- 0.311  exact sampler 0.6 ms/sample
+8N_ER/20260116_1609/Sparse/rank_1             N= 28 shots=  512 w=4 log2p hw   -20.31 ideal   -21.37 uniform   -28  F_XEB  2.067 +/- 0.480  exact sampler 0.7 ms/sample
+8N_ER/20260116_1609/Sparse/rank_2             N= 28 shots=  512 w=4 log2p hw   -20.17 ideal   -21.08 uniform   -28  F_XEB  1.357 +/- 0.231  exact sampler 0.6 ms/sample
+
+by size (mean over models; F_XEB with the spread across models):
+N =  28: 18 models, width 4, F_XEB mean 0.953 (models 0.298 .. 2.067); log2 p hw -21.9 vs ideal -21.2 vs uniform -28; exact sampling 0.7 ms/sample
+N =  45: 18 models, width 6, F_XEB mean 1.041 (models 0.123 .. 6.035); log2 p hw -34.4 vs ideal -32.8 vs uniform -45; exact sampling 3.7 ms/sample
+N =  91: 18 models, width 6, F_XEB mean 0.930 (models 0.001 .. 2.145); log2 p hw -64.1 vs ideal -60.5 vs uniform -91; exact sampling 7.6 ms/sample
+N = 153: 18 models, width 6, F_XEB mean 37.128 (models 0.000 .. 649.328); log2 p hw -99.6 vs ideal -92.4 vs uniform -153; exact sampling 8.3 ms/sample

@@ -7,6 +7,9 @@ depth, and samples 76- and 80-qubit instances of the construction on one cloud n
 
 Technical note: [`paper/exact_graphstate_sampling.pdf`](paper/exact_graphstate_sampling.pdf) (Markdown source alongside).
 
+Also here: [`iqp/`](iqp/README.md), exact classical sampling of the trained IQP generative models that
+arXiv:2511.05267 ran on IBM's 156-qubit Aachen processor (width 6 on the heavy-hex chip at every size run).
+
 Concurrent work: tracker issue #261 (Zhongpu Qiu, 2 November 2026) reports exact samples of the same 70-qubit instance
 on 8 H200 GPUs by splitting the qubits into two halves of 35 (a 2^35 table of 256 GiB, 2.42 s per sample) and scores
 IBM's shots at the same 0.466 ± 0.031. The width-30 order used here needs 32 times less memory, which is what puts the
@@ -23,8 +26,8 @@ ring samples are independent confirmations, not firsts.
 | IBM's hardware shots scored exactly | **linear XEB 0.466 ± 0.031**; controls consistent with zero; every shot agrees with the independent code of #260 to 9.4e-6 | `results/ibmxeb/analysis.txt` |
 | Fidelity of IBM's run, from exact probabilities | 0.457 ± 0.037 (XEB) and 0.48 [0.43, 0.54] (mixture MLE), against IBM's DFE 0.37 (≥ 0.092) | `results/ibmxeb/analysis.txt` |
 | 76-qubit, depth-76 instance | **19 exact samples, 190 s each**, 69 GB, two reproduced to 1e-7 by the independent engine | `results/nq76/analysis.txt` |
-| 80-qubit, depth-80 instance on one 256 GiB node (hybrid sampler) | **79 samples, 246 s per proposal**, width 35 sliced to 34 by a translation of the dual table; 79 of 80 proposals accepted, prefix marginals 0.997–1.002 against a cap of 1.03 (Born law conditioned on the cap, not exact); two re-scored by a second slicing to 5e-7 | `results/nq80/analysis.txt` |
-| IBM's doped flagship (468 T gates) on one node | width 34 after the T-gadget; **17 shots match #242 up to a common factor 1 − 1.8e-4** (15 of 16 within 1e-5 of it), 1,165 s per shot; **135 hybrid samples** (135 of 139 proposals accepted, z 0.998–1.003 vs cap 1.03); from the proposals alone, fidelity ≥ 0.936 at 95% (`hybrid_certificate.py`) | `results/doped/run11/`, `run13/`, `certificate_run11_13.txt` |
+| 80-qubit, depth-80 instance on one 256 GiB node (hybrid sampler) | **79 samples, 246 s per proposal**, width 35 sliced to 34 by a translation of the dual table; 79 of 80 proposals accepted, prefix marginals 0.997–1.002 against a cap of 1.03 (law proportional to min(z, 1.03) on the prefix, not exact; fidelity ≥ 0.887 at 95% from the proposals); two re-scored by a second slicing to 5e-7 | `results/nq80/analysis.txt` |
+| IBM's doped flagship (468 T gates) on one node | width 34 after the T-gadget; **17 shots match #242 up to a common factor 1 − 1.8e-4** (15 of 16 within 2.2e-5 in log₂ of the mean offset), 1,165 s per shot; **135 hybrid samples** (135 of 139 proposals accepted, z 0.998–1.003 vs cap 1.03); from the proposals alone, fidelity ≥ 0.936 at 95% (`hybrid_certificate.py`) | `results/doped/run11/`, `run13/`, `certificate_run11_13.txt` |
 | IBM's 64-qubit ring instance #245 (314 T gates) on one node | Renaud's order sliced to width 34; 3 hardware shots match #249's exact probabilities to 3.8e-6 in log₂; **102 hybrid samples** of 102 proposals, 817 s each, XEB 0.91 ± 0.14 vs hardware 0.390 ± 0.034; fidelity ≥ 0.912 at 95% from the proposals alone; #263 sampled it first | `results/ring64/run14/` |
 | Hybrid sampler's cap, bounded without a model (70 qubits, K = 50) | exact second moment of the prefix marginal over all 2^30 prefix stabilizers: Var(z) = 9.70e-7 (observed 1.00e-6); Chebyshev + Cauchy–Schwarz: accepted output within **total variation 1.1e-3** of the Born law | `results/capvar_nq70_K50.txt`, `capvar.py`, `capvar.cpp`, `results/tests/test_capvar.txt` |
 | Conditionals checked without a dynamic program | stabilizer-group formula matches the sampler to 3.3e-8 on all 1,726 shots | `results/chain/stabprefix_ibm_fwd.txt` |
@@ -143,8 +146,9 @@ Full-instance runs (all on AWS r7a.4xlarge, 16 cores, AMD EPYC 9R14, 123 GB):
 - **80 qubits, 2026-11-02:** seed-1080 instance, width 35 (275 GB), run at width 34 on one r7a.8xlarge (256 GiB) by
   slicing vertex 34 with a translation of the dual table (`sliced_plans.py`, `gsamp2 resume --twist`), hybrid sampler
   (60 bits proposed and accepted against their exact marginal, cap 1.03, 20 bits drawn exactly): 79 samples,
-  79 of 80 proposals accepted, z in [0.9970, 1.0018], 246 s per proposal, peak 128 GiB (`results/nq80/`); the output is
-  the Born law conditioned on z ≤ 1.03 and is not labelled exact (note §3.4); two samples re-scored with the
+  79 of 80 proposals accepted, z in [0.9970, 1.0018], 246 s per proposal, peak 128 GiB (`results/nq80/`); the output law is
+  proportional to min(z, 1.03) on the prefix, certified at fidelity ≥ 0.887 (95%) by its proposals, and is not labelled
+  exact (note §3.4); two samples re-scored with the
   (10, 40) pair slicing agree to 5e-7; gates on the node: two known 70-qubit values to 2.6e-7 and twisted vs unsliced
   hybrid on three 70-qubit proposals to 8.2e-7 with identical bits.
 
@@ -162,7 +166,7 @@ estimators, the stabilizer-only check of the sampler's conditionals, the measure
 dual-table translation that makes dense graphs sliceable, and the ⌊n/2⌋ ceiling. The claim is about this family of
 experiments, not a new complexity result. The doped sibling instance (468 T gates) is reached through the T-gadget
 and the hybrid sampler (`results/doped/`): 1,165 s per IBM shot on one 256 GiB node with the two-table engine, 17 shots
-matching the tensor-network entry #242 up to a common factor of 1 − 1.8e-4 (15 of 16 within 1e-5 of it; cause not found), and 135 hybrid samples of the instance
+matching the tensor-network entry #242 up to a common factor of 1 − 1.8e-4 (15 of 16 within 2.2e-5 in log₂ of the mean offset; cause not found), and 135 hybrid samples of the instance
 (135 of 139 proposals accepted, `results/doped/run11/`, `run13/`).
 
 ## Author

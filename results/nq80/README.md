@@ -1,7 +1,8 @@
 # Cloud run 12: hybrid-sampler samples of the 80-qubit, depth-80 instance on one node
 
-(The output is the Born law conditioned on the prefix marginal z ≤ 1.03; the mass above the cap is not bounded
-rigorously, so these are not labelled exact samples. See the note, §3.4.)
+(The output law is proportional to min(z, 1.03) on the prefix times the exact suffix, equal to the Born law if no
+prefix has z > 1.03; the 80 proposals certify fidelity ≥ 0.887 at 95% (`results/certificates_nq80_fstate.txt`), but the
+mass above the cap is not bounded rigorously, so these are not labelled exact samples. See the note, §3.4.)
 
 Instance: seed 1080 of the construction (`cloud_nq80/fi80_order.json` order, width 35, 1,573 edges, degrees 30–50).
 Node: on-demand r7a.8xlarge (32 vCPU, 256 GiB), us-east-1a, launch template version 4 = `cloud_nq80/run_hybrid.sh`;

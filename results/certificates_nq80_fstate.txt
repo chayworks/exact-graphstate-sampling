@@ -1,0 +1,8 @@
+# python hybrid_certificate.py results/nq80/samples_nq80.txt 1.03
+n = 80 proposals, cap 1.03, max z 1.001777, above cap 0
+mean min(z,c) = 0.999834; 95% lower bound (empirical Bernstein) 0.8873 (Hoeffding 0.8589)
+=> TV(sampled, ideal) <= 0.1127 and classical fidelity >= 0.8873 at 95% confidence
+# python hybrid_certificate.py results/fstate_hybrid_samples.txt 1.03
+n = 150 proposals, cap 1.03, max z 1.002530, above cap 0
+mean min(z,c) = 0.999967; 95% lower bound (empirical Bernstein) 0.9402 (Hoeffding 0.8970)
+=> TV(sampled, ideal) <= 0.0598 and classical fidelity >= 0.9402 at 95% confidence

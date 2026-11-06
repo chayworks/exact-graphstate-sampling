@@ -1,0 +1,4 @@
+selftest probabilities: 40 random graphs/orders up to 11 qubits, max |dP| = 2.22e-16
+control (one edge moved): max |dP| = 1.04e-01
+sampler: TV 0.0289 vs ideal i.i.d. draws 0.0283; reported probabilities match to 3.6e-17
+selftest PASS

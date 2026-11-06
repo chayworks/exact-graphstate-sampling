@@ -1,0 +1,1 @@
+full 156-qubit chip, 3 layers, random angles: width 6 couplers 176 6.0 ms/sample, total prob 1.0

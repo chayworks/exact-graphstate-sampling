@@ -1,0 +1,7 @@
+n =  70, d =  70: spatial-order width  35; bound ceil(d/2) =  35; floor(n/2) =  35
+n =  40, d =  40: spatial-order width  18; bound ceil(d/2) =  20; floor(n/2) =  20
+n = 100, d =  40: spatial-order width  20; bound ceil(d/2) =  20; floor(n/2) =  50
+n = 200, d =  40: spatial-order width  20; bound ceil(d/2) =  20; floor(n/2) = 100
+n =  70, d =  30: spatial-order width  15; bound ceil(d/2) =  15; floor(n/2) =  35
+n =  70, d = 100: spatial-order width  35; bound ceil(d/2) =  50; floor(n/2) =  35
+n = 150, d =  70: spatial-order width  35; bound ceil(d/2) =  35; floor(n/2) =  75

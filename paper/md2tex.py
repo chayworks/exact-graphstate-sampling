@@ -5,13 +5,14 @@ Writes <name>_tex.md next to the source; build with paper/build_tex.sh.
 Usage: python paper/md2tex.py paper/exact_graphstate_sampling.md"""
 import sys, re, pathlib
 src = pathlib.Path(sys.argv[1]); text = src.read_text(encoding="utf-8").replace("\r\n", "\n")
-SUP = {"⁰": "0", "¹": "1", "²": "2", "³": "3", "⁴": "4", "⁵": "5", "⁶": "6", "⁷": "7", "⁸": "8", "⁹": "9", "⁻": "-"}
+SUP = {"⁺": "+", "⁰": "0", "¹": "1", "²": "2", "³": "3", "⁴": "4", "⁵": "5", "⁶": "6", "⁷": "7", "⁸": "8", "⁹": "9", "⁻": "-"}
 SUB = {"₀": "0", "₁": "1", "₂": "2", "₃": "3", "₄": "4", "₅": "5", "₆": "6", "₇": "7", "₈": "8", "₉": "9"}
 MATH = {"−": "-", "·": "\\cdot", "±": "\\pm", "⟩": "\\rangle", "⟨": "\\langle", "Σ": "\\Sigma", "½": "\\tfrac12",
         "χ": "\\chi", "√": "\\surd", "⌊": "\\lfloor", "⌋": "\\rfloor", "≤": "\\le", "≈": "\\approx", "σ": "\\sigma",
         "ψ": "\\psi", "Π": "\\Pi", "∈": "\\in", "φ": "\\varphi", "≥": "\\ge", "†": "\\dagger", "→": "\\to",
         "×": "\\times", "θ": "\\theta", "↦": "\\mapsto", "∎": "\\blacksquare", "⊗": "\\otimes", "′": "'",
-        "≠": "\\ne", "∪": "\\cup", "δ": "\\delta", "π": "\\pi"}
+        "≠": "\\ne", "∪": "\\cup", "δ": "\\delta", "π": "\\pi", "⌈": "\\lceil", "⌉": "\\rceil",
+        "ε": "\\varepsilon", "∝": "\\propto"}
 TEXT = {"–": "--", "—": "---", "…": "\\ldots{}", "§": "\\S{}"}
 def mathify(s):
     """Prose written with TeX-style sub/superscripts (2^{35}, r_k, Z^{v}, A_ij, log2 Σ_k 2^{r_k}) becomes real math.

@@ -28,4 +28,4 @@ Analyses:
 - `porter_thomas_samples.txt` (`python porter_thomas_test.py results/doped/run11/samples.txt 70 --acc`): mean z
   1.81 ± 0.36 (Porter–Thomas 2), mean log₂ Pr −69.59 ± 0.36 (Porter–Thomas −69.39), KS 0.14 (5% level 0.38).
 
-The samples are the Born law conditioned on z ≤ 1.03 (hybrid sampler), not exact samples; see the note, §7.
+The samples follow the capped law, proportional to min(z, 1.03) on the prefix (hybrid sampler), not exact samples; see the note, §7.

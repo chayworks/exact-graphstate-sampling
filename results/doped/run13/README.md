@@ -17,5 +17,6 @@ is empty and `run.log` has no "sampling ended" line. Inputs and SHA-256 in `inpu
   z·e^{−z} 0.108 (5% level 0.123); self-consistency XEB 1.181 ± 0.136.
 
 Runs 11 and 13 together: 139 proposals, 135 accepted samples, all distinct; z in [0.99783, 1.00269], sd 0.00093;
-self-consistency XEB 1.145 ± 0.127; mean log₂ Pr −69.278 ± 0.098. The samples are the Born law conditioned on
-z ≤ 1.03 (hybrid sampler), not exact samples; see the note, §7.
+self-consistency XEB 1.145 ± 0.127; mean log₂ Pr −69.278 ± 0.098. The samples follow the capped
+law, proportional to min(z, 1.03) on the prefix (hybrid sampler), not exact samples; with run 11 the 139 proposals
+certify fidelity ≥ 0.936 at 95% (`results/doped/certificate_run11_13.txt`); see the note, §7.

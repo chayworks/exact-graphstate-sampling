@@ -82,6 +82,7 @@ def cut_profile(A, order):
 
 if __name__ == "__main__":
     test_gadget()
+    if len(sys.argv) < 3: raise SystemExit(0)              # self-test only (no circuit to convert)
     n, ops = parse(sys.argv[1]); out = sys.argv[2]
     gops, k, anc = gadgetize(ops, n); N = n + k
     print(f"{sys.argv[1]}: {n} data qubits, {len(ops)} gates, {k} T gates -> {N} vertices")

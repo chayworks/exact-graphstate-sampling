@@ -1,0 +1,9 @@
+60 simulated sample files
+8N_Bipartite/20260116_1608/Dense/rank_0 N 28 layers 1 samples (512, 28) int64 mean log2 p by f: [(1, np.float64(-19.978)), (0.5, np.float64(-26.863)), (2, np.float64(-35.712))]
+8N_Bipartite/20260116_1608/Dense/rank_1 N 28 layers 1 samples (512, 28) int64 mean log2 p by f: [(1, np.float64(-19.417)), (0.5, np.float64(-28.119)), (2, np.float64(-30.142))]
+8N_Bipartite/20260116_1608/Dense/rank_2 N 28 layers 1 samples (512, 28) int64 mean log2 p by f: [(1, np.float64(-20.27)), (0.5, np.float64(-28.014)), (2, np.float64(-34.23))]
+8N_Bipartite/20260116_1608/Dense/rank_3 N 28 layers 1 samples (512, 28) int64 mean log2 p by f: [(1, np.float64(-20.07)), (0.5, np.float64(-28.602)), (2, np.float64(-32.835))]
+8N_Bipartite/20260116_1608/Dense/rank_4 N 28 layers 1 samples (512, 28) int64 mean log2 p by f: [(1, np.float64(-20.024)), (0.5, np.float64(-28.123)), (2, np.float64(-31.553))]
+8N_Bipartite/20260116_1608/Dense/rank_5 N 28 layers 1 samples (512, 28) int64 mean log2 p by f: [(1, np.float64(-20.357)), (0.5, np.float64(-27.492)), (2, np.float64(-29.623))]
+8N_Bipartite/20260116_1608/Dense/rank_0: mean log2 p  ours -20.024 +/- 0.057, IQPopt -20.004 +/- 0.110, IQPopt reversed bits -34.986
+mean 2^n p: ours 699.9, IQPopt 718.6; per-qubit means max |diff| 0.066
