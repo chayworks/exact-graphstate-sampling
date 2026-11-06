@@ -61,12 +61,17 @@ def make_sliced_plans(A, M, order, S, out, K=None, ND=70):
     twist = []
     for bits in itertools.product([0, 1], repeat=len(S)):
         Ms = [m.copy() for m in M]; a = 0
+        Sset = set(S)
         for v, xv in zip(S, bits):
             Ms[v][:, 1 - xv] = 0                                   # only x_v = xv contributes
             if xv:
                 for u in np.nonzero(A[v])[0]:
-                    if u in pre: Ms[u][:, 1] *= -1                 # (-1)^{x_v x_u} for prefix neighbours
+                    if u in pre and u not in Sset: Ms[u][:, 1] *= -1   # (-1)^{x_v x_u} for prefix neighbours
                 a ^= avec.get(v, 0)                                # suffix neighbours: sign at the summation
+        # an edge between two slice vertices contributes (-1)^{x_i x_j} once (applying it from both ends cancels it)
+        for i in range(len(S)):
+            for j in range(i + 1, len(S)):
+                if A[S[i], S[j]] and bits[i] and bits[j]: Ms[S[j]][:, 1] *= -1
         tag = "".join(map(str, bits)); write_inplace_plan(f"{out}_s{tag}.txt", st, R, Ms, N)
         if avec:
             # translation by a in logical coordinates: a = a_keep + a_Q (F_2^r = span(e_keep) + Q); the dump entry (c, tq)

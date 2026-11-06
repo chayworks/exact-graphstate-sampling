@@ -1,0 +1,4 @@
+# python hybrid_certificate.py <run11/samples.txt + run13/samples.txt, ACC and rej lines> 1.03
+n = 139 proposals, cap 1.03, max z 1.002688, above cap 0
+mean min(z,c) = 1.000082; 95% lower bound (empirical Bernstein) 0.9356 (Hoeffding 0.8932)
+=> TV(sampled, ideal) <= 0.0644 and classical fidelity >= 0.9356 at 95% confidence

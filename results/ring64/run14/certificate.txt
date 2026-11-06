@@ -1,0 +1,3 @@
+n = 102 proposals, cap 1.03, max z 1.002356, above cap 0
+mean min(z,c) = 1.000008; 95% lower bound (empirical Bernstein) 0.9120 (Hoeffding 0.8752)
+=> TV(sampled, ideal) <= 0.0880 and classical fidelity >= 0.9120 at 95% confidence

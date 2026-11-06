@@ -111,7 +111,7 @@ three different dynamic-program paths.
 | Fidelity of IBM's run from exact probabilities | 0.457 ± 0.037 (XEB) and 0.48 [0.43, 0.54] (mixture MLE); IBM's DFE 0.37, ≥ 0.092 | `results/ibmxeb/analysis.txt` |
 | 76-qubit, depth-76 instance sampled exactly | **19 samples, 190 s each**, 69 GB, two reproduced to 10⁻⁷ by the independent engine | `results/nq76/analysis.txt` |
 | 80-qubit, depth-80 instance on one 256 GiB node (hybrid sampler, §3.4) | **79 samples, 246 s per proposal**, width 35 sliced to 34 (128 GiB) by a translation of the dual table; 79 of 80 proposals accepted, marginals 0.997–1.002 against a cap of 1.03; two re-scored by a second slicing to 5·10⁻⁷ | `results/nq80/analysis.txt` |
-| IBM's doped flagship (468 T gates): exact amplitudes and first samples on one node | width 34 after the T-gadget; 17 shots agree with the 256-GPU tensor-network entry #242 up to a common factor of 1 − 1.8·10⁻⁴, 15 of 16 within 10⁻⁵ of it (shot 1 computed seven ways to 1.4·10⁻⁶); 1,165 s per shot; 135 hybrid samples from 139 proposals | `results/doped/run11/`, `run13/` |
+| IBM's doped flagship (468 T gates): exact amplitudes and hybrid samples on one node | width 34 after the T-gadget; 17 shots agree with the 256-GPU tensor-network entry #242 up to a common factor of 1 − 1.8·10⁻⁴, 15 of 16 within 10⁻⁵ of it (shot 1 computed seven ways to 1.4·10⁻⁶); 1,165 s per shot; 135 hybrid samples from 139 proposals | `results/doped/run11/`, `run13/` |
 | Output statistics of our 1,012 samples | Porter–Thomas: KS 0.016 to z·e^{−z} (5% level 0.043), mean z² 6.3 ± 0.3 against 6 | `results/porter_thomas_nq70.txt` |
 | Fine-structure check without a dynamic program | stabilizer-group formula reproduces the sampler's conditionals to 3.3·10⁻⁸ on all shots | `results/chain/stabprefix_ibm_fwd.txt` |
 | Ceiling for every graph | width ≤ ⌊n/2⌋: 275 GB at n = 70, 281 TB at n = 90; random graphs G(70, ½) reach width 32, brickwork 31 | Proposition in §5, `results/ceiling_tightness.jsonl` |
@@ -169,6 +169,10 @@ sampler, used for the 70- and 76-qubit instances, is the exact Born distribution
 unlike rejection sampling its cost does not depend on the shape of the output distribution. Where the chain rule
 is unavailable (projected ancillas, §7) or too costly (a sliced table, §3.4) we use a hybrid sampler that
 re-introduces a capped acceptance step on a prefix marginal, and we label its output accordingly rather than as exact.
+Its ingredients are not new: Manabe, Gu and Pan [9, §§4.1–4.2] describe batched sampling (a uniform prefix with the
+suffix drawn exactly from one batch of amplitudes) and frugal rejection sampling, analyse both under a Porter–Thomas
+assumption, and note that combining them reduces the batched sampler's error. The hybrid sampler is that combination;
+what we add is a bound on its excluded mass that does not assume Porter–Thomas statistics (§7).
 
 **In-place layout.** A second program keeps a single table and updates it in place, so the memory is
 2^{width} complex64 entries rather than two tables of 2^{width+1}: 8.6 GB for the width-30 order of this
@@ -691,7 +695,7 @@ distribution of qubits 0–7 given the other 62 bits: the shots' mean of 256·p(
 the same fidelity read off eight qubits at a time. All three exceed the README's 0.26 ± 0.02, which was obtained on
 the device by other means, and agree with each other.
 
-**Sixteen more shots, and the first samples (run 11).** Run 11 (r7a.8xlarge on-demand, 32 cores, 256 GiB;
+**Sixteen more shots, and hybrid samples (run 11).** Run 11 (r7a.8xlarge on-demand, 32 cores, 256 GiB;
 `results/doped/run11/`) first reproduced shot 1 at −68.295330552 (1,168 s, peak resident set 134,262,660 kB), then
 scored the last 16 of IBM's 2,051 shots at 1,165 s each with the two-table engine. Against #242 the 16 differ by
 almost the same amount: log₂ difference −2.56·10⁻⁴ on average, 15 of 16 within [−2.76, −2.54]·10⁻⁴, and the one
@@ -702,15 +706,31 @@ rounding at the level of a 2^{48} complex64 contraction would produce on top of 
 468 rz(π/4)) predicts a factor of 4·10⁻⁵ of the opposite sign, and our seven in-house values of shot 1 agree to
 1.4·10⁻⁶. It shifts #242's log-XEB by 1.8·10⁻⁴. The 16 shots' own linear XEB is 0.33 ± 0.25 (bootstrap 95%
 [−0.14, 0.83]), consistent with the 0.342 ± 0.028 from all 2,051 published amplitudes (`analysis.txt`). The run then
-drew the first samples of the doped instance with the hybrid sampler: 13 proposals in 15,183 s, 13 accepted, prefix
+drew samples of the doped instance with the hybrid sampler: 13 proposals in 15,183 s, 13 accepted, prefix
 marginals z between 0.9981 and 1.0007 against the cap of 1.03 (mean 0.9996, sd 0.0008), 1,166 s per proposal
 (`samples.txt`); their log₂ Pr averages −69.59 ± 0.36 (Porter–Thomas −69.39) and their self-consistency XEB is
 0.81 ± 0.36, consistent with 1 at this sample size (`porter_thomas_samples.txt`). As at 80 qubits these are the Born
 law conditioned on z ≤ 1.03, not exact samples. A dedicated run on the same node class (run 13,
 `results/doped/run13/`; gate on shot 1 to 10⁻⁶) added 126 proposals at 1,194 s each, 122 accepted, none above the cap,
 z between 0.99783 and 1.00269. Together runs 11 and 13 give 135 distinct samples from 139 proposals (z sd 0.00093);
-their self-consistency XEB is 1.15 ± 0.13 and their mean log₂ Pr −69.28 ± 0.10 against the Porter–Thomas −69.39. To
-our knowledge no other entry has sampled this instance.
+their self-consistency XEB is 1.15 ± 0.13 and their mean log₂ Pr −69.28 ± 0.10 against the Porter–Thomas −69.39. They
+are not the first samples of this instance: tracker entry #258 (8 October 2026) drew 74 samples with a chain-sweep
+contraction in 5-bit block floating point on one desktop GPU, at a predicted fidelity of about 0.87 set by the
+rounding. Ours come from full-precision amplitudes, and their own 139 uniform proposals bound the sampler without a
+Porter–Thomas assumption: TV ≤ 0.064 and classical fidelity ≥ 0.936 at 95% confidence (empirical Bernstein on
+min(z, c), `hybrid_certificate.py`, `results/doped/certificate_run11_13.txt`).
+
+**IBM's ring instance (#245, run 14).** The current doped candidate has 64 qubits on a ring, depth 73 and 314 T gates
+(378-vertex gadget graph). Renaud's published order (#249) gives width 36 on our graph with identical vertex numbering;
+slicing ancillas 317 and 211 brings it to 34 (four plans, no twist; `cloud_ring64/`). On one 256 GiB node the gate
+re-scored three of IBM's hardware shots against #249's exact probabilities to 3.8·10⁻⁶ in log₂ (2,425 s for three);
+an earlier attempt failed this gate and exposed a sign error for an edge between two slice vertices, fixed and checked
+against a dense simulation on an 8-qubit piece of the circuit (`results/tests/test_slice_adjacent.txt`). The run then
+drew 102 hybrid samples from 102 proposals (817 s each, z ≤ 1.00236), all distinct, Porter–Thomas-consistent (mean
+2⁶⁴Pr 1.91 ± 0.14), with linear XEB 0.91 ± 0.14 against 0.390 ± 0.034 for IBM's 1,389 shots, and with TV ≤ 0.088,
+classical fidelity ≥ 0.912 at 95% from the proposals alone (`results/ring64/run14/`). Tracker entry #263 sampled the
+same instance first, while this run was in progress: 1,389 samples in 864 s on 8 H200 GPUs with a uniform prefix, at
+certified fidelity ≥ 0.908. Run 14 is an independent CPU implementation that agrees with both #249 and #263.
 
 ## 8. What this does and does not show
 
@@ -732,7 +752,8 @@ It shows:
 It does not show:
 - a new complexity-theoretic result; the rank-width reduction is from 2007 and the ceiling is elementary;
 - priority on attacking this instance; #260 applied the same reduction with capped rejection sampling the
-  day before our first run, and we cite it throughout;
+  day before our first run, and we cite it throughout; nor priority in sampling the doped instances, which #258
+  (doped 70-qubit, low precision) and #263 (ring) did first;
 - exact samples of the doped instance or at 80 qubits (the hybrid sampler is capped; its excluded mass is proven
   below 1.1·10⁻³ at 70 qubits and model-estimated there), or anything about graph-state experiments with entangled
   measurements.

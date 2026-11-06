@@ -22,11 +22,11 @@ def parse(path):
 def convert(n, ops):
     """Returns (N, body ops, tail ops, ancillas [(a, q, gate_index)]). Everything after the last mid-circuit T or
     Clifford gate that is not Clifford is treated as the data tail."""
-    last_cliff = max(i for i, (g, qs) in enumerate(ops) if g in CLIFF or g == "rz(pi/4)")
+    last_cliff = max(i for i, (g, qs) in enumerate(ops) if g in CLIFF or g in ("rz(pi/4)", "t"))
     body_src, tail_src = ops[:last_cliff + 1], ops[last_cliff + 1:]
     body = []; anc = []; k = 0
     for i, (g, qs) in enumerate(body_src):
-        if g == "rz(pi/4)":
+        if g in ("rz(pi/4)", "t"):   # T and rz(pi/4) differ by a global phase only
             a = n + k; k += 1; anc.append((a, qs[0], i)); body += [("h", [a]), ("cz", [qs[0], a]), ("h", [a])]
         elif g in CLIFF: body.append((g, qs))
         else: raise ValueError(f"unexpected mid-circuit gate {g}")

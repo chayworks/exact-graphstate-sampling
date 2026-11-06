@@ -1,0 +1,3 @@
+classical samples (ours): N = 102, XEB = 0.910 +/- 0.141
+IBM hardware shots      : N = 1389, XEB = 0.390 +/- 0.034
+difference 0.521 +/- 0.145 (3.6 sigma)
