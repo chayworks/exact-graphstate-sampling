@@ -15,7 +15,12 @@
 #include <memory>
 #include <algorithm>
 #include <sys/mman.h>
-typedef std::complex<double> cd; typedef std::complex<float> cf;
+typedef std::complex<double> cd;
+#ifdef GS_DOUBLE
+typedef std::complex<double> cf;   // -DGS_DOUBLE: complex128 tables (and dumps), to check complex64 rounding
+#else
+typedef std::complex<float> cf;
+#endif
 struct Term { uint64_t tq; int x, tau, par; };
 struct Step { int v, nk, m; uint64_t g, rhoc; std::vector<uint64_t> tk; std::vector<Term> t; cd M[2][2]; uint64_t tab[5][256]; };
 struct FreeDel { void operator()(cf* p) const { free(p); } };

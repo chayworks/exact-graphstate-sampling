@@ -1,0 +1,23 @@
+	Command being timed: "python3 doped_sampler.py score doped_m20sl_s00.txt doped_m20_step_vertices.json shotlast.txt c128_shotlast.txt --qiskit --slices doped_m20sl_s00.txt,doped_m20sl_s01.txt,doped_m20sl_s10.txt,doped_m20sl_s11.txt --K 518"
+	User time (seconds): 106484.69
+	System time (seconds): 41.34
+	Percent of CPU this job got: 3106%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 57:08.93
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 134227604
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 296418
+	Voluntary context switches: 30776
+	Involuntary context switches: 156186
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 131120
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

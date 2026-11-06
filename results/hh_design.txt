@@ -1,0 +1,18 @@
+# python hh_design.py <n,d ...> --iters 3000  (heavy-hex #151-style construction on the ibm_aachen coupling map)
+n =  60, d =  10 (3 CZ colours): row-order width  16, searched width  12, ceiling  30, in-place table 0.0 GB
+n =  60, d =  20 (3 CZ colours): row-order width  26, searched width  24, ceiling  30, in-place table 0.1 GB
+n =  60, d =  40 (3 CZ colours): row-order width  30, searched width  26, ceiling  30, in-place table 0.5 GB
+n =  60, d =  70 (3 CZ colours): row-order width  28, searched width  26, ceiling  30, in-place table 0.5 GB
+n = 100, d =  10 (3 CZ colours): row-order width  18, searched width  13, ceiling  50, in-place table 0.0 GB
+n = 100, d =  20 (3 CZ colours): row-order width  30, searched width  27, ceiling  50, in-place table 1.1 GB
+n = 100, d =  40 (3 CZ colours): row-order width  49, searched width  46, ceiling  50, in-place table 562,950.0 GB
+n = 100, d =  70 (3 CZ colours): row-order width  49, searched width  46, ceiling  50, in-place table 562,950.0 GB
+n = 100, d = 100 (3 CZ colours): row-order width  49, searched width  45, ceiling  50, in-place table 281,475.0 GB
+n = 127, d =  10 (3 CZ colours): row-order width  17, searched width  14, ceiling  63, in-place table 0.0 GB
+n = 127, d =  20 (3 CZ colours): row-order width  30, searched width  26, ceiling  63, in-place table 0.5 GB
+n = 127, d =  40 (3 CZ colours): row-order width  56, searched width  51, ceiling  63, in-place table 18,014,398.5 GB
+n = 127, d =  70 (3 CZ colours): row-order width  63, searched width  59, ceiling  63, in-place table 4,611,686,018.4 GB
+n = 127, d = 100 (3 CZ colours): row-order width  63, searched width  59, ceiling  63, in-place table 4,611,686,018.4 GB
+n = 156, d =  10 (3 CZ colours): row-order width  17, searched width  14, ceiling  78, in-place table 0.0 GB
+n = 156, d =  20 (3 CZ colours): row-order width  30, searched width  26, ceiling  78, in-place table 0.5 GB
+n = 156, d =  40 (3 CZ colours): row-order width  55, searched width  50, ceiling  78, in-place table 9,007,199.3 GB

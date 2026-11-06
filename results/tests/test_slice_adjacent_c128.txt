@@ -1,0 +1,5 @@
+# python work/ring64/mini_unsliced.py with gsamp2 built -DGS_DOUBLE (complex128 tables and dumps)
+plan step vertices == order: True
+gsamp2 prob, unsliced plan, direct strings: max |d log2| = 4.97e-13  (256 values)
+driver unsliced: max |d log2| = 5.00e-10
+driver sliced: max |d log2| = 5.00e-10

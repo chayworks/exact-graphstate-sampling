@@ -682,8 +682,11 @@ offset is therefore a common normalisation factor of 1 − 1.8·10⁻⁴ between
 rounding; the spread of 2.2·10⁻⁵ among the 15, and the larger deviation on the smallest amplitude, are what absolute
 rounding at the level of a 2^{48} complex64 contraction would produce on top of it. The factor's origin is not identified: float32 rounding of the repeated gate constants (350 H at 1/√2,
 468 rz(π/4)) predicts a factor of 4·10⁻⁵ of the opposite sign, and our seven in-house values of shot 1 agree to
-1.4·10⁻⁶. It shifts #242's log-XEB by 1.8·10⁻⁴. One amplitude recomputed in complex128 would show which pipeline's
-normalisation is off; we have not run it. The 16 shots' own linear XEB is 0.33 ± 0.25 (bootstrap 95%
+1.4·10⁻⁶. It shifts #242's log-XEB by 1.8·10⁻⁴. Recomputing two amplitudes with complex128 tables (run 15, the same
+two-slice plans; `results/doped/run15_c128/`) moves our values by 2.5·10⁻⁷ (shot 1, −68.295331132) and 1.4·10⁻⁶ (the
+last shot, −69.167144551) and leaves the offset from #242 at −2.57·10⁻⁴ and −2.60·10⁻⁴ in log₂, so the factor is not
+complex64 rounding here; it lies on #242's side or in a convention between the pipelines. The same pipeline reproduces
+Renaud's independent probabilities of the ring instance to 3.8·10⁻⁶ (below). The 16 shots' own linear XEB is 0.33 ± 0.25 (bootstrap 95%
 [−0.14, 0.83]), consistent with the 0.342 ± 0.028 from all 2,051 published amplitudes (`analysis.txt`). The run then
 drew samples of the doped instance with the hybrid sampler: 13 proposals in 15,183 s, 13 accepted, prefix
 marginals z between 0.9981 and 1.0007 against the cap of 1.03 (mean 0.9996, sd 0.0008), 1,166 s per proposal
@@ -724,7 +727,8 @@ It shows:
   code), and IBM's shots show no readout-type bias above the 4-point level that 1,726 shots can detect (Pauli noise
   cannot show in these marginals, so this is not a statement about the noise that sets the fidelity);
 - the doped flagship's amplitudes are computed exactly on one node after the T-gadget (width 34), agreeing with the
-  tensor-network entry #242 string by string up to a common factor of 1 − 1.8·10⁻⁴ whose cause is not identified.
+  tensor-network entry #242 string by string up to a common factor of 1 − 1.8·10⁻⁴ that complex128 recomputation shows
+  is not rounding on our side.
 
 It does not show:
 - a new complexity-theoretic result; the rank-width reduction is from 2007 and the ceiling is elementary;
@@ -834,6 +838,7 @@ lines of the cloud runs and the machines they ran on.
 | Exact second moment of the prefix marginal at 70 qubits, K = 50: Var(z) = 9.70·10⁻⁷, TV bound 1.1·10⁻³ (§7) | `results/capvar_nq70_K50.txt`, `capvar_nq70_K50_gens.txt`, `results/tests/test_capvar.txt` | `capvar.py export ...; capvar` (C++), `test_capvar.py` |
 | Gate-cut bound, widths along the spatial order for n ≠ d (§5, Proposition 2) | `results/gatecut_check.txt` | `gatecut_check.py` |
 | Proposal certificates for the hybrid sampler (§7) | `results/certificates_nq80_fstate.txt`, `results/doped/certificate_run11_13.txt`, `results/ring64/run14/certificate.txt` | `hybrid_certificate.py` (`--selftest`) |
+| complex128 recomputation of two doped amplitudes (§7) | `results/doped/run15_c128/` | `cloud_doped/run_c128.sh`, `gsamp2.cpp -DGS_DOUBLE` |
 | Ring instance #245, run 14 (§7) | `results/ring64/run14/` | `cloud_ring64/run_ring.sh`, `ring64_xeb_compare.py`, `porter_thomas_test.py` |
 | Hybrid sampler at 70 qubits against the exact sampler (§7, Figure 6) | `results/fstate_hybrid_check.txt`, `fstate_hybrid_samples.txt` | `fstate_hybrid_check.py` |
 | #242's amplitudes: Porter–Thomas, fidelity three ways, local 8-qubit estimator (§7) | `results/doped/tn242_log2p.txt`, `tn242_fidelity.txt`, `tn242_porter_thomas.txt`, `tn242_log_xeb.json` | `doped_tn242_analysis.py` on the Zenodo release |
